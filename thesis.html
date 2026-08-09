@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang class="gate-locked">
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Rodrigo Mendoza Diaz - MAS MTEC 2024–2026" />
   <meta name="dcterms.date" content="2026-07-11" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Innovating With Constraints: Leveraging Generative AI to Enable Digital Venturing in Resource-Constrained, Non-Technology-Oriented Small Enterprises</title>
+  <style>
+    html.gate-locked body > *:not(#thesis-gate) { display: none !important; }
+    html.gate-locked body { overflow: hidden; }
+  </style>
   <style>
 
 code{white-space: pre-wrap;}
@@ -103,6 +108,32 @@ width: 100%;
 max-width: 100%;
 height: auto;
 margin: 0 auto;
+background: #fff;
+cursor: zoom-in;
+}
+
+#lightbox-overlay {
+position: fixed;
+inset: 0;
+z-index: 2000;
+display: none;
+align-items: center;
+justify-content: center;
+background: rgba(20, 20, 20, 0.92);
+cursor: zoom-out;
+padding: 3vh 3vw;
+}
+#lightbox-overlay.open { display: flex; }
+#lightbox-overlay img {
+display: block;
+max-width: 100%;
+max-height: 100%;
+width: auto;
+height: auto;
+margin: 0;
+cursor: zoom-out;
+background: #fff;
+box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 figcaption {
 margin-top: 0.75rem;
@@ -175,7 +206,7 @@ h1, h2, h3, h4 { scroll-margin-top: 1.5rem; }
   position: fixed;
   top: 0;
   left: 0;
-  width: 360px;
+  width: 420px;
   height: 100vh;
   overflow-y: auto;
   background: #f6f6f4;
@@ -255,37 +286,13 @@ h1, h2, h3, h4 { scroll-margin-top: 1.5rem; }
 .toc-link.active { background: #1a1a1a; color: #fff !important; font-weight: 600; }
 .toc-item.has-active-descendant > .toc-row .toc-link { color: #000; font-weight: 600; }
 
-#toc-toggle {
-  display: none;
-  position: fixed;
-  top: 0.75rem;
-  left: 0.75rem;
-  z-index: 1100;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 6px;
-  border: 1px solid #dcdcd6;
-  background: #f6f6f4;
-  cursor: pointer;
-  font-size: 1.1rem;
-  color: #333;
-}
-
 /* Hide any inline pandoc TOC to avoid duplication */
 #TOC { display: none; }
 
-@media (min-width: 1101px) {
-  body { margin-left: 360px; }
-}
-@media (max-width: 1100px) {
-  #toc-sidebar {
-    transform: translateX(-100%);
-    transition: transform 0.25s ease;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-  }
-  #toc-sidebar.open { transform: translateX(0); }
-  #toc-toggle { display: block; }
-  body { margin-left: 0; }
+body {
+  max-width: calc(78rem + 420px + 420px);
+  padding-left: calc(6rem + 420px);
+  padding-right: calc(6rem + 420px);
 }
 
 /* ===== Clicked-reference highlighting ===== */
@@ -303,6 +310,57 @@ span.citation:target { background: #fff3b0; border-radius: 3px; }
 </style>
 </head>
 <body>
+<div id="thesis-gate" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#282c34;font-family:'Futura PT',Futura,'Century Gothic',Avenir,'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <form id="thesis-gate-form" style="text-align:center;color:#f2f2f2;max-width:20rem;width:90%;">
+    <p style="font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:#9aa0ab;margin:0 0 1rem;">Restricted</p>
+    <p style="font-size:1.05rem;font-weight:300;margin:0 0 1.5rem;">This thesis is password protected.</p>
+    <input id="thesis-gate-input" type="password" autocomplete="off" placeholder="Password"
+      style="width:100%;padding:.6rem .75rem;font-size:1rem;font-family:inherit;background:transparent;border:1px solid #9aa0ab;color:#f2f2f2;border-radius:2px;box-sizing:border-box;text-align:center;" />
+    <button type="submit" style="margin-top:1rem;width:100%;padding:.6rem .75rem;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;font-family:inherit;background:#f2f2f2;color:#282c34;border:0;border-radius:2px;cursor:pointer;">Enter</button>
+    <p id="thesis-gate-error" style="display:none;color:#e06c75;font-size:.8rem;margin-top:1rem;">Incorrect password.</p>
+  </form>
+</div>
+<script>
+(function () {
+  var CORRECT_HASH = "bfed790967458cb22a2f5fe469bd027906d5a300ebec6c8a943e9942c4b020e3";
+  var gate = document.getElementById("thesis-gate");
+  var form = document.getElementById("thesis-gate-form");
+  var input = document.getElementById("thesis-gate-input");
+  var error = document.getElementById("thesis-gate-error");
+
+  function unlock() {
+    gate.remove();
+    document.documentElement.classList.remove("gate-locked");
+  }
+
+  async function sha256Hex(text) {
+    var data = new TextEncoder().encode(text);
+    var hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(hashBuffer))
+      .map(function (b) { return b.toString(16).padStart(2, "0"); })
+      .join("");
+  }
+
+  if (sessionStorage.getItem("thesis-unlocked") === "1") {
+    unlock();
+  } else {
+    input.focus();
+  }
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var hash = await sha256Hex(input.value.trim());
+    if (hash === CORRECT_HASH) {
+      sessionStorage.setItem("thesis-unlocked", "1");
+      unlock();
+    } else {
+      error.style.display = "block";
+      input.value = "";
+      input.focus();
+    }
+  });
+})();
+</script>
 <header id="title-block-header">
 <h1 class="title"><strong>Innovating With Constraints:</strong>
 <em>Leveraging Generative AI to Enable Digital Venturing in
@@ -4285,25 +4343,11 @@ Quarterly</em> 35 (1): 37–56.
       li.removeChild(cu);
     } else if (cu) {
       li.classList.add('has-children');
+      li.classList.add('collapsed');
     }
   });
 
   document.body.appendChild(sidebar);
-
-  var mobBtn = document.createElement('button');
-  mobBtn.id = 'toc-toggle';
-  mobBtn.type = 'button';
-  mobBtn.setAttribute('aria-label', 'Toggle contents');
-  mobBtn.innerHTML = '\u2630';
-  document.body.appendChild(mobBtn);
-  mobBtn.addEventListener('click', function () { sidebar.classList.toggle('open'); });
-
-  nav.addEventListener('click', function (e) {
-    if (e.target.classList.contains('toc-link') &&
-        window.matchMedia('(max-width: 1100px)').matches) {
-      sidebar.classList.remove('open');
-    }
-  });
 
   sidebar.querySelector('.toc-expand').addEventListener('click', function () {
     Array.prototype.forEach.call(nav.querySelectorAll('.toc-item'), function (li) {
@@ -4364,6 +4408,32 @@ Quarterly</em> 35 (1): 37–56.
   }, { passive: true });
   window.addEventListener('resize', update);
   update();
+})();
+</script>
+<div id="lightbox-overlay"><img id="lightbox-image" src="" alt="" /></div>
+<script>
+(function () {
+  var overlay = document.getElementById('lightbox-overlay');
+  var lbImg = document.getElementById('lightbox-image');
+
+  function isZoomable(img) {
+    return img.closest('figure') || img.closest('p') || img.classList.contains('wikilink');
+  }
+
+  document.addEventListener('click', function (e) {
+    var img = e.target.closest('img');
+    if (img && img.id !== 'lightbox-image' && isZoomable(img)) {
+      lbImg.src = img.currentSrc || img.src;
+      lbImg.alt = img.alt || '';
+      overlay.classList.add('open');
+    } else if (e.target === overlay || e.target === lbImg) {
+      overlay.classList.remove('open');
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') overlay.classList.remove('open');
+  });
 })();
 </script>
 </body>
