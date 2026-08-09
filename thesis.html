@@ -327,6 +327,26 @@ h1, h2, h3, h4 { scroll-margin-top: 1.5rem; }
   #toc-toggle { display: flex; }
 }
 
+@media (max-width: 640px) {
+  body {
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+  figure img,
+  p > img,
+  img.wikilink {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .thesis-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* ===== Clicked-reference highlighting ===== */
 div.csl-entry { scroll-margin-top: 2.5rem; padding: 0.2rem 0.4rem; }
 div.csl-entry:target {
