@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="author" content="Rodrigo Mendoza Diaz" />
+<meta name="description" content="Rodrigo Mendoza Diaz — Architect and Consultant for Building Physics, Sustainability and Digitalization, based in Zürich." />
+<title>Rodrigo Mendoza Diaz</title>
+<style>
+  @font-face {
+    font-family: "Futura PT";
+    font-weight: 300;
+    font-style: normal;
+    src: local("Futura PT Light"), local("FuturaPT-Light");
+  }
+  @font-face {
+    font-family: "Futura PT";
+    font-weight: 700;
+    font-style: normal;
+    src: local("Futura PT Bold"), local("FuturaPT-Bold");
+  }
+
+  :root {
+    --bg: #fdfdfd;
+    --fg: #1a1a1a;
+    --muted: #8a8a8a;
+    --rule: #1a1a1a;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111111;
+      --fg: #f2f2f2;
+      --muted: #8a8a8a;
+      --rule: #f2f2f2;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--fg);
+  }
+
+  body {
+    font-family: "Futura PT", Futura, "Century Gothic", Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 6vh 1.5rem;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  main {
+    max-width: 34rem;
+    width: 100%;
+    text-align: center;
+    animation: fade-in 0.6s ease-out;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .kicker {
+    font-size: 0.7rem;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1.5rem;
+  }
+
+  h1 {
+    font-weight: 700;
+    font-size: clamp(2.1rem, 6vw, 3.4rem);
+    letter-spacing: 0.01em;
+    margin: 0 0 1.25rem;
+    line-height: 1.1;
+  }
+
+  .rule {
+    width: 3rem;
+    height: 1px;
+    background: var(--rule);
+    border: 0;
+    margin: 0 auto 1.5rem;
+    opacity: 0.4;
+  }
+
+  .tagline {
+    font-weight: 300;
+    font-size: clamp(1rem, 2.4vw, 1.15rem);
+    letter-spacing: 0.02em;
+    margin: 0 0 0.85rem;
+  }
+
+  .intro {
+    font-weight: 300;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 0 auto 2.75rem;
+    max-width: 28rem;
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+  }
+
+  nav a {
+    color: var(--fg);
+    text-decoration: none;
+    padding-bottom: 2px;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease, opacity 0.2s ease;
+  }
+
+  nav a:hover {
+    border-color: var(--fg);
+  }
+
+  nav .sep {
+    color: var(--muted);
+  }
+
+  footer {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+  <main>
+    <p class="kicker">Zürich, Switzerland</p>
+    <h1>Rodrigo </h1>
+    <h1>Mendoza Diaz</h1>
+    <hr class="rule" />
+    <p class="tagline">Architect &amp; Consultant</p>
+    <p class="intro">
+      Trained Architect with a focus on Digitalization, Strategy and Innovation. Currently Senior
+      Consultant at Durable Planung und Beratung
+      MAS in Management, Technology &amp; Economics at ETH Zürich.
+      Msc. in Architecture at ETH Zürich.
+      Bsc. in Architecture at ETH Zürich.
+      Bsc. in Architecture at Universidad de los Andes, Bogotá. 
+    </p>
+    <nav>
+      <a href="mailto:rodrigo.mendoza9010@gmail.com">Email</a>
+      <span class="sep">·</span>
+      <a href="files/CV-Rodrigo-Mendoza-Diaz.pdf">CV</a>
+      <span class="sep">·</span>
+      <a href="thesis.html">Thesis</a>
+    </nav>
+    <footer>&copy; 2026 Rodrigo Mendoza Diaz</footer>
+  </main>
+</body>
+</html>
