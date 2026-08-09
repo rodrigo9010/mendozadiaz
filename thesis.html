@@ -415,6 +415,16 @@ span.citation:target { background: #fff3b0; border-radius: 3px; }
   transition: background 0.15s ease, border-color 0.15s ease;
 }
 #pdf-download:hover { background: #ecece8; border-color: #cfcfc9; }
+
+@media (max-width: 1100px) {
+  #pdf-download {
+    top: auto;
+    right: auto;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
 </style>
 <header id="title-block-header">
 <h1 class="title"><strong>Innovating With Constraints:</strong>
