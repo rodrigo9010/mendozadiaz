@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="author" content="Rodrigo Mendoza Diaz" />
-<meta name="description" content="Rodrigo Mendoza Diaz — Architect and Consultant for Building Physics, Sustainability and Digitalization, based in Zürich." />
+<meta name="description" content="Rodrigo Mendoza Diaz — Trained Architect with a focus in Digitalization, Innovation, Strategy and Sustainable Design." />
 <title>Rodrigo Mendoza Diaz</title>
 <style>
   @font-face {
@@ -24,7 +24,6 @@
     --bg: #282c34;
     --fg: #f2f2f2;
     --muted: #9aa0ab;
-    --rule: #f2f2f2;
   }
 
   * { box-sizing: border-box; }
@@ -61,18 +60,9 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  .kicker {
-    font-size: 0.7rem;
-    font-weight: 300;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin: 0 0 1.5rem;
-  }
-
   h1 {
     font-weight: 700;
-    font-size: clamp(2.1rem, 6vw, 3.4rem);
+    font-size: clamp(1.68rem, 4.8vw, 2.72rem);
     letter-spacing: 0.01em;
     margin: 0 0 1.25rem;
     line-height: 1.1;
@@ -81,7 +71,7 @@
   .rule {
     width: 3rem;
     height: 1px;
-    background: var(--rule);
+    background: var(--fg);
     border: 0;
     margin: 0 auto 1.5rem;
     opacity: 0.4;
@@ -89,18 +79,44 @@
 
   .tagline {
     font-weight: 300;
-    font-size: clamp(1rem, 2.4vw, 1.15rem);
-    letter-spacing: 0.02em;
-    margin: 0 0 0.85rem;
+    font-size: clamp(1.05rem, 2.6vw, 1.25rem);
+    line-height: 1.6;
+    color: var(--fg);
+    margin: 0 auto 0.85rem;
+    max-width: 28rem;
   }
 
-  .intro {
+  .role {
     font-weight: 300;
     font-size: 0.95rem;
     line-height: 1.6;
     color: var(--muted);
+    margin: 0 auto 2rem;
+    max-width: 28rem;
+  }
+
+  .role a {
+    color: var(--fg);
+    text-decoration: none;
+    border-bottom: 1px solid var(--muted);
+    transition: border-color 0.2s ease;
+  }
+
+  .role a:hover {
+    border-color: var(--fg);
+  }
+
+  .education {
     margin: 0 auto 2.75rem;
     max-width: 28rem;
+  }
+
+  .education p {
+    font-weight: 300;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: var(--muted);
+    margin: 0;
   }
 
   nav {
@@ -127,10 +143,6 @@
     border-color: var(--fg);
   }
 
-  nav .sep {
-    color: var(--muted);
-  }
-
   footer {
     font-size: 0.75rem;
     letter-spacing: 0.08em;
@@ -141,25 +153,23 @@
 </head>
 <body>
   <main>
-    <p class="kicker">Zürich, Switzerland</p>
-    <h1>Rodrigo </h1>
-    <h1>Mendoza Diaz</h1>
+    <h1>Rodrigo Mendoza Diaz</h1>
     <hr class="rule" />
-    <p class="tagline">Architect &amp; Consultant</p>
-    <p class="intro">
-      Trained Architect with a focus on Digitalization, Strategy and Innovation. Currently Senior
-      Consultant at Durable Planung und Beratung
-      MAS in Management, Technology &amp; Economics at ETH Zürich.
-      Msc. in Architecture at ETH Zürich.
-      Bsc. in Architecture at ETH Zürich.
-      Bsc. in Architecture at Universidad de los Andes, Bogotá. 
+    <p class="tagline">Trained Architect with a focus in Digitalization, Innovation, Strategy and Sustainable Design</p>
+    <p class="role">
+      Currently Senior Consultant at
+      <a href="https://www.studiodurable.com" target="_blank" rel="noopener">Durable Planung und Beratung GmbH</a>
     </p>
+    <div class="education">
+      <p>MAS in Management, Technology &amp; Economics — ETH Zürich</p>
+      <p>MSc in Architecture — ETH Zürich</p>
+      <p>BSc in Architecture — ETH Zürich</p>
+      <p>BA in Architecture — Universidad de los Andes, Bogotá</p>
+    </div>
     <nav>
       <a href="mailto:rodrigo.mendoza9010@gmail.com">Email</a>
-      <span class="sep">·</span>
+      <a href="https://www.linkedin.com/in/rodrigo-mendoza-59666185" target="_blank" rel="noopener">LinkedIn</a>
       <a href="files/CV-Rodrigo-Mendoza-Diaz.pdf">CV</a>
-      <span class="sep">·</span>
-      <a href="thesis.html">Thesis</a>
     </nav>
     <footer>&copy; 2026 Rodrigo Mendoza Diaz</footer>
   </main>
