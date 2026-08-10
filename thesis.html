@@ -61,7 +61,7 @@ box-sizing: border-box;
 body {
 margin: 0 auto;
 max-width: 78rem;
-padding: 4rem 6rem;
+padding: clamp(1.5rem, 5vw, 4rem) clamp(1.25rem, 7vw, 6rem);
 line-height: 1.55;
 overflow-wrap: break-word;
 text-rendering: optimizeLegibility;
@@ -193,7 +193,6 @@ width: 16rem;
 @media (max-width: 900px) {
 body {
 max-width: none;
-padding: 2rem 1.25rem;
 }
 }
 </style>
@@ -311,8 +310,16 @@ h1, h2, h3, h4 { scroll-margin-top: 1.5rem; }
 @media (min-width: 1101px) {
   body {
     max-width: calc(78rem + 420px + 420px);
-    padding-left: calc(6rem + 420px);
-    padding-right: calc(6rem + 420px);
+    padding-left: calc(clamp(1.25rem, 7vw, 6rem) + 420px);
+    padding-right: clamp(1.25rem, 7vw, 6rem);
+  }
+}
+
+@media (min-width: 1101px) and (max-width: 1500px) {
+  body {
+    max-width: 100%;
+    padding-left: calc(420px + 3vw);
+    padding-right: 3vw;
   }
 }
 
