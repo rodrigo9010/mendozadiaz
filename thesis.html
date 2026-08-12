@@ -995,14 +995,6 @@ environment. They are not new model architectures but system-level
 configurations that allow a model to use tools, retrieve information,
 execute code, and work through multi-step tasks with limited human
 intervention <span class="citation" data-cites="SapkotaEtAl2026 IBM2026">(<a href="#ref-SapkotaEtAl2026" role="doc-biblioref">Sapkota et al. 2026</a>; <a href="#ref-IBM2026" role="doc-biblioref">IBM 2026</a>)</span>.</p>
-<p>For the research questions of this thesis, the decisive development
-is not text generation but AI coding agents. LLM applications react to
-prompts by generating content. AI agents extend this by combining a
-foundation model with external tools, memory, and an execution
-environment. They are not new model architectures but system-level
-configurations that allow a model to use tools, retrieve information,
-execute code, and work through multi-step tasks with limited human
-intervention <span class="citation" data-cites="SapkotaEtAl2026 IBM2026">(<a href="#ref-SapkotaEtAl2026" role="doc-biblioref">Sapkota et al. 2026</a>; <a href="#ref-IBM2026" role="doc-biblioref">IBM 2026</a>)</span>.</p>
 <p>Sapkota et al. <span class="citation" data-cites="SapkotaEtAl2026">(<a href="#ref-SapkotaEtAl2026" role="doc-biblioref">2026</a>)</span> distinguish AI agents from agentic
 AI by complexity and coordination logic. AI agents are usually modular
 systems designed to execute specific tasks, while agentic AI refers to
@@ -1129,8 +1121,7 @@ raised output quality and speed. Outside it, on tasks requiring
 integrative judgment, assisted users were less likely to reach the
 correct answer, and reached the wrong one faster and with more
 confidence. The technology amplifies what the operator already knows and
-obscures what they do not. In some cases it may even confident false
-results.</p>
+obscures what they do not.</p>
 <p>This is why this account of GenAI is necessary before the framework.
 GenAI and agentic coding change the resource problem for small firms
 without eliminating it. They may allow a firm to begin experimenting
@@ -1172,7 +1163,7 @@ statistical system that generates outputs by predicting likely patterns
 from training data. It can produce convincing content, but it does not
 understand the task in a human sense, judge whether the goal is
 appropriate, or assess the wider context of its output. Coding agents
-extend this features by decomposing tasks, using tools, writing and
+extend these features by decomposing tasks, using tools, writing and
 executing code, reading errors, and revising their outputs. This makes
 them especially relevant for resource-constrained firms, because a
 non-technical operator can move from a natural-language instruction to a
@@ -2108,7 +2099,7 @@ notes.</p>
 </div>
 <h3 id="resource-mapping-workshop">3.3.2 Resource Mapping Workshop</h3>
 <p>A resource-mapping workshop was held on 14 May 2026 with Durable’s
-management. The participants were Adrian Eitle, Managing Director, and
+management. The participants where Adrian Eitle, Managing Director, and
 Nicolo Guariento, Team Manager of the Digitalization Team. The
 researcher prepared the session as a one-hour workshop.</p>
 <p>The session was a 1 hour workshop divided into two parts. During the
@@ -2472,7 +2463,7 @@ software layer. The prototype described in this section is the first
 attempt to test whether that raw material could be organized toward such
 a structure. This definition sets the reference point for what
 follows.</p>
-<h3 id="dur-data-landscape">3.4.1 DUR Data Landscape</h3>
+<h3 id="dur-data-landscape">3.4.2 DUR Data Landscape</h3>
 <p>Durable already operates several separate databases. They serve
 different purposes, but are only partly integrated, or not integrated at
 all, and do not form a central data foundation. Where connections
@@ -2511,7 +2502,7 @@ of a database tangible.</p>
 <p><img role="img" src="figures/figure-12.png" /></p>
 <p>Figure 12: Prototype data-integration architecture.</p>
 </div>
-<h3 id="data-basis-sources-selection-and-cleaning">3.4.2 Data Basis:
+<h3 id="data-basis-sources-selection-and-cleaning">3.4.3 Data Basis:
 Sources, Selection, and Cleaning</h3>
 <p>The pipeline was organized around a single stable identifier. Every
 project carries a Project ID issued by the firm’s ERP system, and the
@@ -2591,7 +2582,7 @@ built in four versions: an initial 30-column consolidation, a second
 pass improving client coverage against a richer export, a third adding
 Lesosai building categories, and a fourth adding project-size
 estimation.</p>
-<h3 id="the-prototype-findur-0.1">3.4.3 The Prototype: finDUR 0.1</h3>
+<h3 id="the-prototype-findur-0.1">3.4.4 The Prototype: finDUR 0.1</h3>
 <p>The resulting data tables were displayed in the form of a Power BI
 dashboard called <code>finDUR 0.1</code>. It consolidates project data
 from the server, Lesosai files, procurement documents, Asana, and Abacus
@@ -2655,7 +2646,7 @@ The more relevant finding lies in how it was built: which decisions were
 made, where GenAI helped, where it failed, and which parts still
 required human judgement. The next section reconstructs this development
 process and the decisions behind <code>finDUR 0.1</code>.</p>
-<h3 id="building-findur-0.1-process-and-decisions">3.4.4 Building finDUR
+<h3 id="building-findur-0.1-process-and-decisions">3.4.5 Building finDUR
 0.1: Process and Decisions</h3>
 <p>The prototype was built through several short working sessions
 between 29 May and 16 June 2026. Each session closed with a practical
@@ -2686,7 +2677,7 @@ possible in theory, and GenAI could have supported it, but the one-month
 constraint made Power BI the safer choice. This shows a central finding:
 GenAI expanded the perceived options, but the final implementation still
 stayed close to existing means.</p>
-<h3 id="the-role-of-genai-during-the-process">3.4.5 The Role of GenAI
+<h3 id="the-role-of-genai-during-the-process">3.4.6 The Role of GenAI
 During the Process</h3>
 <p>This section evaluates GenAI by separating the prototype into the
 actual tasks required to build it. The aim is not to claim that GenAI
@@ -2804,7 +2795,7 @@ compensated for missing technical capability, especially in coding and
 debugging. It did not compensate for judgement. The capability gap was
 reduced enough to produce a functional prototype, but it was not
 removed.</p>
-<h3 id="management-evaluation-the-second-management-workshop">3.4.6
+<h3 id="management-evaluation-the-second-management-workshop">3.4.7
 Management Evaluation: The Second Management Workshop</h3>
 <p>The prototype was presented on 16 June during an Executive Board
 meeting with the extended management group. The participants where:
@@ -3034,7 +3025,7 @@ needed</td>
 <p>Table 12: External technical expert recommendations for the next
 iteration.</p>
 </div>
-<h3 id="sub-cycle-b-design-principles">3.3.5 Sub-cycle B: Design
+<h3 id="sub-cycle-b-design-principles">3.4.9 Sub-cycle B: Design
 Principles</h3>
 <p>These design principles follow from the build. They are based on the
 learnings during the process of producing the prototype:</p>
@@ -3928,8 +3919,8 @@ are missing, and which views would support their daily work.</td>
 </table>
 <p>Table 17: Recommended actions, conditions, and first steps.</p>
 </div>
-<h3 id="profile-of-future-hires-and-gatekeepers-1">5.2.2 Profile of
-Future Hires and Gatekeepers</h3>
+<h3 id="profile-of-future-hires-and-gatekeepers">5.2.2 Profile of Future
+Hires and Gatekeepers</h3>
 <p>One of the most interesting findings of this thesis is the
 identification of a staffing model for GenAI-supported digital
 initiatives. The development of <code>finDUR</code> revealed not only a
