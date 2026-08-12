@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" class="gate-locked">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Operation Controlled Exit</title>
+<style>
+  html.gate-locked body > *:not(#mc-gate) { display: none !important; }
+  html.gate-locked body { overflow: hidden; }
+</style>
+<style>
+  :root {
+    --bg: #0e0f0d;
+    --surface: #191a17;
+    --border: #2c2e29;
+    --text: #e8e6e0;
+    --text-dim: #8b8d85;
+    --accent: #5dcaa5;
+    --danger: #e24b4a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+  .dash { width: 100%; max-width: 640px; }
+  .header { text-align: center; margin-bottom: 1.5rem; }
+  .label {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 0.35rem;
+  }
+  .title { font-size: 26px; font-weight: 500; }
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 1.25rem;
+  }
+  .control { flex: 1; min-width: 180px; }
+  .control label {
+    display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 5px;
+  }
+  input {
+    width: 100%; padding: 8px 10px;
+    background: var(--surface); color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px;
+    font-size: 14px; font-family: inherit;
+  }
+  input:focus { outline: none; border-color: var(--accent); }
+  .grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 10px; margin-bottom: 1.25rem;
+  }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1rem 0.5rem; text-align: center;
+  }
+  .num { font-size: 30px; font-weight: 500; line-height: 1; margin-bottom: 5px; }
+  .cap {
+    font-size: 10px; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.09em;
+  }
+  .prog-head {
+    display: flex; justify-content: space-between;
+    font-size: 13px; color: var(--text-dim); margin-bottom: 8px;
+  }
+  .track {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; height: 9px; overflow: hidden; margin-bottom: 1.25rem;
+  }
+  .fill {
+    height: 100%; background: var(--accent);
+    width: 0%; transition: width 0.8s ease;
+  }
+  .intel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 0.5rem 1.25rem; margin-bottom: 1rem;
+  }
+  .row {
+    display: flex; justify-content: space-between;
+    padding: 9px 0; font-size: 13px;
+    border-bottom: 1px solid var(--border);
+  }
+  .row:last-child { border-bottom: none; }
+  .k { color: var(--text-dim); }
+  .v { font-weight: 500; }
+  .v.danger { color: var(--danger); }
+  .v.good { color: var(--accent); }
+  .status {
+    display: flex; justify-content: center; align-items: center;
+    gap: 8px; font-size: 12px; color: var(--text-dim);
+  }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent); animation: p 2s infinite;
+  }
+  @keyframes p { 0%,100%{opacity:1} 50%{opacity:0.25} }
+</style>
+</head>
+<body>
+
+<div id="mc-gate" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#0e0f0d;">
+  <form id="mc-gate-form">
+    <input id="mc-gate-input" type="password" autocomplete="off"
+      style="padding:.6rem .75rem;font-size:1rem;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;background:#191a17;border:1px solid #2c2e29;color:#e8e6e0;border-radius:8px;text-align:center;" />
+  </form>
+</div>
+<script>
+(function () {
+  var CORRECT_HASH = "f3e46e64aa9c14e688c34e776242cda7ecdea66ffb5bf92d21adb73d1af80a23";
+  var gate = document.getElementById("mc-gate");
+  var form = document.getElementById("mc-gate-form");
+  var input = document.getElementById("mc-gate-input");
+
+  function unlock() {
+    gate.remove();
+    document.documentElement.classList.remove("gate-locked");
+  }
+
+  async function sha256Hex(text) {
+    var data = new TextEncoder().encode(text);
+    var hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(hashBuffer))
+      .map(function (b) { return b.toString(16).padStart(2, "0"); })
+      .join("");
+  }
+
+  if (sessionStorage.getItem("mc-unlocked") === "1") {
+    unlock();
+  } else {
+    input.focus();
+  }
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var hash = await sha256Hex(input.value.trim());
+    if (hash === CORRECT_HASH) {
+      sessionStorage.setItem("mc-unlocked", "1");
+      unlock();
+    } else {
+      input.value = "";
+    }
+  });
+})();
+</script>
+
+<div class="dash">
+  <div class="header">
+    <div class="label">Operation Controlled Exit</div>
+    <div class="title" id="title">Mission clock</div>
+  </div>
+
+  <div class="controls">
+    <div class="control">
+      <label for="dday">Exfiltration date</label>
+      <input type="date" id="dday">
+    </div>
+    <div class="control">
+      <label for="mpw">Boss meetings per week</label>
+      <input type="number" id="mpw" value="3" min="0" max="20" step="1">
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card"><div class="num" id="c-days">--</div><div class="cap">Days</div></div>
+    <div class="card"><div class="num" id="c-weeks">--</div><div class="cap">Weeks</div></div>
+    <div class="card"><div class="num" id="c-work">--</div><div class="cap">Workdays</div></div>
+    <div class="card"><div class="num" id="c-pct">--%</div><div class="cap">Year done</div></div>
+  </div>
+
+  <div class="prog-head">
+    <span>Jan 1 to D-Day</span>
+    <span id="p-label">calculating</span>
+  </div>
+  <div class="track"><div class="fill" id="p-fill"></div></div>
+
+  <div class="intel">
+    <div class="row"><span class="k">Current position</span><span class="v" id="i-today">--</span></div>
+    <div class="row"><span class="k">Exfiltration date</span><span class="v" id="i-dday">--</span></div>
+    <div class="row"><span class="k">Resignation notice (est.)</span><span class="v" id="i-notice">--</span></div>
+    <div class="row"><span class="k">Boss interactions left</span><span class="v danger" id="i-boss">--</span></div>
+    <div class="row"><span class="k">Fridays until freedom</span><span class="v good" id="i-fri">--</span></div>
+  </div>
+
+  <div class="status">
+    <div class="dot"></div>
+    <span id="clock">--:--:--</span>
+    <span>mission clock active</span>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const MS_DAY = 86400000;
+
+const ddayInput = $('dday');
+const mpwInput = $('mpw');
+
+let target = new Date(2026, 9, 1);
+while (target.getDay() === 0 || target.getDay() === 6) target.setDate(target.getDate() + 1);
+ddayInput.value = target.toISOString().slice(0, 10);
+
+function countDays(start, end, predicate) {
+  let n = 0;
+  const d = new Date(start); d.setHours(0,0,0,0);
+  const e = new Date(end); e.setHours(0,0,0,0);
+  while (d < e) {
+    if (predicate(d.getDay())) n++;
+    d.setDate(d.getDate() + 1);
+  }
+  return n;
+}
+
+const isWorkday = day => day !== 0 && day !== 6;
+const isFriday = day => day === 5;
+
+const fmt = d => d.toLocaleDateString('en-CH', { day: 'numeric', month: 'long', year: 'numeric' });
+
+function update() {
+  const now = new Date();
+  const dday = new Date(ddayInput.value + 'T00:00:00');
+  if (isNaN(dday)) return;
+
+  const days = Math.max(0, Math.ceil((dday - now) / MS_DAY));
+  const weeks = Math.floor(days / 7);
+  const workdays = countDays(now, dday, isWorkday);
+  const fridays = countDays(now, dday, isFriday);
+
+  const perWeek = Number(mpwInput.value) || 0;
+  const boss = Math.round(workdays * (perWeek / 5));
+
+  const notice = new Date(dday);
+  notice.setDate(notice.getDate() - 28);
+
+  const yearStart = new Date(dday.getFullYear(), 0, 1);
+  const pct = Math.max(0, Math.min(100,
+    Math.round(((now - yearStart) / (dday - yearStart)) * 100)));
+
+  $('c-days').textContent = days;
+  $('c-weeks').textContent = weeks;
+  $('c-work').textContent = workdays;
+  $('c-pct').textContent = pct + '%';
+
+  $('p-fill').style.width = pct + '%';
+  $('p-label').textContent = pct + '% of the sentence served';
+
+  $('i-today').textContent = fmt(now);
+  $('i-dday').textContent = fmt(dday);
+  $('i-notice').textContent = fmt(notice);
+  $('i-boss').textContent = boss + ' (estimated)';
+  $('i-fri').textContent = fridays;
+
+  $('title').textContent = days > 0 ? days + ' days to exfiltration' : 'Mission complete';
+}
+
+function tick() {
+  const n = new Date();
+  $('clock').textContent = [n.getHours(), n.getMinutes(), n.getSeconds()]
+    .map(v => String(v).padStart(2, '0')).join(':');
+}
+
+ddayInput.addEventListener('change', update);
+mpwInput.addEventListener('input', update);
+
+update();
+tick();
+setInterval(update, 60000);
+setInterval(tick, 1000);
+</script>
+
+</body>
+</html>
