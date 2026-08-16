@@ -8,7 +8,7 @@ const path = require('path');
 
 const PORT = 5500;
 const DATA_PATH = path.join(__dirname, 'data.json');
-const EDITOR_PATH = path.join(__dirname, 'editor.html');
+const PAGE_PATH = path.join(__dirname, 'calendar.html');
 
 function readData() {
   const raw = fs.readFileSync(DATA_PATH, 'utf8');
@@ -20,9 +20,9 @@ function writeData(data) {
 }
 
 const server = http.createServer((req, res) => {
-  // Serve the editor page
-  if (req.method === 'GET' && (req.url === '/' || req.url === '/editor.html')) {
-    const html = fs.readFileSync(EDITOR_PATH, 'utf8');
+  // Serve the calendar page
+  if (req.method === 'GET' && (req.url === '/' || req.url === '/calendar.html')) {
+    const html = fs.readFileSync(PAGE_PATH, 'utf8');
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.end(html);
     return;

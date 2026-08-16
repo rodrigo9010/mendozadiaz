@@ -7,8 +7,8 @@ read-only website.
 ## Architecture (v0.1 direction)
 
 - **Editing happens locally.** You run a tiny local server on your own
-  machine, open the editor in a browser, and every add/remove is written
-  straight to a JSON file on disk.
+  machine, open the calendar in a browser, and every add/remove is
+  written straight to a JSON file on disk.
 - **The JSON file is the database.** No Firebase, no Postgres, no remote
   API. `data.json` in this folder *is* the data store.
 - **GitHub is the sync mechanism, not a live backend.** When you're happy
@@ -20,6 +20,10 @@ read-only website.
   it. A password there is a light deterrent on *viewing*, not real
   security — anyone who looks at the page source can read it. Don't put
   anything behind it you'd be upset about a stranger seeing.
+- **One page, two modes.** `calendar.html` is used both locally (as the
+  editor) and publicly (as the viewer) — it detects which mode to run in
+  itself, see Step 4 below. There's no separate editor/viewer file to
+  keep in sync.
 
 ## Why not write straight from the browser?
 
@@ -37,9 +41,8 @@ and does the actual `fs.writeFileSync` on your behalf.
 |---|---|---|
 | `data.json` | The entries themselves: `{ "YYYY-MM-DD": ["entry", ...] }` | done |
 | `try-write.js` | Minimal proof-of-concept: a Node script that reads, modifies, and writes `data.json` directly — no server, no browser yet | done (throwaway, not used by the app) |
-| `server.js` | Local HTTP server: serves `editor.html` and exposes `/data` (read) and `/save` (write) endpoints | done |
-| `editor.html` | The local-only editing UI — same calendar UI as before, but talks to `server.js` instead of `window.storage` | done |
-| `viewer.html` | The public, read-only calendar (talks only to `data.json`, no writes) | done |
+| `server.js` | Local HTTP server: serves `calendar.html` and exposes `/data` (read) and `/save` (write) endpoints | done |
+| `calendar.html` | The calendar UI — edit mode locally (via `server.js`), read-only view mode on the public site (via static `data.json`) | done |
 
 ## Concepts covered so far
 
@@ -53,10 +56,9 @@ data[key].push('...');                                       // modify in memory
 fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));    // write back
 ```
 
-This is the same three-step pattern `server.js` will run every time the
-editor page asks it to save an entry — the only difference is *what
-triggers it* (running the script by hand vs. an HTTP request from a
-browser).
+This is the same three-step pattern `server.js` runs every time the
+page asks it to save an entry — the only difference is *what triggers
+it* (running the script by hand vs. an HTTP request from a browser).
 
 ### How to run `try-write.js`
 
@@ -76,15 +78,12 @@ script is a throwaway proof, not part of the final app.
 dependencies — only the built-in `http`, `fs`, `path` modules). It does
 three things:
 
-1. `GET /` or `/editor.html` → serves the editor page's HTML.
+1. `GET /` → serves `calendar.html`.
 2. `GET /data` → reads `data.json` and sends it to the browser as JSON.
 3. `POST /save` → receives the browser's updated JSON in the request
    body, and runs the exact same `fs.writeFileSync` pattern
    `try-write.js` proved works — just triggered by an HTTP request
    instead of you running a script.
-
-`editor.html` is the calendar UI from the original prototype, with the
-storage calls swapped:
 
 ```js
 // before (didn't actually work in a plain browser):
@@ -96,11 +95,38 @@ await fetch('/data');
 await fetch('/save', { method: 'POST', body: JSON.stringify(data) });
 ```
 
-The calendar rendering logic (building the month grid, the modal, add/
-remove entry handlers) is unchanged — only *how data gets in and out*
-changed. That's the point of separating storage from rendering early.
+**Step 2.5 — fixed 3-month range.**
+The calendar covers a fixed trip window: November 2026, December 2026,
+January 2027 — no more prev/next month browsing. On desktop, explicit
+grid placement puts November top-left, December on the right (spanning
+both rows), and January bottom-left, under November. On mobile (under
+780px) the months stack vertically in order.
 
-### How to run the editor
+**Step 3 → Step 4 — one file, auto-detecting mode.**
+Originally the editor (`editor.html`) and the public viewer
+(`viewer.html`) were two separate files sharing most of their markup/
+CSS/JS. They were merged into a single `calendar.html` that detects
+which mode to run in on load:
+
+```js
+try {
+  const res = await fetch('/data', { signal: AbortSignal.timeout(800) });
+  // local server responded -> edit mode: show add/remove UI, save on change
+} catch (e) {
+  const res = await fetch('data.json'); // no local server -> read-only view
+  // read-only mode: no add/remove UI, clicking a day only shows entries
+}
+```
+
+`/data` only exists when `server.js` is running (i.e. locally). On the
+public site there's no server at all — just static files — so that
+`fetch('/data')` fails fast (bounded by an 800ms timeout so a visitor
+never sits on a hung request) and the page falls back to reading
+`data.json` directly, read-only. One set of markup/CSS/rendering code
+serves both roles; only the storage calls and which buttons are shown
+differ, gated behind a single `editable` flag set once at load.
+
+### How to run locally (edit mode)
 
 On your own machine, in a terminal, inside your local clone of this repo:
 
@@ -114,21 +140,6 @@ each change is written straight to `data.json` on disk. Stop the server
 with `Ctrl+C` when done. Then `git add`, `commit`, and `push` from the
 repo root to publish your changes.
 
-**Step 2.5 — fixed 3-month range.**
-The calendar covers a fixed trip window: November 2026, December 2026,
-January 2027 — no more prev/next month browsing. On desktop the layout
-is a 2x2 grid (November and January stacked in the left column,
-December alone on the right) via `grid-auto-flow: column`; on mobile
-(under 780px) the months stack vertically in order.
-
-**Step 3 — the public, read-only viewer.**
-`viewer.html` is what actually gets deployed to the public site. It has
-no `/save` calls, no add/remove buttons, no `server.js` dependency —
-just a plain `fetch('data.json')` (a relative path, since GitHub Pages
-serves it as a static file sitting right next to the HTML) and the same
-month-grid rendering. Clicking a day with entries opens a small
-read-only popup listing them; empty days aren't clickable at all.
-
 ### How to publish
 
 There is no separate deploy step. Publishing = pushing to `main`:
@@ -139,10 +150,11 @@ git commit -m "..."
 git push
 ```
 
-Once pushed, the page is live at:
+Once pushed, the page is live (read-only, since there's no server on
+GitHub Pages) at:
 
-- `https://mendozadiaz.ch/apps/calendario/viewer.html` (custom domain)
-- `https://rodrigo9010.github.io/mendozadiaz/apps/calendario/viewer.html` (same content, GitHub's own domain)
+- `https://mendozadiaz.ch/apps/calendario/calendar.html` (custom domain)
+- `https://rodrigo9010.github.io/mendozadiaz/apps/calendario/calendar.html` (same content, GitHub's own domain)
 
 Both point at the same GitHub Pages deploy — `mendozadiaz.ch` is DNS
 registered through Infomaniak, pointed at GitHub Pages via the `CNAME`
@@ -154,14 +166,15 @@ including this one.
 1. `cd apps/calendario && node server.js`, edit at `http://localhost:5500`.
 2. Stop the server (`Ctrl+C`) when done editing.
 3. From the repo root: `git add`, `commit`, `push`.
-4. The public viewer at `mendozadiaz.ch/apps/calendario/viewer.html`
-   now reflects your changes.
+4. The public page at `mendozadiaz.ch/apps/calendario/calendar.html`
+   now reflects your changes (read-only there, since it's the same file
+   running in view mode).
 
 ## Next step
 
-Not yet decided — possible directions: a password gate on the viewer
-(deterrent only, see the security note above), or moving off plain-JSON
-storage to something with real multi-device sync (see options below) if
+Not yet decided — possible directions: a password gate (deterrent only,
+see the security note above), or moving off plain-JSON storage to
+something with real multi-device sync (see options below) if
 local-only editing turns out to be too limiting in practice.
 
 ## Other storage options (for later, not built)
