@@ -39,7 +39,7 @@ and does the actual `fs.writeFileSync` on your behalf.
 | `try-write.js` | Minimal proof-of-concept: a Node script that reads, modifies, and writes `data.json` directly — no server, no browser yet | done (throwaway, not used by the app) |
 | `server.js` | Local HTTP server: serves `editor.html` and exposes `/data` (read) and `/save` (write) endpoints | done |
 | `editor.html` | The local-only editing UI — same calendar UI as before, but talks to `server.js` instead of `window.storage` | done |
-| `viewer.html` | The public, read-only calendar (talks only to `data.json`, no writes) | not built yet |
+| `viewer.html` | The public, read-only calendar (talks only to `data.json`, no writes) | done |
 
 ## Concepts covered so far
 
@@ -121,10 +121,60 @@ is a 2x2 grid (November and January stacked in the left column,
 December alone on the right) via `grid-auto-flow: column`; on mobile
 (under 780px) the months stack vertically in order.
 
+**Step 3 — the public, read-only viewer.**
+`viewer.html` is what actually gets deployed to the public site. It has
+no `/save` calls, no add/remove buttons, no `server.js` dependency —
+just a plain `fetch('data.json')` (a relative path, since GitHub Pages
+serves it as a static file sitting right next to the HTML) and the same
+month-grid rendering. Clicking a day with entries opens a small
+read-only popup listing them; empty days aren't clickable at all.
+
+### How to publish
+
+There is no separate deploy step. Publishing = pushing to `main`:
+
+```
+git add apps/calendario/
+git commit -m "..."
+git push
+```
+
+Once pushed, the page is live at:
+
+- `https://mendozadiaz.ch/apps/calendario/viewer.html` (custom domain)
+- `https://rodrigo9010.github.io/mendozadiaz/apps/calendario/viewer.html` (same content, GitHub's own domain)
+
+Both point at the same GitHub Pages deploy — `mendozadiaz.ch` is DNS
+registered through Infomaniak, pointed at GitHub Pages via the `CNAME`
+file at the repo root. GitHub Pages is what actually serves every page,
+including this one.
+
+## Workflow summary
+
+1. `cd apps/calendario && node server.js`, edit at `http://localhost:5500`.
+2. Stop the server (`Ctrl+C`) when done editing.
+3. From the repo root: `git add`, `commit`, `push`.
+4. The public viewer at `mendozadiaz.ch/apps/calendario/viewer.html`
+   now reflects your changes.
+
 ## Next step
 
-Build `viewer.html`: the public, read-only page that GitHub Pages will
-serve. It fetches `data.json` (no server needed for this, since GitHub
-Pages can serve a static JSON file directly) and renders the calendar
-with no editing UI at all — no `/save` calls, because there's no server
-on the public site to receive them.
+Not yet decided — possible directions: a password gate on the viewer
+(deterrent only, see the security note above), or moving off plain-JSON
+storage to something with real multi-device sync (see options below) if
+local-only editing turns out to be too limiting in practice.
+
+## Other storage options (for later, not built)
+
+If local-only editing + git push ever feels like too much friction, free
+alternatives with real sync between devices:
+
+- **Firebase (Firestore/Realtime DB)** — free tier, real-time sync,
+  public API key is normal (access controlled by security rules, not
+  secrecy).
+- **Supabase** — free tier, Postgres-backed, similar tradeoffs to Firebase.
+- **GitHub-as-a-database** — save `data.json` via GitHub's API using a
+  personal access token instead of a local git commit. Removes the need
+  to be on a machine with the repo cloned, but the token is another
+  secret exposed client-side, and every save becomes a real git commit
+  (slower, subject to API rate limits).
