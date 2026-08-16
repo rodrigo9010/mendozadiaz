@@ -60,7 +60,7 @@
   }
   .nav button:hover { background: var(--ink); color: var(--paper); }
   .months { display: grid; grid-template-columns: 1fr; gap: 40px; }
-  @media (min-width: 780px) { .months { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 780px) { .months { grid-template-columns: 1fr 1fr; grid-auto-flow: column; grid-template-rows: auto auto; } }
   .month-title { font-size: 1.15rem; margin: 0 0 10px; font-weight: bold; color: var(--teal); }
   table { width: 100%; border-collapse: collapse; table-layout: fixed; }
   th {
@@ -146,11 +146,7 @@
       <h1>Calendario</h1>
       <span class="badge">local editor</span>
     </div>
-    <div class="nav">
-      <button id="prev">&larr; prev</button>
-      <span id="rangeLabel"></span>
-      <button id="next">next &rarr;</button>
-    </div>
+    <span id="rangeLabel" style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 0.85rem; color: var(--muted);"></span>
   </header>
   <div class="months" id="months"></div>
   <div class="status" id="status">Loading...</div>
@@ -170,9 +166,6 @@
 
 <script>
 const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-
-let baseYear = new Date().getFullYear();
-let baseMonth = new Date().getMonth();
 
 let data = {}; // { "YYYY-MM-DD": [ "entry1", "entry2" ] }
 let currentKey = null;
@@ -286,27 +279,22 @@ function buildMonthTable(year, month) {
   return container;
 }
 
+// Fixed 3-month range: Nov 2026, Dec 2026, Jan 2027.
+// DOM order Nov, Dec, Jan + grid-auto-flow:column fills
+// column 1 (Nov, Jan) then column 2 (Dec) -> Jan lands under Nov.
+const FIXED_MONTHS = [
+  { year: 2026, month: 10 }, // November
+  { year: 2026, month: 11 }, // December
+  { year: 2027, month: 0 },  // January
+];
+
 function render() {
   monthsEl.innerHTML = '';
-  const m1 = buildMonthTable(baseYear, baseMonth);
-  let y2 = baseYear, m2 = baseMonth + 1;
-  if (m2 > 11) { m2 = 0; y2++; }
-  const m2el = buildMonthTable(y2, m2);
-  monthsEl.appendChild(m1);
-  monthsEl.appendChild(m2el);
-  rangeLabel.textContent = `${MONTH_NAMES[baseMonth]} ${baseYear} - ${MONTH_NAMES[m2]} ${y2}`;
+  FIXED_MONTHS.forEach(({ year, month }) => {
+    monthsEl.appendChild(buildMonthTable(year, month));
+  });
+  rangeLabel.textContent = 'November 2026 – January 2027';
 }
-
-document.getElementById('prev').addEventListener('click', () => {
-  baseMonth--;
-  if (baseMonth < 0) { baseMonth = 11; baseYear--; }
-  render();
-});
-document.getElementById('next').addEventListener('click', () => {
-  baseMonth++;
-  if (baseMonth > 11) { baseMonth = 0; baseYear++; }
-  render();
-});
 
 function openModal(key) {
   currentKey = key;

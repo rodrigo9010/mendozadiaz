@@ -114,6 +114,13 @@ each change is written straight to `data.json` on disk. Stop the server
 with `Ctrl+C` when done. Then `git add`, `commit`, and `push` from the
 repo root to publish your changes.
 
+**Step 2.5 — fixed 3-month range.**
+The calendar covers a fixed trip window: November 2026, December 2026,
+January 2027 — no more prev/next month browsing. On desktop the layout
+is a 2x2 grid (November and January stacked in the left column,
+December alone on the right) via `grid-auto-flow: column`; on mobile
+(under 780px) the months stack vertically in order.
+
 ## Next step
 
 Build `viewer.html`: the public, read-only page that GitHub Pages will
