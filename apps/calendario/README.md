@@ -36,9 +36,9 @@ and does the actual `fs.writeFileSync` on your behalf.
 | File | Purpose | Status |
 |---|---|---|
 | `data.json` | The entries themselves: `{ "YYYY-MM-DD": ["entry", ...] }` | done |
-| `try-write.js` | Minimal proof-of-concept: a Node script that reads, modifies, and writes `data.json` directly — no server, no browser yet | done |
-| `server.js` | Local HTTP server: serves the editor page and exposes a save endpoint that does the write `try-write.js` demonstrated | not built yet |
-| `editor.html` | The local-only editing UI (talks to `server.js`) | not built yet |
+| `try-write.js` | Minimal proof-of-concept: a Node script that reads, modifies, and writes `data.json` directly — no server, no browser yet | done (throwaway, not used by the app) |
+| `server.js` | Local HTTP server: serves `editor.html` and exposes `/data` (read) and `/save` (write) endpoints | done |
+| `editor.html` | The local-only editing UI — same calendar UI as before, but talks to `server.js` instead of `window.storage` | done |
 | `viewer.html` | The public, read-only calendar (talks only to `data.json`, no writes) | not built yet |
 
 ## Concepts covered so far
@@ -71,9 +71,53 @@ This appends a test entry to `data.json` and prints the result. Reset
 `data.json` back to `{}` afterward so the next step starts clean — this
 script is a throwaway proof, not part of the final app.
 
+**Step 2 — a browser-triggered version of the same write.**
+`server.js` is a plain Node `http` server (no npm install, no
+dependencies — only the built-in `http`, `fs`, `path` modules). It does
+three things:
+
+1. `GET /` or `/editor.html` → serves the editor page's HTML.
+2. `GET /data` → reads `data.json` and sends it to the browser as JSON.
+3. `POST /save` → receives the browser's updated JSON in the request
+   body, and runs the exact same `fs.writeFileSync` pattern
+   `try-write.js` proved works — just triggered by an HTTP request
+   instead of you running a script.
+
+`editor.html` is the calendar UI from the original prototype, with the
+storage calls swapped:
+
+```js
+// before (didn't actually work in a plain browser):
+await window.storage.get('vacation-entries', true);
+await window.storage.set('vacation-entries', JSON.stringify(data), true);
+
+// now:
+await fetch('/data');
+await fetch('/save', { method: 'POST', body: JSON.stringify(data) });
+```
+
+The calendar rendering logic (building the month grid, the modal, add/
+remove entry handlers) is unchanged — only *how data gets in and out*
+changed. That's the point of separating storage from rendering early.
+
+### How to run the editor
+
+On your own machine, in a terminal, inside your local clone of this repo:
+
+```
+cd apps/calendario
+node server.js
+```
+
+Then open `http://localhost:5500` in a browser. Add/remove entries —
+each change is written straight to `data.json` on disk. Stop the server
+with `Ctrl+C` when done. Then `git add`, `commit`, and `push` from the
+repo root to publish your changes.
+
 ## Next step
 
-Build `server.js`: a plain Node `http` server (no npm install, no
-dependencies) that serves `editor.html` and exposes a `POST /save`
-endpoint doing the same write `try-write.js` does, so the browser can
-trigger it instead of you running the script by hand.
+Build `viewer.html`: the public, read-only page that GitHub Pages will
+serve. It fetches `data.json` (no server needed for this, since GitHub
+Pages can serve a static JSON file directly) and renders the calendar
+with no editing UI at all — no `/save` calls, because there's no server
+on the public site to receive them.
