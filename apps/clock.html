@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Operation Controlled Exit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   html.gate-locked body > *:not(#mc-gate) { display: none !important; }
   html.gate-locked body { overflow: hidden; }
@@ -23,7 +26,7 @@
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-family: "Jost", "Century Gothic", Futura, Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif;
     display: flex;
     justify-content: center;
     padding: 2rem 1rem;
@@ -104,7 +107,7 @@
 <div id="mc-gate" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#0e0f0d;">
   <form id="mc-gate-form">
     <input id="mc-gate-input" type="password" autocomplete="off"
-      style="padding:.6rem .75rem;font-size:1rem;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;background:#191a17;border:1px solid #2c2e29;color:#e8e6e0;border-radius:8px;text-align:center;" />
+      style="padding:.6rem .75rem;font-size:1rem;font-family:inherit;background:#191a17;border:1px solid #2c2e29;color:#e8e6e0;border-radius:8px;text-align:center;" />
   </form>
 </div>
 <script>
@@ -161,6 +164,10 @@
       <label for="mpw">Boss meetings per week</label>
       <input type="number" id="mpw" value="3" min="0" max="20" step="1">
     </div>
+    <div class="control">
+      <label for="notice-date">Resignation notice</label>
+      <input type="date" id="notice-date">
+    </div>
   </div>
 
   <div class="grid">
@@ -197,10 +204,14 @@ const MS_DAY = 86400000;
 
 const ddayInput = $('dday');
 const mpwInput = $('mpw');
+const noticeInput = $('notice-date');
 
 let target = new Date(2026, 9, 1);
 while (target.getDay() === 0 || target.getDay() === 6) target.setDate(target.getDate() + 1);
 ddayInput.value = target.toISOString().slice(0, 10);
+const defaultNotice = new Date(target);
+defaultNotice.setDate(defaultNotice.getDate() - 28);
+noticeInput.value = defaultNotice.toISOString().slice(0, 10);
 
 function countDays(start, end, predicate) {
   let n = 0;
@@ -231,8 +242,7 @@ function update() {
   const perWeek = Number(mpwInput.value) || 0;
   const boss = Math.round(workdays * (perWeek / 5));
 
-  const notice = new Date(dday);
-  notice.setDate(notice.getDate() - 28);
+  const notice = new Date(noticeInput.value + 'T00:00:00');
 
   const yearStart = new Date(dday.getFullYear(), 0, 1);
   const pct = Math.max(0, Math.min(100,
@@ -248,7 +258,7 @@ function update() {
 
   $('i-today').textContent = fmt(now);
   $('i-dday').textContent = fmt(dday);
-  $('i-notice').textContent = fmt(notice);
+  $('i-notice').textContent = isNaN(notice) ? '--' : fmt(notice);
   $('i-boss').textContent = boss + ' (estimated)';
   $('i-fri').textContent = fridays;
 
@@ -263,6 +273,7 @@ function tick() {
 
 ddayInput.addEventListener('change', update);
 mpwInput.addEventListener('input', update);
+noticeInput.addEventListener('change', update);
 
 update();
 tick();
