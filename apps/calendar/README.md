@@ -39,10 +39,13 @@ and does the actual `fs.writeFileSync` on your behalf.
 
 | File | Purpose | Status |
 |---|---|---|
-| `data.json` | The entries themselves: `{ "YYYY-MM-DD": ["entry", ...] }` | done |
+| `data.json` | The data store: a `_countries` color legend plus one entry per date, `{ "YYYY-MM-DD": { "country", "city", "entries": [...] } }` | done |
+| `itinerary.md` | Readable, English source for the trip — dated headings, optionally tagged `[Country / City]`, with bullets underneath. Hand-edit this, not `data.json` | done |
+| `md-to-json.js` | Regenerates `data.json` from `itinerary.md` — run with `node md-to-json.js` | done |
 | `try-write.js` | Minimal proof-of-concept: a Node script that reads, modifies, and writes `data.json` directly — no server, no browser yet | done (throwaway, not used by the app) |
 | `server.js` | Local HTTP server: serves `view.html` and exposes `/data` (read) and `/save` (write) endpoints | done |
 | `view.html` | The calendar UI — edit mode locally (via `server.js`), read-only view mode on the public site (via static `data.json`) | done |
+| `COMMANDS.md` | Quick copy-paste command reference for running the local editor and regenerating `data.json` | done |
 
 ## Concepts covered so far
 
@@ -109,6 +112,45 @@ self-hosted block used in `thesis.html` and `index.html`. That means it
 renders identically on every machine regardless of whether the font is
 installed locally, with no external font request (unlike `apps/clock.html`,
 which pulls Jost from Google Fonts instead).
+
+**Step 2.7 — zoom levels.**
+The toolbar above the calendar switches between three zoom levels: Trip
+(all 3 months, the original fixed view), Month (one month, with ‹ ›
+buttons to page between months), and Week (one week, with entries shown
+in full instead of truncated). Clicking a month's title while in Trip
+view jumps straight into that month.
+
+**Step 2.8 — country/city tags and an editable color legend.**
+Each day can carry a `country`/`city` tag. The country's color shows up
+on that day's entry bubbles (so the color that matters is the one
+attached to actual content, not a border nobody's looking at), plus a
+small city-name label at Month/Week zoom. The color mapping lives in
+`data.json`'s `_countries` object — a plain `{ "Japan": "#b8503c", ... }`
+map, shown as a legend row above the calendar. Tagging is driven from
+`itinerary.md`: a heading like `## 2026-11-04 [Japan / Tokyo]` tags that
+day, and any country name used there that isn't in the legend yet is
+added automatically with a placeholder color. Opening a day (in edit
+mode) shows Country/City fields, autocompleting from existing country
+names, to tag that day directly instead.
+
+The legend itself is fully editable from the local editor, not just via
+`itinerary.md`: click a swatch to recolor a country (native color
+picker, updates every day tagged with it at once); click a name to
+rename it in place (renaming cascades to every day tagged with the old
+name, and refuses silently on an empty name or a collision with an
+existing country); click the × to remove a country entirely (after a
+confirm — this clears the country/city tag, not the entries, from every
+day that used it); "+ Add country" appends a new placeholder-colored
+entry, focused and ready to rename.
+
+**Step 2.9 — drag entries between days.**
+In the local editor, an entry bubble can be dragged onto a different day
+cell to move it there (native HTML5 drag-and-drop — no library). The
+entry keeps its text but takes on whatever tag the destination day
+already has; it doesn't drag its origin day's tag along with it. Works
+at any zoom level, limited to whichever days are currently on screen
+(so moving between two different months means zooming out to Trip, or
+navigating Month view to bring both into view first).
 
 **Step 3 → Step 4 — one file, auto-detecting mode.**
 Originally the editor (`editor.html`) and the public viewer

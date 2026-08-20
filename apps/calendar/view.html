@@ -93,6 +93,83 @@
   .zoom-btn:disabled, .nav-btn:disabled { opacity: 0.3; cursor: default; }
   .zoom-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); min-width: 40px; text-align: center; }
 
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 18px;
+    margin: -10px 0 26px;
+    font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif;
+    font-size: 0.74rem;
+    color: var(--ink);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.15);
+    display: inline-block;
+    flex: none;
+  }
+  input.legend-swatch {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    border: 1px solid var(--line);
+    background: none;
+    padding: 0;
+  }
+  input.legend-swatch::-webkit-color-swatch-wrapper { padding: 0; }
+  input.legend-swatch::-webkit-color-swatch { border: none; border-radius: 50%; }
+
+  .legend-name {
+    font: inherit;
+    font-size: 0.74rem;
+    color: var(--ink);
+    border: none;
+    border-bottom: 1px dashed transparent;
+    background: transparent;
+    padding: 0;
+  }
+  .legend-name:hover, .legend-name:focus { border-bottom-color: var(--muted); outline: none; }
+  .legend-remove {
+    border: none;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.95rem;
+    line-height: 1;
+    padding: 0 0 0 1px;
+  }
+  .legend-remove:hover { color: var(--coral); }
+  .legend-add {
+    border: 1px dashed var(--line);
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-family: inherit;
+    border-radius: 12px;
+    padding: 3px 10px;
+  }
+  .legend-add:hover { border-color: var(--teal); color: var(--teal); }
+
+  .day-top { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+  .citytag {
+    font-size: 0.58rem;
+    padding: 1px 6px;
+    border-radius: 8px;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 62%;
+  }
+  table.size-md .citytag, table.size-lg .citytag { font-size: 0.68rem; padding: 2px 8px; }
+
   .months { display: grid; grid-template-columns: 1fr; gap: 40px; }
   @media (min-width: 780px) {
     .months { grid-template-columns: 1fr 1fr; }
@@ -137,6 +214,9 @@
     text-overflow: ellipsis;
   }
   .more { color: var(--teal); font-size: 0.62rem; }
+  .entry[draggable="true"] { cursor: grab; }
+  .entry[draggable="true"]:active { cursor: grabbing; }
+  td.drop-target { outline: 2px dashed var(--teal); outline-offset: -2px; background: rgba(47,92,88,0.08); }
 
   table.size-md td { height: 112px; }
   table.size-md .daynum { font-size: 0.78rem; }
@@ -167,6 +247,8 @@
     font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif;
   }
   .modal h2 { font-size: 1.1rem; margin: 0 0 14px; }
+  #tagRow input[type=text], #tagRow select { flex: 1; padding: 7px 8px; border: 1px solid var(--line); background: white; font-family: inherit; font-size: 0.85rem; color: var(--ink); }
+  #tagRow input[type=text]:focus, #tagRow select:focus { outline: 2px solid var(--teal); }
   .modal ul { list-style: none; padding: 0; margin: 0 0 14px; max-height: 220px; overflow-y: auto; }
   .modal li {
     display: flex;
@@ -206,6 +288,7 @@
     </div>
     <button id="nextBtn" class="nav-btn" aria-label="Next">›</button>
   </div>
+  <div class="legend" id="legend"></div>
   <div class="months" id="months"></div>
   <div class="status" id="status">Loading...</div>
 </div>
@@ -213,6 +296,11 @@
 <div class="overlay" id="overlay">
   <div class="modal">
     <h2 id="modalDate"></h2>
+    <div id="tagRow" style="display:flex; gap:8px; margin-bottom:14px;">
+      <select id="countrySelect"></select>
+      <input type="text" id="newCountryInput" placeholder="New country name" style="display:none;" autocomplete="off">
+      <input type="text" id="cityInput" placeholder="City" autocomplete="off">
+    </div>
     <ul id="entryList"></ul>
     <div id="addRow" style="display:flex; gap:8px;">
       <input type="text" id="entryInput" placeholder="Add something..." autocomplete="off">
@@ -232,12 +320,14 @@ const MONTH_NAMES = ["January","February","March","April","May","June","July","A
 
 let data = {}; // { "YYYY-MM-DD": [ "entry1", "entry2" ] }
 let currentKey = null;
+let dragPayload = null; // { fromKey, index } of the entry currently being dragged
 let editable = false;
 
 // Zoom: 'trip' (all 3 months) -> 'month' (one month) -> 'week' (one week).
 let viewMode = 'trip';
 let viewYear = 2026, viewMonth = 10;   // anchor for 'month' mode
 let weekStart = null;                  // Date (Sunday) anchor for 'week' mode
+let pendingFocusCountry = null;        // legend name to focus on the next renderLegend()
 
 const monthsEl = document.getElementById('months');
 const rangeLabel = document.getElementById('rangeLabel');
@@ -253,9 +343,51 @@ const zoomOutBtn = document.getElementById('zoomOutBtn');
 const zoomLabel = document.getElementById('zoomLabel');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
+const legendEl = document.getElementById('legend');
+const tagRow = document.getElementById('tagRow');
+const countrySelect = document.getElementById('countrySelect');
+const newCountryInput = document.getElementById('newCountryInput');
+const cityInput = document.getElementById('cityInput');
 
 function pad(n) { return String(n).padStart(2,'0'); }
 function keyFor(y,m,d) { return `${y}-${pad(m+1)}-${pad(d)}`; }
+
+// A day in data.json is either a plain array of entries (legacy) or
+// { entries, country, city }. getDay() normalizes either shape.
+function getDay(key) {
+  const raw = data[key];
+  if (!raw) return { entries: [], country: null, city: null };
+  if (Array.isArray(raw)) return { entries: raw, country: null, city: null };
+  return { entries: raw.entries || [], country: raw.country || null, city: raw.city || null };
+}
+
+function setDayEntries(key, entries) {
+  const day = getDay(key);
+  if (entries.length === 0 && !day.country && !day.city) {
+    delete data[key];
+    return;
+  }
+  const next = { entries };
+  if (day.country) next.country = day.country;
+  if (day.city) next.city = day.city;
+  data[key] = next;
+}
+
+function setDayTag(key, country, city) {
+  const day = getDay(key);
+  if (day.entries.length === 0 && !country && !city) {
+    delete data[key];
+    return;
+  }
+  const next = { entries: day.entries };
+  if (country) next.country = country;
+  if (city) next.city = city;
+  data[key] = next;
+}
+
+function countryColor(name) {
+  return (data._countries && data._countries[name]) || null;
+}
 
 // Try the local editor server first (short timeout so the public site
 // doesn't hang waiting on a server that isn't there); fall back to
@@ -314,19 +446,47 @@ function buildWeekdayHeaderRow() {
 // size: 'sm' (trip overview), 'md' (single month), 'lg' (single week).
 function buildDayCell(key, dayNum, size) {
   const td = document.createElement('td');
-  const num = document.createElement('div');
+  const day = getDay(key);
+
+  const topRow = document.createElement('div');
+  topRow.className = 'day-top';
+  const num = document.createElement('span');
   num.className = 'daynum';
   num.textContent = dayNum;
-  td.appendChild(num);
+  topRow.appendChild(num);
 
-  const entries = data[key] || [];
+  const entryColor = day.country ? countryColor(day.country) : null;
+  if (day.country) {
+    td.title = day.city ? `${day.country} — ${day.city}` : day.country;
+    if (size !== 'sm' && day.city) {
+      const tag = document.createElement('span');
+      tag.className = 'citytag';
+      tag.textContent = day.city;
+      tag.style.background = entryColor || 'var(--muted)';
+      topRow.appendChild(tag);
+    }
+  }
+  td.appendChild(topRow);
+
+  const entries = day.entries;
   const maxShown = size === 'lg' ? entries.length : (size === 'md' ? 4 : 2);
   const entriesDiv = document.createElement('div');
   entriesDiv.className = 'entries';
-  entries.slice(0, maxShown).forEach(txt => {
+  entries.slice(0, maxShown).forEach((txt, idx) => {
     const e = document.createElement('div');
     e.className = 'entry';
     e.textContent = txt;
+    if (entryColor) e.style.background = entryColor;
+    if (editable) {
+      e.draggable = true;
+      e.addEventListener('dragstart', (ev) => {
+        dragPayload = { fromKey: key, index: idx };
+        ev.dataTransfer.effectAllowed = 'move';
+        ev.dataTransfer.setData('text/plain', txt);
+        ev.stopPropagation();
+      });
+      e.addEventListener('dragend', () => { dragPayload = null; });
+    }
     entriesDiv.appendChild(e);
   });
   if (entries.length > maxShown) {
@@ -339,6 +499,32 @@ function buildDayCell(key, dayNum, size) {
   if (editable || entries.length > 0) {
     td.classList.add('clickable');
     td.addEventListener('click', () => openModal(key));
+  }
+  if (editable) {
+    td.addEventListener('dragover', (ev) => {
+      if (!dragPayload) return;
+      ev.preventDefault();
+      ev.dataTransfer.dropEffect = 'move';
+      td.classList.add('drop-target');
+    });
+    td.addEventListener('dragleave', () => td.classList.remove('drop-target'));
+    td.addEventListener('drop', async (ev) => {
+      ev.preventDefault();
+      td.classList.remove('drop-target');
+      if (!dragPayload) return;
+      const { fromKey, index } = dragPayload;
+      dragPayload = null;
+      if (fromKey === key) return;
+      const fromEntries = getDay(fromKey).entries.slice();
+      const moved = fromEntries.splice(index, 1)[0];
+      if (moved === undefined) return;
+      setDayEntries(fromKey, fromEntries);
+      const toEntries = getDay(key).entries.slice();
+      toEntries.push(moved);
+      setDayEntries(key, toEntries);
+      await saveData();
+      render();
+    });
   }
   return td;
 }
@@ -441,9 +627,141 @@ const FIXED_MONTHS = [
   { year: 2027, month: 0 },  // January
 ];
 
+const PLACEHOLDER_COLORS = ['#7a8f99', '#a97d5d', '#6b9b7a', '#9b6b8f', '#7d8f5d', '#5d7d8f'];
+
+// Renames a country everywhere: the legend entry and every day tagged
+// with it. Returns false (no-op) on an empty name or a collision with
+// an existing country.
+function renameCountry(oldName, newName) {
+  newName = newName.trim();
+  if (!newName || newName === oldName) return false;
+  if (data._countries[newName]) return false;
+
+  const color = data._countries[oldName];
+  delete data._countries[oldName];
+  data._countries[newName] = color;
+
+  Object.keys(data).forEach(key => {
+    if (key === '_countries') return;
+    const day = data[key];
+    if (day && !Array.isArray(day) && day.country === oldName) {
+      day.country = newName;
+    }
+  });
+  return true;
+}
+
+// Removes a country from the legend and clears its tag (country + city)
+// from any day that used it, rather than leaving a dangling reference.
+function removeCountry(name) {
+  delete data._countries[name];
+  Object.keys(data).forEach(key => {
+    if (key === '_countries') return;
+    const day = data[key];
+    if (day && !Array.isArray(day) && day.country === name) {
+      delete day.country;
+      delete day.city;
+    }
+  });
+}
+
+function addCountry() {
+  const base = 'New country';
+  let name = base, n = 1;
+  while (data._countries[name]) { n++; name = `${base} ${n}`; }
+  const used = Object.keys(data._countries).length;
+  data._countries[name] = PLACEHOLDER_COLORS[used % PLACEHOLDER_COLORS.length];
+  return name;
+}
+
+function renderLegend() {
+  legendEl.innerHTML = '';
+  const countries = data._countries || {};
+  const justAdded = pendingFocusCountry;
+  pendingFocusCountry = null;
+
+  Object.keys(countries).forEach(name => {
+    const item = document.createElement('div');
+    item.className = 'legend-item';
+
+    let swatch;
+    if (editable) {
+      swatch = document.createElement('input');
+      swatch.type = 'color';
+      swatch.value = countries[name];
+      swatch.title = `Recolor ${name}`;
+      swatch.addEventListener('change', async () => {
+        data._countries[name] = swatch.value;
+        await saveData();
+        render();
+      });
+    } else {
+      swatch = document.createElement('span');
+      swatch.style.background = countries[name];
+    }
+    swatch.className = 'legend-swatch';
+    item.appendChild(swatch);
+
+    if (editable) {
+      const label = document.createElement('input');
+      label.type = 'text';
+      label.className = 'legend-name';
+      label.value = name;
+      label.style.width = (name.length + 1) + 'ch';
+      label.addEventListener('input', () => {
+        label.style.width = (label.value.length + 1) + 'ch';
+      });
+      label.addEventListener('change', async () => {
+        const ok = renameCountry(name, label.value);
+        if (!ok) label.value = name;
+        await saveData();
+        render();
+      });
+      label.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); label.blur(); }
+      });
+      item.appendChild(label);
+      if (name === justAdded) { label.focus(); label.select(); }
+
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'legend-remove';
+      removeBtn.textContent = '×';
+      removeBtn.title = `Remove ${name}`;
+      removeBtn.addEventListener('click', async () => {
+        if (!confirm(`Remove "${name}"? Days tagged with it will become untagged.`)) return;
+        removeCountry(name);
+        await saveData();
+        render();
+      });
+      item.appendChild(removeBtn);
+    } else {
+      const label = document.createElement('span');
+      label.textContent = name;
+      item.appendChild(label);
+    }
+
+    legendEl.appendChild(item);
+  });
+
+  if (editable) {
+    const addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.className = 'legend-add';
+    addBtn.textContent = '+ Add country';
+    addBtn.addEventListener('click', async () => {
+      pendingFocusCountry = addCountry();
+      await saveData();
+      render();
+    });
+    legendEl.appendChild(addBtn);
+  }
+}
+
 function render() {
   monthsEl.innerHTML = '';
   monthsEl.classList.toggle('single', viewMode !== 'trip');
+  renderLegend();
 
   if (viewMode === 'trip') {
     FIXED_MONTHS.forEach(({ year, month }) => {
@@ -526,6 +844,32 @@ function openModal(key) {
   currentKey = key;
   const [y,m,d] = key.split('-').map(Number);
   modalDate.textContent = `${MONTH_NAMES[m-1]} ${d}, ${y}`;
+
+  tagRow.style.display = editable ? 'flex' : 'none';
+  if (editable) {
+    const day = getDay(key);
+    countrySelect.innerHTML = '';
+    const noneOpt = document.createElement('option');
+    noneOpt.value = '';
+    noneOpt.textContent = '— none —';
+    countrySelect.appendChild(noneOpt);
+    Object.keys(data._countries || {}).forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      countrySelect.appendChild(opt);
+    });
+    const newOpt = document.createElement('option');
+    newOpt.value = '__new__';
+    newOpt.textContent = '+ New country…';
+    countrySelect.appendChild(newOpt);
+
+    countrySelect.value = day.country || '';
+    newCountryInput.style.display = 'none';
+    newCountryInput.value = '';
+    cityInput.value = day.city || '';
+  }
+
   renderEntryList();
   overlay.classList.add('open');
   if (editable) {
@@ -534,9 +878,51 @@ function openModal(key) {
   }
 }
 
+async function saveTag(newCountryName) {
+  if (!editable || !currentKey) return;
+  let country = newCountryName !== undefined ? newCountryName : countrySelect.value;
+  if (country === '__new__') return; // waiting on the new-name input, nothing to save yet
+  if (country && !data._countries[country]) {
+    const used = Object.keys(data._countries).length;
+    data._countries[country] = PLACEHOLDER_COLORS[used % PLACEHOLDER_COLORS.length];
+  }
+  setDayTag(currentKey, country, cityInput.value.trim());
+  await saveData();
+  render();
+}
+
+countrySelect.addEventListener('change', () => {
+  if (countrySelect.value === '__new__') {
+    newCountryInput.style.display = 'block';
+    newCountryInput.value = '';
+    newCountryInput.focus();
+  } else {
+    newCountryInput.style.display = 'none';
+    saveTag();
+  }
+});
+newCountryInput.addEventListener('change', () => {
+  const name = newCountryInput.value.trim();
+  if (!name) return;
+  saveTag(name);
+});
+newCountryInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    newCountryInput.blur();
+  }
+});
+cityInput.addEventListener('change', () => saveTag());
+cityInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    cityInput.blur();
+  }
+});
+
 function renderEntryList() {
   entryList.innerHTML = '';
-  const entries = data[currentKey] || [];
+  const entries = getDay(currentKey).entries;
   if (entries.length === 0) {
     const li = document.createElement('li');
     li.textContent = 'Nothing yet.';
@@ -552,8 +938,9 @@ function renderEntryList() {
       const btn = document.createElement('button');
       btn.textContent = 'remove';
       btn.addEventListener('click', async () => {
-        entries.splice(idx,1);
-        if (entries.length === 0) delete data[currentKey];
+        const updated = entries.slice();
+        updated.splice(idx, 1);
+        setDayEntries(currentKey, updated);
         await saveData();
         renderEntryList();
         render();
@@ -568,8 +955,9 @@ async function addEntry() {
   if (!editable) return;
   const val = entryInput.value.trim();
   if (!val || !currentKey) return;
-  if (!data[currentKey]) data[currentKey] = [];
-  data[currentKey].push(val);
+  const entries = getDay(currentKey).entries.slice();
+  entries.push(val);
+  setDayEntries(currentKey, entries);
   entryInput.value = '';
   await saveData();
   renderEntryList();
