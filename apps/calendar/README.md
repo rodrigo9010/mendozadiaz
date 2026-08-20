@@ -1,4 +1,4 @@
-# Calendario — build notes
+# Calendar — build notes
 
 A shared vacation calendar, built incrementally as a tutorial in how a small
 local-first app can read/write data and later show up on a public,
@@ -20,7 +20,7 @@ read-only website.
   it. A password there is a light deterrent on *viewing*, not real
   security — anyone who looks at the page source can read it. Don't put
   anything behind it you'd be upset about a stranger seeing.
-- **One page, two modes.** `calendar.html` is used both locally (as the
+- **One page, two modes.** `view.html` is used both locally (as the
   editor) and publicly (as the viewer) — it detects which mode to run in
   itself, see Step 4 below. There's no separate editor/viewer file to
   keep in sync.
@@ -41,8 +41,8 @@ and does the actual `fs.writeFileSync` on your behalf.
 |---|---|---|
 | `data.json` | The entries themselves: `{ "YYYY-MM-DD": ["entry", ...] }` | done |
 | `try-write.js` | Minimal proof-of-concept: a Node script that reads, modifies, and writes `data.json` directly — no server, no browser yet | done (throwaway, not used by the app) |
-| `server.js` | Local HTTP server: serves `calendar.html` and exposes `/data` (read) and `/save` (write) endpoints | done |
-| `calendar.html` | The calendar UI — edit mode locally (via `server.js`), read-only view mode on the public site (via static `data.json`) | done |
+| `server.js` | Local HTTP server: serves `view.html` and exposes `/data` (read) and `/save` (write) endpoints | done |
+| `view.html` | The calendar UI — edit mode locally (via `server.js`), read-only view mode on the public site (via static `data.json`) | done |
 
 ## Concepts covered so far
 
@@ -65,7 +65,7 @@ it* (running the script by hand vs. an HTTP request from a browser).
 On your own machine, in a terminal, inside your local clone of this repo:
 
 ```
-cd apps/calendario
+cd apps/calendar
 node try-write.js
 ```
 
@@ -78,7 +78,7 @@ script is a throwaway proof, not part of the final app.
 dependencies — only the built-in `http`, `fs`, `path` modules). It does
 three things:
 
-1. `GET /` → serves `calendar.html`.
+1. `GET /` → serves `view.html`.
 2. `GET /data` → reads `data.json` and sends it to the browser as JSON.
 3. `POST /save` → receives the browser's updated JSON in the request
    body, and runs the exact same `fs.writeFileSync` pattern
@@ -102,10 +102,18 @@ grid placement puts November top-left, December on the right (spanning
 both rows), and January bottom-left, under November. On mobile (under
 780px) the months stack vertically in order.
 
+**Step 2.6 — Jost typeface.**
+The page uses Jost (the same house font as the rest of the site), embedded
+as a base64 WOFF2 `@font-face` directly in `view.html` — the same
+self-hosted block used in `thesis.html` and `index.html`. That means it
+renders identically on every machine regardless of whether the font is
+installed locally, with no external font request (unlike `apps/clock.html`,
+which pulls Jost from Google Fonts instead).
+
 **Step 3 → Step 4 — one file, auto-detecting mode.**
 Originally the editor (`editor.html`) and the public viewer
 (`viewer.html`) were two separate files sharing most of their markup/
-CSS/JS. They were merged into a single `calendar.html` that detects
+CSS/JS. They were merged into a single `view.html` that detects
 which mode to run in on load:
 
 ```js
@@ -131,7 +139,7 @@ differ, gated behind a single `editable` flag set once at load.
 On your own machine, in a terminal, inside your local clone of this repo:
 
 ```
-cd apps/calendario
+cd apps/calendar
 node server.js
 ```
 
@@ -145,7 +153,7 @@ repo root to publish your changes.
 There is no separate deploy step. Publishing = pushing to `main`:
 
 ```
-git add apps/calendario/
+git add apps/calendar/
 git commit -m "..."
 git push
 ```
@@ -153,8 +161,8 @@ git push
 Once pushed, the page is live (read-only, since there's no server on
 GitHub Pages) at:
 
-- `https://mendozadiaz.ch/apps/calendario/calendar.html` (custom domain)
-- `https://rodrigo9010.github.io/mendozadiaz/apps/calendario/calendar.html` (same content, GitHub's own domain)
+- `https://mendozadiaz.ch/apps/calendar/view.html` (custom domain)
+- `https://rodrigo9010.github.io/mendozadiaz/apps/calendar/view.html` (same content, GitHub's own domain)
 
 Both point at the same GitHub Pages deploy — `mendozadiaz.ch` is DNS
 registered through Infomaniak, pointed at GitHub Pages via the `CNAME`
@@ -163,10 +171,10 @@ including this one.
 
 ## Workflow summary
 
-1. `cd apps/calendario && node server.js`, edit at `http://localhost:5500`.
+1. `cd apps/calendar && node server.js`, edit at `http://localhost:5500`.
 2. Stop the server (`Ctrl+C`) when done editing.
 3. From the repo root: `git add`, `commit`, `push`.
-4. The public page at `mendozadiaz.ch/apps/calendario/calendar.html`
+4. The public page at `mendozadiaz.ch/apps/calendar/view.html`
    now reflects your changes (read-only there, since it's the same file
    running in view mode).
 

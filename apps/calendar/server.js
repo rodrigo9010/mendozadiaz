@@ -8,7 +8,7 @@ const path = require('path');
 
 const PORT = 5500;
 const DATA_PATH = path.join(__dirname, 'data.json');
-const PAGE_PATH = path.join(__dirname, 'calendar.html');
+const PAGE_PATH = path.join(__dirname, 'view.html');
 
 function readData() {
   const raw = fs.readFileSync(DATA_PATH, 'utf8');
@@ -21,7 +21,7 @@ function writeData(data) {
 
 const server = http.createServer((req, res) => {
   // Serve the calendar page
-  if (req.method === 'GET' && (req.url === '/' || req.url === '/calendar.html')) {
+  if (req.method === 'GET' && (req.url === '/' || req.url === '/view.html')) {
     const html = fs.readFileSync(PAGE_PATH, 'utf8');
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.end(html);
@@ -59,5 +59,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Calendario editor running at http://localhost:${PORT}`);
+  console.log(`Calendar editor running at http://localhost:${PORT}`);
 });
