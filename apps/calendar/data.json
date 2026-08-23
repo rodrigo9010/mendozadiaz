@@ -8,486 +8,428 @@
     "Philippines": "#358f70",
     "Thailand": "#b85a8c"
   },
-  "2026-11-03": {
-    "country": "Travel",
-    "city": "Zurich → Tokyo",
+  "2026-11-04": {
+    "country": "Japan",
+    "city": "Tokyo",
     "entries": [
-      "LETS GOOOOO",
-      "Zurich - Tokyo"
+      "Accommodation: Fare Metallo ?",
+      "Cost: 369 chf",
+      "Currency: Yen, 198 JPY = 1 chf",
+      "Payment: Revolut o cash --> Sì, una quota media. Ristoranti tradizionali, templi, ricariche delle carte IC (Suica/Pasmo) e piccoli negozi richiedono spesso contanti."
     ]
   },
-  "2026-11-04": {
-    "entries": [
-      "Tokyo"
-    ],
-    "country": "Japan",
-    "city": "Tokyo"
-  },
   "2026-11-05": {
-    "entries": [
-      "Tokyo"
-    ],
     "country": "Japan",
-    "city": "Tokyo"
+    "city": "Tokyo",
+    "entries": []
   },
   "2026-11-06": {
-    "entries": [
-      "Tokyo"
-    ],
     "country": "Japan",
-    "city": "Tokyo"
+    "city": "Tokyo",
+    "entries": []
   },
   "2026-11-07": {
-    "entries": [
-      "Tokyo"
-    ],
     "country": "Japan",
-    "city": "Tokyo"
+    "city": "Tokyo",
+    "entries": []
   },
   "2026-11-08": {
-    "entries": [
-      "Tokyo"
-    ],
     "country": "Japan",
-    "city": "Tokyo"
+    "city": "Tokyo",
+    "entries": []
   },
   "2026-11-09": {
+    "country": "Travel",
+    "city": "Tokyo → Kyoto",
     "entries": [
-      "Mt Fuji"
-    ],
-    "country": "Japan",
-    "city": "Mt. Fuji"
+      "Treno: Tokyo → Kyoto",
+      "Cost: ca. 70 chf",
+      "Accommodation: Onyado ?",
+      "Cost: 277 chf"
+    ]
   },
   "2026-11-10": {
-    "entries": [
-      "Hakone or Kawaguchiko (Mt Fuji + onsen)"
-    ],
     "country": "Japan",
-    "city": "Mt. Fuji"
+    "city": "Kyoto",
+    "entries": []
   },
   "2026-11-11": {
-    "entries": [
-      "Mt Fuji to Kyoto"
-    ],
     "country": "Japan",
-    "city": "Kyoto"
+    "city": "Kyoto",
+    "entries": []
   },
   "2026-11-12": {
+    "country": "Travel",
+    "city": "Kyoto → Osaka",
     "entries": [
-      "KYoto"
-    ],
-    "country": "Japan",
-    "city": "Kyoto"
+      "Treno: Kyoto → Osaka",
+      "Cost: ca. 5 chf"
+    ]
   },
   "2026-11-13": {
-    "entries": [
-      "Osaka",
-      "Osaka"
-    ],
     "country": "Japan",
-    "city": "Osaka"
+    "city": "Osaka",
+    "entries": []
   },
   "2026-11-14": {
-    "entries": [
-      "Osaka"
-    ],
     "country": "Japan",
-    "city": "Osaka"
+    "city": "Osaka",
+    "entries": []
+  },
+  "2026-11-15": {
+    "country": "Japan",
+    "city": "Osaka",
+    "entries": []
   },
   "2026-11-16": {
+    "country": "Travel",
+    "city": "Osaka → Hiroshima",
     "entries": [
-      "Osaka"
-    ],
-    "country": "Japan",
-    "city": "Osaka"
+      "Treno: Osaka → Hiroshima",
+      "Accommodation: FDS Azur",
+      "Cost: 161 chf / 31.940  Y",
+      "Notes: Pagamento caricato su VISA il 7.11 / cxl gratis fino al 9.11"
+    ]
   },
   "2026-11-17": {
-    "entries": [
-      "Osaka"
-    ],
     "country": "Japan",
-    "city": "Hiroshima"
+    "city": "Hiroshima",
+    "entries": []
   },
   "2026-11-18": {
-    "entries": [
-      "Osaka"
-    ],
     "country": "Japan",
-    "city": "Hiroshima"
+    "city": "Hiroshima",
+    "entries": []
   },
   "2026-11-19": {
+    "country": "Travel",
+    "city": "Hiroshima → Fukuoka",
     "entries": [
-      "Evening: street food at Gwangjang Market. Try bindaetteok (mung bean pancakes), tteokbokki (spicy rice cakes), and mayak gimbap."
-    ],
+      "Treno: Hiroshima → Fukuoka",
+      "Cost: ca. 200 chf"
+    ]
+  },
+  "2026-11-20": {
     "country": "Japan",
-    "city": "Fukuoka"
+    "city": "Fukuoka",
+    "entries": []
   },
   "2026-11-21": {
-    "entries": [
-      "Flight to Soul"
-    ],
-    "country": "Travel",
-    "city": "Seoul"
+    "country": "Japan",
+    "city": "Fukuoka",
+    "entries": []
   },
   "2026-11-22": {
+    "country": "Travel",
+    "city": "Fukuoka → Seoul",
     "entries": [
-      "Soul"
-    ],
-    "country": "South Korea",
-    "city": "Soul"
+      "Volo: Fukuoka → Seoul",
+      "Accommodation: app ?",
+      "Cost: 378 chf",
+      "Currency: Won, 1.730 KRW = 1 chf"
+    ]
   },
   "2026-11-23": {
-    "entries": [
-      "Soul"
-    ],
     "country": "South Korea",
-    "city": "Soul"
+    "city": "Seoul",
+    "entries": []
   },
   "2026-11-24": {
-    "entries": [
-      "Soul"
-    ],
     "country": "South Korea",
-    "city": "Soul"
+    "city": "Seoul",
+    "entries": []
   },
   "2026-11-25": {
-    "entries": [
-      "Soul"
-    ],
     "country": "South Korea",
-    "city": "Soul"
+    "city": "Seoul",
+    "entries": []
+  },
+  "2026-11-26": {
+    "country": "South Korea",
+    "city": "Seoul",
+    "entries": []
   },
   "2026-11-27": {
+    "country": "Travel",
+    "city": "Seoul → Beijing",
     "entries": [
-      "Walk along the Bund, visit Yuyuan Garden and the Old City. Evening along the lively pedestrian street of Nanjing Road."
-    ],
-    "country": "China",
-    "city": "Beijing"
+      "Volo: Seoul → Beijing",
+      "Cost: ca. 100 chf",
+      "Accommodation: base-Beijing Sanlitun Serviced Apartment",
+      "Cost: 282 chf / 2.366,18 CNY",
+      "Notes: Pagamento con VISA? / cxl gratis fino al 22.11",
+      "Currency: Yuan, 8.4 CNY = 1 chf"
+    ]
   },
   "2026-11-28": {
-    "entries": [
-      "Explore the former French Concession (cafes, colonial architecture) and go up one of the Pudong skyscrapers (e.g. Shanghai Tower, the world's second tallest)."
-    ],
     "country": "China",
-    "city": "Beijing"
+    "city": "Beijing",
+    "entries": []
   },
   "2026-11-29": {
     "country": "China",
-    "city": "Suzhou",
-    "entries": [
-      "Day trip by fast train (30 min) to Suzhou (the \"Venice of the East,\" known for its classical UNESCO-listed gardens) or to a water village like Zhujiajiao."
-    ]
+    "city": "Beijing",
+    "entries": []
   },
   "2026-11-30": {
     "country": "China",
-    "city": "Shanghai",
-    "entries": [
-      "M50 art district or the modern Xintiandi area. Relax and a scenic dinner before departing."
-    ]
+    "city": "Beijing",
+    "entries": []
+  },
+  "2026-12-01": {
+    "country": "China",
+    "city": "Beijing",
+    "entries": []
   },
   "2026-12-02": {
-    "country": "China",
-    "city": "Zhangjiajie",
+    "country": "Travel",
+    "city": "Beijing → Shanghai",
     "entries": [
-      "Arrival in Zhangjiajie, checking in around the Wulingyuan area."
+      "Treno: Beijing → Shanghai",
+      "Provider: www.trip.com",
+      "Cost: ca. 80 chf",
+      "Notes: da riservare a fine settembre",
+      "Accommodation: Sidihome Selected City Apartment",
+      "Cost: 225,53 chf / 1.892,36 CNY",
+      "Notes: Pagamento con VISA? / cxl gratis fino al 25.11"
     ]
   },
   "2026-12-03": {
     "country": "China",
-    "city": "Zhangjiajie",
-    "entries": [
-      "Zhangjiajie National Forest Park: exploring the quartzite peaks that inspired the floating mountains in the film Avatar (Bailong Elevator, Yuanjiajie area, and Tianzi Mountain)."
-    ]
+    "city": "Shanghai",
+    "entries": []
   },
   "2026-12-04": {
     "country": "China",
-    "city": "Zhangjiajie",
-    "entries": [
-      "Visit Tianmen Mountain (very long cable car, glass skywalks over the void, and the striking \"Heaven's Gate\"). Evening high-speed train to Guilin (about 4.5 hours)."
-    ]
+    "city": "Shanghai",
+    "entries": []
   },
   "2026-12-05": {
     "country": "China",
-    "city": "Yangshuo",
-    "entries": [
-      "Cruise on the Li River from Guilin to Yangshuo (about 4 hours through karst peaks). Afternoon in Yangshuo, exploring the countryside by bike or e-bike along the Yulong River."
-    ]
+    "city": "Shanghai",
+    "entries": []
   },
   "2026-12-06": {
     "country": "China",
-    "city": "Yangshuo",
-    "entries": [
-      "Full day in Yangshuo: bamboo raft ride on the Yulong River, climb Moon Hill or the Xianggong Mountain viewpoint for a spectacular view over the river's bends."
-    ]
+    "city": "Shanghai",
+    "entries": []
   },
   "2026-12-07": {
-    "country": "China",
-    "city": "Guilin",
+    "country": "Travel",
+    "city": "Shanghai → Zhangjiajie",
     "entries": [
-      "Day trip to the Longji Rice Terraces (Dragon's Backbone) north of Guilin, to see the traditional villages of the Yao and Miao ethnic groups."
+      "Treno: Shanghai → Zhangjiajie",
+      "Provider: www.trip.com",
+      "Cost: ca. 100 chf",
+      "Notes: da riservare a fine settembre",
+      "Accommodation: XMAN Sunrise Peaks Resort",
+      "Cost: 109,40 chf / 917,95 CNY",
+      "Notes: Pagamento in alloggio / cxl gratis"
     ]
   },
   "2026-12-08": {
     "country": "China",
-    "city": "Guilin",
-    "entries": [
-      "Half day: relaxed morning in Yangshuo/Guilin. In the afternoon, high-speed train direct to Hong Kong (from Guilin West or Shenzhen station to Hong Kong West Kowloon, about 3–3.5 hours)."
-    ]
+    "city": "Zhangjiajie",
+    "entries": []
   },
   "2026-12-09": {
-    "entries": [
-      "China"
-    ],
     "country": "China",
-    "city": "China"
-  },
-  "2026-12-10": {
-    "entries": [
-      "China"
-    ],
-    "country": "China",
-    "city": "China"
-  },
-  "2026-12-11": {
-    "entries": [
-      "China"
-    ],
-    "country": "China",
-    "city": "China"
+    "city": "Zhangjiajie",
+    "entries": []
   },
   "2026-12-12": {
+    "country": "Travel",
+    "city": "Zhangjiajie → Guilin",
     "entries": [
-      "China"
-    ],
-    "country": "China",
-    "city": "China"
+      "Treno: Zhangjiajie → Guilin",
+      "Provider: www.trip.com",
+      "Cost: ca. 50 chf",
+      "Notes: da riservare a fine settembre",
+      "Accommodation: Riverside Inn Guilin Central",
+      "Cost: 119,70 chf / 1.0004,37 CNY",
+      "Notes: Pagamento in alloggio / cxl gratis fino al 02.12"
+    ]
   },
   "2026-12-13": {
-    "entries": [
-      "Travel to Honk Kong"
-    ],
-    "country": "Hong Kong",
-    "city": "Honk Kong"
+    "country": "China",
+    "city": "Guilin",
+    "entries": []
   },
   "2026-12-14": {
-    "entries": [
-      "Honk Kong"
-    ],
-    "country": "Hong Kong",
-    "city": "Honk Kong"
+    "country": "China",
+    "city": "Guilin",
+    "entries": []
   },
   "2026-12-15": {
+    "country": "Travel",
+    "city": "Guilin → Shenzen",
     "entries": [
-      "Honk Kong"
-    ],
-    "country": "Hong Kong",
-    "city": "Honk Kong"
+      "Treno: Guilin → Shenzen",
+      "Provider: www.trip.com",
+      "Cost: ca. 60 chf",
+      "Notes: da riservare a fine settembre"
+    ]
   },
   "2026-12-16": {
-    "entries": [
-      "Hong Kong"
-    ],
-    "country": "Hong Kong",
-    "city": "Hong Kong"
+    "country": "China",
+    "city": "Shenzen",
+    "entries": []
   },
   "2026-12-17": {
+    "country": "Travel",
+    "city": "Shenzen → Hongkong",
     "entries": [
-      "Hong Kong"
-    ],
-    "country": "Hong Kong",
-    "city": "Hong Kong"
+      "Treno: Shenzen → Hongkong",
+      "Accommodation: 99 Bonham?",
+      "Cost: 535 chf"
+    ]
   },
   "2026-12-18": {
-    "entries": [
-      "Flight Kong Kong Bo"
-    ],
-    "country": "Travel",
-    "city": "Bohol"
+    "country": "Hong Kong",
+    "city": "Hongkong",
+    "entries": []
   },
   "2026-12-19": {
-    "country": "Philippines",
-    "city": "Bohol",
-    "entries": [
-      "Full rest at the resort, or a traditional massage session (Hilot) at the spa."
-    ]
+    "country": "Hong Kong",
+    "city": "Hongkong",
+    "entries": []
   },
   "2026-12-20": {
-    "country": "Philippines",
-    "city": "Coron",
-    "entries": [
-      "Internal flight from Bohol to Coron (Busuanga). Coron offers dramatic limestone cliffs without the crowded \"trash\" feel of central El Nido. Panoramic sunset from Mt. Tapyas."
-    ]
+    "country": "Hong Kong",
+    "city": "Hongkong",
+    "entries": []
   },
   "2026-12-21": {
-    "country": "Philippines",
-    "city": "Coron",
-    "entries": [
-      "Private boat tour (Bangka) to avoid the crowds. Swim in the clear waters of Kayangan Lake and Barracuda Lake, surrounded by vertical rock walls."
-    ]
+    "country": "Hong Kong",
+    "city": "Hongkong",
+    "entries": []
   },
   "2026-12-22": {
-    "country": "Philippines",
-    "city": "Coron",
+    "country": "Travel",
+    "city": "Hongkong → Bohol/Panglao",
     "entries": [
-      "Guided snorkeling among the famous Japanese WWII wrecks, now completely covered in coral, followed by relaxing at Smith Beach."
+      "Volo: Hongkong → Bohol/Panglao",
+      "Cost: ca. 100 chf",
+      "Accommodation: Air Residence Makati ? Moana ?",
+      "Cost: 86 chf"
     ]
   },
   "2026-12-23": {
     "country": "Philippines",
-    "city": "Coron",
-    "entries": [
-      "Relax day."
-    ]
+    "city": "Bohol/Panglao",
+    "entries": []
   },
   "2026-12-24": {
     "country": "Philippines",
-    "city": "Coron",
-    "entries": [
-      "Relax day."
-    ]
+    "city": "Bohol/Panglao",
+    "entries": []
   },
   "2026-12-25": {
-    "entries": [
-      "Manila"
-    ],
     "country": "Philippines",
-    "city": "Manila"
+    "city": "Bohol/Panglao",
+    "entries": []
   },
   "2026-12-26": {
-    "entries": [
-      "Chiang Mai, through Dec 30. (Open question: night train back to Bangkok?)"
-    ],
     "country": "Philippines",
-    "city": "Philipines"
+    "city": "Bohol/Panglao",
+    "entries": []
+  },
+  "2026-12-27": {
+    "country": "Philippines",
+    "city": "Bohol/Panglao",
+    "entries": []
+  },
+  "2026-12-28": {
+    "country": "Travel",
+    "city": "Bohol/Panglao → Manila",
+    "entries": [
+      "Volo: Bohol/Panglao → Manila",
+      "Cost: ca. 50 chf",
+      "Accommodation: City Garden Hotel ?",
+      "Cost: 74 chf"
+    ]
+  },
+  "2026-12-29": {
+    "country": "Philippines",
+    "city": "Manila",
+    "entries": []
+  },
+  "2026-12-30": {
+    "country": "Travel",
+    "city": "Manila → Bkk",
+    "entries": [
+      "Volo: Manila → Bkk",
+      "Cost: ca. 300 chf",
+      "Accommodation: Somerset Ekamai",
+      "Cost: 290,26 chf / 11.847,60 THB",
+      "Notes: Pagamento con VISA il 27.12 / cxl gratis fino al 29.12"
+    ]
   },
   "2026-12-31": {
     "country": "Thailand",
-    "city": "Bangkok",
-    "entries": [
-      "Bangkok, through Jan 3."
-    ]
-  },
-  "2027-01-03": {
-    "country": "Thailand",
-    "city": "Ko Kood",
-    "entries": [
-      "Ko Kood, through Jan 9. Early start by bus/minivan to the Laem Sok pier in Trat (about 5h), or a Bangkok Airways flight to Trat (45 min) plus speedboat to Koh Kood. Top beaches: Bang Bao Bay, Klong Chao Beach, Ao Tapao. Activities: scooter rental to explore the island, kayaking through the mangroves, and visiting the Khlong Chao and Huang Nam Keaw waterfalls."
-    ]
-  },
-  "2027-01-09": {
-    "country": "Thailand",
-    "city": "Bangkok",
-    "entries": [
-      "Bangkok, through Jan 11."
-    ]
-  },
-  "2027-01-11": {
-    "country": "Travel",
-    "city": "Bangkok → Zurich",
-    "entries": [
-      "Come Back"
-    ]
-  },
-  "2026-11-15": {
-    "entries": [
-      "Osaka"
-    ],
-    "country": "Japan",
-    "city": "Osaka"
-  },
-  "2026-11-20": {
-    "entries": [
-      "Fukuoka"
-    ],
-    "country": "Japan",
-    "city": "Fukuoka"
-  },
-  "2026-11-26": {
-    "entries": [
-      "Flight to Beijing"
-    ],
-    "country": "Travel",
-    "city": "Beijing"
-  },
-  "2026-12-01": {
-    "entries": [
-      "dvsvda"
-    ],
-    "country": "China",
-    "city": "Choina"
-  },
-  "2027-01-10": {
-    "entries": [
-      "T"
-    ],
-    "country": "Thailand",
-    "city": "Bangkok"
-  },
-  "2026-12-27": {
-    "entries": [
-      "Philipines"
-    ],
-    "country": "Philippines"
-  },
-  "2026-12-28": {
-    "entries": [
-      "Thailand",
-      "Philipines"
-    ],
-    "country": "Philippines"
-  },
-  "2026-12-29": {
-    "entries": [
-      "Internal flight from Coron to Manila."
-    ],
-    "country": "Travel"
-  },
-  "2026-12-30": {
-    "entries": [
-      "Thailand"
-    ],
-    "country": "Thailand"
+    "city": "Bkk",
+    "entries": []
   },
   "2027-01-01": {
-    "entries": [
-      "T"
-    ],
-    "country": "Thailand"
+    "country": "Thailand",
+    "city": "Bkk",
+    "entries": []
   },
   "2027-01-02": {
+    "country": "Thailand",
+    "city": "Bkk",
+    "entries": []
+  },
+  "2027-01-03": {
+    "country": "Travel",
+    "city": "Bkk → Ko Chang",
     "entries": [
-      "T"
-    ],
-    "country": "Thailand"
+      "Bus + Ferry: Bkk → Ko Chang",
+      "Provider: https://boonsiriferry.com/",
+      "Cost: ca. 40 chf / 1700 THB",
+      "Accommodation: Kae Beaxh resort",
+      "Cost: 657 chf /26.784 THB",
+      "Notes: Pagamento con VISA il 28.12 / cxl gratis fino al 30.12"
+    ]
   },
   "2027-01-04": {
-    "entries": [
-      "T"
-    ],
-    "country": "Thailand"
+    "country": "Thailand",
+    "city": "Ko Chang",
+    "entries": []
   },
   "2027-01-05": {
-    "entries": [
-      "T"
-    ],
-    "country": "Thailand"
+    "country": "Thailand",
+    "city": "Ko Chang",
+    "entries": []
   },
   "2027-01-06": {
-    "entries": [
-      "T"
-    ],
-    "country": "Thailand"
+    "country": "Thailand",
+    "city": "Ko Chang",
+    "entries": []
   },
   "2027-01-07": {
-    "entries": [
-      "T"
-    ],
-    "country": "Thailand"
+    "country": "Thailand",
+    "city": "Ko Chang",
+    "entries": []
   },
   "2027-01-08": {
+    "country": "Thailand",
+    "city": "Ko Chang",
+    "entries": []
+  },
+  "2027-01-09": {
+    "country": "Travel",
+    "city": "Ko Chang → Bkk",
     "entries": [
-      "T"
-    ],
-    "country": "Thailand"
+      "Ferry + Bus: Ko Chang → Bkk",
+      "Provider: https://boonsiriferry.com/",
+      "Accommodation: grandre centre point ?",
+      "Cost: 254 chf"
+    ]
+  },
+  "2027-01-10": {
+    "country": "Thailand",
+    "city": "Bkk",
+    "entries": []
   }
 }
