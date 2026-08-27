@@ -17,12 +17,14 @@
   </style>
 <style>
   :root {
-    --ink: #1c2b2d;
-    --paper: #f6f3ea;
-    --line: #d8d0bd;
-    --teal: #2f5c58;
-    --coral: #c85f42;
-    --muted: #8a8577;
+    --ink: #eef0ea;        /* primary text — light on dark */
+    --paper: #0f1a1a;      /* page background — dark */
+    --surface: #1b2a2b;    /* raised panels: cards, modal, inputs */
+    --line: #33413f;       /* borders / hairlines on dark */
+    --teal: #4f938a;       /* accent, brightened for dark */
+    --coral: #d67350;      /* accent, brightened for dark */
+    --muted: #8c9490;      /* secondary text */
+    --on-accent: #f7f5ef;  /* text on a teal/coral fill */
   }
   * { box-sizing: border-box; }
   body {
@@ -39,7 +41,7 @@
     align-items: baseline;
     flex-wrap: wrap;
     gap: 12px;
-    border-bottom: 2px solid var(--ink);
+    border-bottom: 1px solid var(--line);
     padding-bottom: 14px;
     margin-bottom: 24px;
   }
@@ -50,7 +52,7 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     background: var(--coral);
-    color: var(--paper);
+    color: var(--on-accent);
     padding: 3px 8px;
     border-radius: 3px;
   }
@@ -64,14 +66,14 @@
     align-items: center;
     justify-content: center;
     gap: 16px;
-    margin-bottom: 28px;
+    margin-bottom: 26px;
     font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif;
   }
   .zoom-group {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: rgba(28,43,45,0.05);
+    background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 20px;
     padding: 4px 8px;
@@ -89,10 +91,9 @@
   }
   .zoom-btn { width: 26px; height: 26px; font-size: 0.9rem; }
   .nav-btn { width: 30px; height: 30px; font-size: 1.15rem; background: none; }
-  .zoom-btn:hover:not(:disabled), .nav-btn:hover:not(:disabled) { background: var(--teal); color: var(--paper); border-color: var(--teal); }
+  .zoom-btn:hover:not(:disabled), .nav-btn:hover:not(:disabled) { background: var(--teal); color: var(--on-accent); border-color: var(--teal); }
   .zoom-btn:disabled, .nav-btn:disabled { opacity: 0.3; cursor: default; }
-  .zoom-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); min-width: 40px; text-align: center; }
-
+  .zoom-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); min-width: 42px; text-align: center; }
   .legend {
     display: flex;
     flex-wrap: wrap;
@@ -108,7 +109,7 @@
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    border: 1px solid rgba(0,0,0,0.15);
+    border: 1px solid rgba(255,255,255,0.2);
     display: inline-block;
     flex: none;
   }
@@ -168,70 +169,83 @@
     text-overflow: ellipsis;
     max-width: 62%;
   }
-  table.size-md .citytag, table.size-lg .citytag { font-size: 0.68rem; padding: 2px 8px; }
+  table.size-md .citytag { font-size: 0.68rem; padding: 2px 8px; }
 
-  .months { display: grid; grid-template-columns: 1fr; gap: 40px; }
-  @media (min-width: 780px) {
-    .months { grid-template-columns: 1fr 1fr; }
-    .months > :nth-child(1) { grid-column: 1; grid-row: 1; } /* November */
-    .months > :nth-child(2) { grid-column: 2; grid-row: 1 / span 2; } /* December */
-    .months > :nth-child(3) { grid-column: 1; grid-row: 2; } /* January */
+  .months { display: grid; grid-template-columns: 1fr; gap: 28px; }
+  .month-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
   }
-  .months.single { grid-template-columns: 1fr !important; }
-  .month-title { font-size: 1.15rem; margin: 0 0 10px; font-weight: bold; color: var(--teal); }
-  .month-title.zoomable { cursor: pointer; }
-  .month-title.zoomable:hover { text-decoration: underline; }
-  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .month-title { font-size: 1.15rem; margin: 0 0 14px; font-weight: bold; color: var(--ink); }
+  table { width: 100%; border-collapse: separate; border-spacing: 4px; table-layout: fixed; }
   th {
     font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif;
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--muted);
+    color: rgba(247,247,244,0.45);
     font-weight: normal;
     padding-bottom: 6px;
   }
   td {
-    border: 1px solid var(--line);
+    border: none;
+    background: rgba(247,247,244,0.06);
+    border-radius: 10px;
     height: 76px;
     vertical-align: top;
-    padding: 4px;
+    padding: 6px;
     position: relative;
   }
   td.clickable { cursor: pointer; transition: background 0.15s; }
-  td.clickable:hover { background: rgba(47,92,88,0.06); }
-  td.empty { background: transparent; border-color: transparent; }
-  .daynum { font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif; font-size: 0.7rem; color: var(--muted); }
+  td.clickable:hover { background: rgba(247,247,244,0.15); }
+  td.empty { background: transparent; }
+  .daynum { font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif; font-size: 0.7rem; color: rgba(247,247,244,0.55); }
   .entries { margin-top: 2px; font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif; font-size: 0.68rem; line-height: 1.3; }
   .entry {
     background: var(--coral);
-    color: var(--paper);
-    border-radius: 3px;
+    color: var(--on-accent);
+    border-radius: 6px;
     padding: 1px 4px;
     margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .more { color: var(--teal); font-size: 0.62rem; }
+  .more { color: rgba(247,247,244,0.7); font-size: 0.62rem; }
   .entry[draggable="true"] { cursor: grab; }
   .entry[draggable="true"]:active { cursor: grabbing; }
-  td.drop-target { outline: 2px dashed var(--teal); outline-offset: -2px; background: rgba(47,92,88,0.08); }
+  td.drop-target { outline: 2px dashed var(--teal); outline-offset: -2px; background: rgba(247,247,244,0.12); }
 
   table.size-md td { height: 112px; }
   table.size-md .daynum { font-size: 0.78rem; }
   table.size-md .entries { font-size: 0.75rem; }
 
-  table.size-lg td { height: auto; min-height: 170px; }
+  table.size-lg td { height: auto; min-height: 150px; }
   table.size-lg .daynum { font-size: 0.85rem; }
   table.size-lg .entries { font-size: 0.8rem; line-height: 1.4; }
   table.size-lg .entry { white-space: normal; overflow: visible; text-overflow: unset; }
+
+  @media (max-width: 560px) {
+    body { padding: 20px 10px 60px; }
+    .month-card { padding: 12px 10px; }
+    table { border-spacing: 3px; }
+    td { padding: 4px; border-radius: 8px; }
+    table.size-md td { height: 72px; }
+    table.size-md .entries { font-size: 0.68rem; }
+    table.size-lg { display: block; }
+    table.size-lg thead { display: none; }
+    table.size-lg tbody, table.size-lg tr { display: block; }
+    table.size-lg td { display: block; width: 100%; min-height: 0; margin-bottom: 6px; }
+  }
 
   .overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(28,43,45,0.55);
+    background: rgba(0,0,0,0.6);
     align-items: center;
     justify-content: center;
     padding: 16px;
@@ -239,15 +253,40 @@
   }
   .overlay.open { display: flex; }
   .modal {
-    background: var(--paper);
-    border: 2px solid var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
     max-width: 420px;
     width: 100%;
-    padding: 20px;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    padding: 24px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
     font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif;
   }
-  .modal h2 { font-size: 1.1rem; margin: 0 0 14px; }
-  #tagRow input[type=text], #tagRow select { flex: 1; padding: 7px 8px; border: 1px solid var(--line); background: white; font-family: inherit; font-size: 0.85rem; color: var(--ink); }
+  .modal h2 { font-size: 1.1rem; margin: 0 0 14px; color: var(--ink); }
+
+  /* Mobile: modal becomes a bottom sheet, inputs stay 16px to stop iOS zoom */
+  @media (max-width: 560px) {
+    .overlay { align-items: flex-end; padding: 0; }
+    .modal {
+      max-width: none;
+      border-radius: 18px 18px 0 0;
+      border-bottom: none;
+      max-height: 88vh;
+      padding: 22px 18px calc(22px + env(safe-area-inset-bottom));
+    }
+    .modal ul { max-height: 42vh; }
+    #tagRow { flex-wrap: wrap; }
+    #tagRow input[type=text], #tagRow select,
+    .modal input[type=text] { font-size: 16px; padding: 10px; }
+    .modal li { padding: 10px 0; font-size: 0.95rem; }
+    .modal li button { font-size: 1rem; padding: 4px 6px; }
+    #addRow { gap: 10px; }
+    .modal button.add { padding: 10px 16px; }
+    .close-row button { padding: 9px 16px; font-size: 0.9rem; }
+  }
+  #tagRow input[type=text], #tagRow select { flex: 1; padding: 7px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); font-family: inherit; font-size: 0.85rem; color: var(--ink); }
   #tagRow input[type=text]:focus, #tagRow select:focus { outline: 2px solid var(--teal); }
   .modal ul { list-style: none; padding: 0; margin: 0 0 14px; max-height: 220px; overflow-y: auto; }
   .modal li {
@@ -261,12 +300,12 @@
   }
   .modal li button { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.9rem; }
   .modal li button:hover { color: var(--coral); }
-  .modal input[type=text] { flex: 1; padding: 8px; border: 1px solid var(--line); background: white; font-family: inherit; }
+  .modal input[type=text] { flex: 1; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); font-family: inherit; }
   .modal input[type=text]:focus { outline: 2px solid var(--teal); }
-  .modal button.add { background: var(--teal); color: var(--paper); border: none; padding: 8px 14px; cursor: pointer; }
-  .modal button.add:hover { background: var(--ink); }
+  .modal button.add { background: var(--teal); color: var(--on-accent); border: none; border-radius: 8px; padding: 8px 14px; cursor: pointer; }
+  .modal button.add:hover { filter: brightness(1.15); }
   .close-row { text-align: right; margin-top: 12px; }
-  .close-row button { background: none; border: 1px solid var(--muted); color: var(--muted); padding: 5px 12px; cursor: pointer; font-size: 0.8rem; }
+  .close-row button { background: none; border: 1px solid var(--muted); border-radius: 8px; color: var(--muted); padding: 5px 12px; cursor: pointer; font-size: 0.8rem; }
   .status { font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif; font-size: 0.7rem; color: var(--muted); margin-top: 24px; }
 </style>
 </head>
@@ -279,14 +318,14 @@
     </div>
     <span id="rangeLabel"></span>
   </header>
-  <div class="toolbar">
-    <button id="prevBtn" class="nav-btn" aria-label="Previous">‹</button>
+  <div class="toolbar" id="toolbar">
+    <button id="prevBtn" class="nav-btn" aria-label="Previous week">‹</button>
     <div class="zoom-group">
       <button id="zoomOutBtn" class="zoom-btn" aria-label="Zoom out">－</button>
       <span id="zoomLabel" class="zoom-label">Trip</span>
       <button id="zoomInBtn" class="zoom-btn" aria-label="Zoom in">＋</button>
     </div>
-    <button id="nextBtn" class="nav-btn" aria-label="Next">›</button>
+    <button id="nextBtn" class="nav-btn" aria-label="Next week">›</button>
   </div>
   <div class="legend" id="legend"></div>
   <div class="months" id="months"></div>
@@ -323,9 +362,10 @@ let currentKey = null;
 let dragPayload = null; // { fromKey, index } of the entry currently being dragged
 let editable = false;
 
-// Zoom: 'trip' (all 3 months) -> 'month' (one month) -> 'week' (one week).
+// Two zoom levels only: 'trip' (the fixed 3-month overview) and 'week'
+// (one expanded week). Switch between them with the − / + toolbar
+// buttons; the ‹ › arrows step weeks while zoomed in.
 let viewMode = 'trip';
-let viewYear = 2026, viewMonth = 10;   // anchor for 'month' mode
 let weekStart = null;                  // Date (Sunday) anchor for 'week' mode
 let pendingFocusCountry = null;        // legend name to focus on the next renderLegend()
 
@@ -338,11 +378,11 @@ const modalDate = document.getElementById('modalDate');
 const entryList = document.getElementById('entryList');
 const entryInput = document.getElementById('entryInput');
 const addRow = document.getElementById('addRow');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
 const zoomInBtn = document.getElementById('zoomInBtn');
 const zoomOutBtn = document.getElementById('zoomOutBtn');
 const zoomLabel = document.getElementById('zoomLabel');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
 const legendEl = document.getElementById('legend');
 const tagRow = document.getElementById('tagRow');
 const countrySelect = document.getElementById('countrySelect');
@@ -443,7 +483,7 @@ function buildWeekdayHeaderRow() {
   return thead;
 }
 
-// size: 'sm' (trip overview), 'md' (single month), 'lg' (single week).
+// size: 'md' (single month, incl. trip overview), 'lg' (single week).
 function buildDayCell(key, dayNum, size) {
   const td = document.createElement('td');
   const day = getDay(key);
@@ -452,13 +492,19 @@ function buildDayCell(key, dayNum, size) {
   topRow.className = 'day-top';
   const num = document.createElement('span');
   num.className = 'daynum';
-  num.textContent = dayNum;
+  if (size === 'lg') {
+    const [yy, mm, dd] = key.split('-').map(Number);
+    const wd = new Date(yy, mm - 1, dd).toLocaleDateString('en-US', { weekday: 'short' });
+    num.textContent = `${wd} ${dayNum}`;
+  } else {
+    num.textContent = dayNum;
+  }
   topRow.appendChild(num);
 
   const entryColor = day.country ? countryColor(day.country) : null;
   if (day.country) {
     td.title = day.city ? `${day.country} — ${day.city}` : day.country;
-    if (size !== 'sm' && day.city) {
+    if (day.city) {
       const tag = document.createElement('span');
       tag.className = 'citytag';
       tag.textContent = day.city;
@@ -529,26 +575,16 @@ function buildDayCell(key, dayNum, size) {
   return td;
 }
 
-// size: 'sm' (trip overview, clicking the title zooms into the month) or 'md' (single month).
 function buildMonthTable(year, month, size) {
   const first = new Date(year, month, 1);
   const startDow = first.getDay();
   const daysInMonth = new Date(year, month+1, 0).getDate();
 
   const container = document.createElement('div');
+  container.className = 'month-card';
   const title = document.createElement('h3');
   title.className = 'month-title';
   title.textContent = `${MONTH_NAMES[month]} ${year}`;
-  if (size === 'sm') {
-    title.classList.add('zoomable');
-    title.title = 'Zoom into this month';
-    title.addEventListener('click', () => {
-      viewMode = 'month';
-      viewYear = year;
-      viewMonth = month;
-      render();
-    });
-  }
   container.appendChild(title);
 
   const table = document.createElement('table');
@@ -592,6 +628,7 @@ function formatWeekRange(start, end) {
 
 function buildWeekTable(start) {
   const container = document.createElement('div');
+  container.className = 'month-card';
   const end = new Date(start);
   end.setDate(end.getDate() + 6);
 
@@ -618,9 +655,7 @@ function buildWeekTable(start) {
   return container;
 }
 
-// Fixed 3-month range: Nov 2026, Dec 2026, Jan 2027.
-// Explicit grid placement (see CSS) puts December on the right
-// spanning both rows, with January under November on the left.
+// Fixed 3-month range: Nov 2026, Dec 2026, Jan 2027, stacked vertically.
 const FIXED_MONTHS = [
   { year: 2026, month: 10 }, // November
   { year: 2026, month: 11 }, // December
@@ -758,87 +793,85 @@ function renderLegend() {
   }
 }
 
+// Sunday on or before a given date, at local midnight.
+function sundayOf(date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - d.getDay());
+  return d;
+}
+
+const TRIP_FIRST_WEEK = sundayOf(new Date(FIXED_MONTHS[0].year, FIXED_MONTHS[0].month, 1));
+const LAST_MONTH = FIXED_MONTHS[FIXED_MONTHS.length - 1];
+const TRIP_LAST_WEEK = sundayOf(new Date(LAST_MONTH.year, LAST_MONTH.month + 1, 0));
+
+function clampWeek(d) {
+  if (d < TRIP_FIRST_WEEK) return new Date(TRIP_FIRST_WEEK);
+  if (d > TRIP_LAST_WEEK) return new Date(TRIP_LAST_WEEK);
+  return d;
+}
+
 function render() {
   monthsEl.innerHTML = '';
-  monthsEl.classList.toggle('single', viewMode !== 'trip');
   renderLegend();
 
-  if (viewMode === 'trip') {
-    FIXED_MONTHS.forEach(({ year, month }) => {
-      monthsEl.appendChild(buildMonthTable(year, month, 'sm'));
-    });
-    rangeLabel.textContent = 'November 2026 – January 2027';
-  } else if (viewMode === 'month') {
-    monthsEl.appendChild(buildMonthTable(viewYear, viewMonth, 'md'));
-    rangeLabel.textContent = `${MONTH_NAMES[viewMonth]} ${viewYear}`;
-  } else if (viewMode === 'week') {
+  if (viewMode === 'week') {
+    if (!weekStart) weekStart = new Date(TRIP_FIRST_WEEK);
     monthsEl.appendChild(buildWeekTable(weekStart));
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekEnd.getDate() + 6);
     rangeLabel.textContent = formatWeekRange(weekStart, weekEnd);
+  } else {
+    FIXED_MONTHS.forEach(({ year, month }) => {
+      monthsEl.appendChild(buildMonthTable(year, month, 'md'));
+    });
+    rangeLabel.textContent = 'November 2026 – January 2027';
   }
-
   updateToolbar();
 }
 
 function updateToolbar() {
-  zoomLabel.textContent = viewMode === 'trip' ? 'Trip' : viewMode === 'month' ? 'Month' : 'Week';
-  zoomOutBtn.disabled = viewMode === 'trip';
-  zoomInBtn.disabled = viewMode === 'week';
-  const showNav = viewMode !== 'trip';
-  prevBtn.style.visibility = showNav ? 'visible' : 'hidden';
-  nextBtn.style.visibility = showNav ? 'visible' : 'hidden';
+  const week = viewMode === 'week';
+  zoomLabel.textContent = week ? 'Week' : 'Trip';
+  zoomOutBtn.disabled = !week;
+  zoomInBtn.disabled = week;
+  prevBtn.style.visibility = week ? 'visible' : 'hidden';
+  nextBtn.style.visibility = week ? 'visible' : 'hidden';
+  prevBtn.disabled = week && weekStart <= TRIP_FIRST_WEEK;
+  nextBtn.disabled = week && weekStart >= TRIP_LAST_WEEK;
 }
 
 function zoomIn() {
-  if (viewMode === 'trip') {
-    viewMode = 'month';
-    viewYear = FIXED_MONTHS[0].year;
-    viewMonth = FIXED_MONTHS[0].month;
-  } else if (viewMode === 'month') {
-    const first = new Date(viewYear, viewMonth, 1);
-    weekStart = new Date(first);
-    weekStart.setDate(first.getDate() - first.getDay());
-    viewMode = 'week';
-  }
+  if (viewMode !== 'trip') return;
+  if (!weekStart) weekStart = new Date(TRIP_FIRST_WEEK);
+  viewMode = 'week';
   render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function zoomOut() {
-  if (viewMode === 'week') {
-    viewMode = 'month';
-    viewYear = weekStart.getFullYear();
-    viewMonth = weekStart.getMonth();
-  } else if (viewMode === 'month') {
-    viewMode = 'trip';
-  }
+  if (viewMode !== 'week') return;
+  viewMode = 'trip';
   render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function navPrev() {
-  if (viewMode === 'month') {
-    viewMonth--;
-    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
-  } else if (viewMode === 'week') {
-    weekStart.setDate(weekStart.getDate() - 7);
-  }
-  render();
-}
-
-function navNext() {
-  if (viewMode === 'month') {
-    viewMonth++;
-    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
-  } else if (viewMode === 'week') {
-    weekStart.setDate(weekStart.getDate() + 7);
-  }
+function shiftWeek(deltaWeeks) {
+  if (viewMode !== 'week') return;
+  const next = new Date(weekStart);
+  next.setDate(next.getDate() + deltaWeeks * 7);
+  weekStart = clampWeek(next);
   render();
 }
 
 zoomInBtn.addEventListener('click', zoomIn);
 zoomOutBtn.addEventListener('click', zoomOut);
-prevBtn.addEventListener('click', navPrev);
-nextBtn.addEventListener('click', navNext);
+prevBtn.addEventListener('click', () => shiftWeek(-1));
+nextBtn.addEventListener('click', () => shiftWeek(1));
+document.addEventListener('keydown', (e) => {
+  if (overlay.classList.contains('open')) return;
+  if (e.key === 'Escape' && viewMode === 'week') zoomOut();
+});
 
 function openModal(key) {
   currentKey = key;
