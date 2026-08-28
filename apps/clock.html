@@ -8,6 +8,22 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  @font-face {
+    font-family: "DSEG7 Classic";
+    src: url("fonts/DSEG7Classic-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "DSEG7 Classic";
+    src: url("fonts/DSEG7Classic-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+</style>
+<style>
   html.gate-locked body > *:not(#mc-gate) { display: none !important; }
   html.gate-locked body { overflow: hidden; }
 </style>
@@ -91,6 +107,28 @@
   .v { font-weight: 500; }
   .v.danger { color: var(--danger); }
   .v.good { color: var(--accent); }
+  .timer { margin-bottom: 1.5rem; text-align: center; }
+  .timer-label {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 0.6rem;
+  }
+  .timer-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  }
+  .tcard {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.1rem 0.5rem;
+  }
+  .tnum {
+    font-family: "DSEG7 Classic", "Jost", monospace;
+    font-size: 44px; font-weight: 700; line-height: 1;
+    font-variant-numeric: tabular-nums; margin-bottom: 6px;
+    color: var(--accent);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: geometricPrecision;
+    transform: translateZ(0);
+  }
   .status {
     display: flex; justify-content: center; align-items: center;
     gap: 8px; font-size: 12px; color: var(--text-dim);
@@ -155,6 +193,16 @@
     <div class="title" id="title">Mission clock</div>
   </div>
 
+  <div class="timer">
+    <div class="timer-label">Time to exfiltration</div>
+    <div class="timer-grid">
+      <div class="tcard"><div class="tnum" id="t-dd">--</div><div class="cap">Days</div></div>
+      <div class="tcard"><div class="tnum" id="t-hh">--</div><div class="cap">Hours</div></div>
+      <div class="tcard"><div class="tnum" id="t-mm">--</div><div class="cap">Min</div></div>
+      <div class="tcard"><div class="tnum" id="t-ss">--</div><div class="cap">Sec</div></div>
+    </div>
+  </div>
+
   <div class="controls">
     <div class="control">
       <label for="dday">Exfiltration date</label>
@@ -163,10 +211,6 @@
     <div class="control">
       <label for="mpw">Boss meetings per week</label>
       <input type="number" id="mpw" value="3" min="0" max="20" step="1">
-    </div>
-    <div class="control">
-      <label for="notice-date">Resignation notice</label>
-      <input type="date" id="notice-date">
     </div>
   </div>
 
@@ -186,14 +230,12 @@
   <div class="intel">
     <div class="row"><span class="k">Current position</span><span class="v" id="i-today">--</span></div>
     <div class="row"><span class="k">Exfiltration date</span><span class="v" id="i-dday">--</span></div>
-    <div class="row"><span class="k">Resignation notice (est.)</span><span class="v" id="i-notice">--</span></div>
     <div class="row"><span class="k">Boss interactions left</span><span class="v danger" id="i-boss">--</span></div>
     <div class="row"><span class="k">Fridays until freedom</span><span class="v good" id="i-fri">--</span></div>
   </div>
 
   <div class="status">
     <div class="dot"></div>
-    <span id="clock">--:--:--</span>
     <span>mission clock active</span>
   </div>
 </div>
@@ -204,14 +246,9 @@ const MS_DAY = 86400000;
 
 const ddayInput = $('dday');
 const mpwInput = $('mpw');
-const noticeInput = $('notice-date');
 
-let target = new Date(2026, 9, 1);
-while (target.getDay() === 0 || target.getDay() === 6) target.setDate(target.getDate() + 1);
+let target = new Date(2026, 9, 31);
 ddayInput.value = target.toISOString().slice(0, 10);
-const defaultNotice = new Date(target);
-defaultNotice.setDate(defaultNotice.getDate() - 28);
-noticeInput.value = defaultNotice.toISOString().slice(0, 10);
 
 function countDays(start, end, predicate) {
   let n = 0;
@@ -242,8 +279,6 @@ function update() {
   const perWeek = Number(mpwInput.value) || 0;
   const boss = Math.round(workdays * (perWeek / 5));
 
-  const notice = new Date(noticeInput.value + 'T00:00:00');
-
   const yearStart = new Date(dday.getFullYear(), 0, 1);
   const pct = Math.max(0, Math.min(100,
     Math.round(((now - yearStart) / (dday - yearStart)) * 100)));
@@ -258,7 +293,6 @@ function update() {
 
   $('i-today').textContent = fmt(now);
   $('i-dday').textContent = fmt(dday);
-  $('i-notice').textContent = isNaN(notice) ? '--' : fmt(notice);
   $('i-boss').textContent = boss + ' (estimated)';
   $('i-fri').textContent = fridays;
 
@@ -266,14 +300,23 @@ function update() {
 }
 
 function tick() {
-  const n = new Date();
-  $('clock').textContent = [n.getHours(), n.getMinutes(), n.getSeconds()]
-    .map(v => String(v).padStart(2, '0')).join(':');
+  const dday = new Date(ddayInput.value + 'T00:00:00');
+  if (isNaN(dday)) return;
+
+  let diff = Math.max(0, dday - new Date());
+  const dd = Math.floor(diff / 86400000); diff -= dd * 86400000;
+  const hh = Math.floor(diff / 3600000); diff -= hh * 3600000;
+  const mm = Math.floor(diff / 60000); diff -= mm * 60000;
+  const ss = Math.floor(diff / 1000);
+
+  $('t-dd').textContent = String(dd).padStart(2, '0');
+  $('t-hh').textContent = String(hh).padStart(2, '0');
+  $('t-mm').textContent = String(mm).padStart(2, '0');
+  $('t-ss').textContent = String(ss).padStart(2, '0');
 }
 
 ddayInput.addEventListener('change', update);
 mpwInput.addEventListener('input', update);
-noticeInput.addEventListener('change', update);
 
 update();
 tick();
