@@ -16,6 +16,8 @@
   }
   </style>
 <style>
+  /* ==================== THEME TOKENS ====================
+     Colors and typeface for the whole page. Edit here to reskin. */
   :root {
     --ink: #eef0ea;        /* primary text — light on dark */
     --paper: #0f1a1a;      /* page background — dark */
@@ -25,16 +27,24 @@
     --coral: #d67350;      /* accent, brightened for dark */
     --muted: #8c9490;      /* secondary text */
     --on-accent: #f7f5ef;  /* text on a teal/coral fill */
+    --font-stack: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    padding: 32px 16px 80px;
+    /* Side padding shrinks as a share of viewport width (down to 12px,
+       up to 40px) so the page uses the full width on wide screens
+       without the content ever touching the edge on narrow ones. */
+    padding: 32px clamp(12px, 3vw, 40px) 80px;
     background: var(--paper);
     color: var(--ink);
-    font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif;
+    font-family: var(--font-stack);
   }
-  .wrap { max-width: 900px; margin: 0 auto; }
+  /* Wider than a phone/tablet column so each month card gets bigger on a
+     laptop/desktop screen — still one stacked column, just scaled up. */
+  .wrap { max-width: 1440px; margin: 0 auto; }
+
+  /* ==================== HEADER & TOOLBAR ==================== */
   header {
     display: flex;
     justify-content: space-between;
@@ -47,7 +57,7 @@
   }
   h1 { font-size: 1.6rem; margin: 0; letter-spacing: 0.02em; }
   .badge {
-    font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif;
+    font-family: var(--font-stack);
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -57,7 +67,7 @@
     border-radius: 3px;
   }
   #rangeLabel {
-    font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif;
+    font-family: var(--font-stack);
     font-size: 0.85rem;
     color: var(--muted);
   }
@@ -65,23 +75,42 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 16px;
+    gap: 14px;
     margin-bottom: 26px;
-    font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif;
+    font-family: var(--font-stack);
   }
-  .zoom-group {
+  /* Two-way switch for Trip / Week — the active side is filled solid,
+     so which mode you're in is legible at a glance (no +/- guessing). */
+  .view-toggle {
     display: flex;
-    align-items: center;
-    gap: 10px;
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 20px;
-    padding: 4px 8px;
+    padding: 3px;
   }
-  .zoom-btn, .nav-btn {
+  .view-btn {
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 6px 16px;
+    border-radius: 16px;
+    cursor: pointer;
+  }
+  .view-btn:hover { color: var(--ink); }
+  .view-btn[aria-selected="true"] { background: var(--teal); color: var(--on-accent); }
+  .week-nav { display: none; align-items: center; gap: 8px; }
+  .week-nav.visible { display: flex; }
+  .nav-btn {
     border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 1.15rem;
     border: 1px solid var(--line);
-    background: var(--paper);
+    background: none;
     color: var(--ink);
     cursor: pointer;
     line-height: 1;
@@ -89,18 +118,16 @@
     align-items: center;
     justify-content: center;
   }
-  .zoom-btn { width: 26px; height: 26px; font-size: 0.9rem; }
-  .nav-btn { width: 30px; height: 30px; font-size: 1.15rem; background: none; }
-  .zoom-btn:hover:not(:disabled), .nav-btn:hover:not(:disabled) { background: var(--teal); color: var(--on-accent); border-color: var(--teal); }
-  .zoom-btn:disabled, .nav-btn:disabled { opacity: 0.3; cursor: default; }
-  .zoom-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); min-width: 42px; text-align: center; }
+  .nav-btn:hover:not(:disabled) { background: var(--teal); color: var(--on-accent); border-color: var(--teal); }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+  /* ==================== LEGEND (country tags) ==================== */
   .legend {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 8px 18px;
     margin: -10px 0 26px;
-    font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif;
+    font-family: var(--font-stack);
     font-size: 0.74rem;
     color: var(--ink);
   }
@@ -158,6 +185,7 @@
   }
   .legend-add:hover { border-color: var(--teal); color: var(--teal); }
 
+  /* ==================== CALENDAR GRID (month & week tables) ==================== */
   .day-top { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
   .citytag {
     font-size: 0.58rem;
@@ -169,20 +197,20 @@
     text-overflow: ellipsis;
     max-width: 62%;
   }
-  table.size-md .citytag { font-size: 0.68rem; padding: 2px 8px; }
+  table.size-md .citytag { font-size: 0.72rem; padding: 2px 8px; }
 
-  .months { display: grid; grid-template-columns: 1fr; gap: 28px; }
+  .months { display: grid; grid-template-columns: 1fr; gap: 32px; }
   .month-card {
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 16px;
-    padding: 18px;
+    padding: 22px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.35);
   }
-  .month-title { font-size: 1.15rem; margin: 0 0 14px; font-weight: bold; color: var(--ink); }
+  .month-title { font-size: 1.3rem; margin: 0 0 16px; font-weight: bold; color: var(--ink); }
   table { width: 100%; border-collapse: separate; border-spacing: 4px; table-layout: fixed; }
   th {
-    font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif;
+    font-family: var(--font-stack);
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -202,8 +230,8 @@
   td.clickable { cursor: pointer; transition: background 0.15s; }
   td.clickable:hover { background: rgba(247,247,244,0.15); }
   td.empty { background: transparent; }
-  .daynum { font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif; font-size: 0.7rem; color: rgba(247,247,244,0.55); }
-  .entries { margin-top: 2px; font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif; font-size: 0.68rem; line-height: 1.3; }
+  .daynum { font-family: var(--font-stack); font-size: 0.7rem; color: rgba(247,247,244,0.55); }
+  .entries { margin-top: 2px; font-family: var(--font-stack); font-size: 0.68rem; line-height: 1.3; }
   .entry {
     background: var(--coral);
     color: var(--on-accent);
@@ -219,9 +247,9 @@
   .entry[draggable="true"]:active { cursor: grabbing; }
   td.drop-target { outline: 2px dashed var(--teal); outline-offset: -2px; background: rgba(247,247,244,0.12); }
 
-  table.size-md td { height: 112px; }
-  table.size-md .daynum { font-size: 0.78rem; }
-  table.size-md .entries { font-size: 0.75rem; }
+  table.size-md td { height: 138px; }
+  table.size-md .daynum { font-size: 0.85rem; }
+  table.size-md .entries { font-size: 0.8rem; }
 
   table.size-lg td { height: auto; min-height: 150px; }
   table.size-lg .daynum { font-size: 0.85rem; }
@@ -241,6 +269,7 @@
     table.size-lg td { display: block; width: 100%; min-height: 0; margin-bottom: 6px; }
   }
 
+  /* ==================== MODAL (day editor) ==================== */
   .overlay {
     display: none;
     position: fixed;
@@ -262,7 +291,7 @@
     overflow-y: auto;
     padding: 24px;
     box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-    font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif;
+    font-family: var(--font-stack);
   }
   .modal h2 { font-size: 1.1rem; margin: 0 0 14px; color: var(--ink); }
 
@@ -306,7 +335,7 @@
   .modal button.add:hover { filter: brightness(1.15); }
   .close-row { text-align: right; margin-top: 12px; }
   .close-row button { background: none; border: 1px solid var(--muted); border-radius: 8px; color: var(--muted); padding: 5px 12px; cursor: pointer; font-size: 0.8rem; }
-  .status { font-family: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif; font-size: 0.7rem; color: var(--muted); margin-top: 24px; }
+  .status { font-family: var(--font-stack); font-size: 0.7rem; color: var(--muted); margin-top: 24px; }
 </style>
 </head>
 <body>
@@ -319,13 +348,14 @@
     <span id="rangeLabel"></span>
   </header>
   <div class="toolbar" id="toolbar">
-    <button id="prevBtn" class="nav-btn" aria-label="Previous week">‹</button>
-    <div class="zoom-group">
-      <button id="zoomOutBtn" class="zoom-btn" aria-label="Zoom out">－</button>
-      <span id="zoomLabel" class="zoom-label">Trip</span>
-      <button id="zoomInBtn" class="zoom-btn" aria-label="Zoom in">＋</button>
+    <div class="view-toggle" role="tablist" aria-label="Calendar view">
+      <button id="tripViewBtn" class="view-btn" role="tab" aria-selected="true">Trip</button>
+      <button id="weekViewBtn" class="view-btn" role="tab" aria-selected="false">Week</button>
     </div>
-    <button id="nextBtn" class="nav-btn" aria-label="Next week">›</button>
+    <div class="week-nav" id="weekNav">
+      <button id="prevBtn" class="nav-btn" aria-label="Previous week">‹</button>
+      <button id="nextBtn" class="nav-btn" aria-label="Next week">›</button>
+    </div>
   </div>
   <div class="legend" id="legend"></div>
   <div class="months" id="months"></div>
@@ -355,19 +385,53 @@
 //   Add/remove UI is shown, changes write straight to data.json on disk.
 // - View mode (default when no local server, e.g. the public site):
 //   reads data.json as a static file, no write UI at all.
+
+// ============================================================
+// CONFIG — the values you'll actually want to change live here.
+// Everything below this block is behavior, not settings.
+// ============================================================
+
+// The trip's date range: one entry per month shown in the "trip" overview.
+// month is 0-indexed (0 = January), so add/remove/edit entries to move
+// or extend the trip. Order matters — keep it chronological.
+const FIXED_MONTHS = [
+  { year: 2026, month: 10 }, // November 2026
+  { year: 2026, month: 11 }, // December 2026
+  { year: 2027, month: 0 },  // January 2027
+];
+
+// Colors auto-assigned to new countries, in order, cycling once exhausted.
+// Existing countries keep whatever color is already saved in data.json —
+// this only applies the first time a country is added via "+ Add country".
+const PLACEHOLDER_COLORS = ['#7a8f99', '#a97d5d', '#6b9b7a', '#9b6b8f', '#7d8f5d', '#5d7d8f'];
+
+// How many weeks the "week" view shows stacked at once. Prev/next page
+// by this many weeks (a whole new block), same way trip view pages by
+// its fixed set of months.
+const WEEKS_PER_PAGE = 3;
+
 const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+// ============================================================
+// STATE
+// ============================================================
 
 let data = {}; // { "YYYY-MM-DD": [ "entry1", "entry2" ] }
 let currentKey = null;
 let dragPayload = null; // { fromKey, index } of the entry currently being dragged
 let editable = false;
 
-// Two zoom levels only: 'trip' (the fixed 3-month overview) and 'week'
-// (one expanded week). Switch between them with the − / + toolbar
-// buttons; the ‹ › arrows step weeks while zoomed in.
+// Two views only: 'trip' (the fixed 3-month overview) and 'week' (a
+// stacked block of WEEKS_PER_PAGE weeks). The Trip/Week toggle switches
+// between them; the ‹ › arrows (only shown in week view) page the whole
+// block forward/back by WEEKS_PER_PAGE weeks.
 let viewMode = 'trip';
-let weekStart = null;                  // Date (Sunday) anchor for 'week' mode
+let weekStart = null;                  // Date (Sunday) — start of the first week in the visible block
 let pendingFocusCountry = null;        // legend name to focus on the next renderLegend()
+
+// ============================================================
+// DOM REFERENCES
+// ============================================================
 
 const monthsEl = document.getElementById('months');
 const rangeLabel = document.getElementById('rangeLabel');
@@ -380,14 +444,18 @@ const entryInput = document.getElementById('entryInput');
 const addRow = document.getElementById('addRow');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
-const zoomInBtn = document.getElementById('zoomInBtn');
-const zoomOutBtn = document.getElementById('zoomOutBtn');
-const zoomLabel = document.getElementById('zoomLabel');
+const weekNav = document.getElementById('weekNav');
+const tripViewBtn = document.getElementById('tripViewBtn');
+const weekViewBtn = document.getElementById('weekViewBtn');
 const legendEl = document.getElementById('legend');
 const tagRow = document.getElementById('tagRow');
 const countrySelect = document.getElementById('countrySelect');
 const newCountryInput = document.getElementById('newCountryInput');
 const cityInput = document.getElementById('cityInput');
+
+// ============================================================
+// DATA MODEL HELPERS
+// ============================================================
 
 function pad(n) { return String(n).padStart(2,'0'); }
 function keyFor(y,m,d) { return `${y}-${pad(m+1)}-${pad(d)}`; }
@@ -428,6 +496,10 @@ function setDayTag(key, country, city) {
 function countryColor(name) {
   return (data._countries && data._countries[name]) || null;
 }
+
+// ============================================================
+// PERSISTENCE — load & save
+// ============================================================
 
 // Try the local editor server first (short timeout so the public site
 // doesn't hang waiting on a server that isn't there); fall back to
@@ -470,6 +542,10 @@ async function saveData() {
     statusEl.textContent = "Save failed, is server.js still running?";
   }
 }
+
+// ============================================================
+// RENDERING — day cells & tables
+// ============================================================
 
 function buildWeekdayHeaderRow() {
   const thead = document.createElement('thead');
@@ -655,14 +731,9 @@ function buildWeekTable(start) {
   return container;
 }
 
-// Fixed 3-month range: Nov 2026, Dec 2026, Jan 2027, stacked vertically.
-const FIXED_MONTHS = [
-  { year: 2026, month: 10 }, // November
-  { year: 2026, month: 11 }, // December
-  { year: 2027, month: 0 },  // January
-];
-
-const PLACEHOLDER_COLORS = ['#7a8f99', '#a97d5d', '#6b9b7a', '#9b6b8f', '#7d8f5d', '#5d7d8f'];
+// ============================================================
+// LEGEND (country tags)
+// ============================================================
 
 // Renames a country everywhere: the legend entry and every day tagged
 // with it. Returns false (no-op) on an empty name or a collision with
@@ -793,6 +864,10 @@ function renderLegend() {
   }
 }
 
+// ============================================================
+// TRIP RANGE & WEEK NAVIGATION
+// ============================================================
+
 // Sunday on or before a given date, at local midnight.
 function sundayOf(date) {
   const d = new Date(date);
@@ -805,9 +880,18 @@ const TRIP_FIRST_WEEK = sundayOf(new Date(FIXED_MONTHS[0].year, FIXED_MONTHS[0].
 const LAST_MONTH = FIXED_MONTHS[FIXED_MONTHS.length - 1];
 const TRIP_LAST_WEEK = sundayOf(new Date(LAST_MONTH.year, LAST_MONTH.month + 1, 0));
 
-function clampWeek(d) {
+// Week view shows a block of WEEKS_PER_PAGE consecutive weeks starting at
+// weekStart. The block can't slide past the trip's range, so the latest
+// valid start is however many weeks before TRIP_LAST_WEEK the block is long.
+const MAX_BLOCK_START = (() => {
+  const d = new Date(TRIP_LAST_WEEK);
+  d.setDate(d.getDate() - (WEEKS_PER_PAGE - 1) * 7);
+  return d;
+})();
+
+function clampBlockStart(d) {
   if (d < TRIP_FIRST_WEEK) return new Date(TRIP_FIRST_WEEK);
-  if (d > TRIP_LAST_WEEK) return new Date(TRIP_LAST_WEEK);
+  if (d > MAX_BLOCK_START) return new Date(MAX_BLOCK_START);
   return d;
 }
 
@@ -817,10 +901,14 @@ function render() {
 
   if (viewMode === 'week') {
     if (!weekStart) weekStart = new Date(TRIP_FIRST_WEEK);
-    monthsEl.appendChild(buildWeekTable(weekStart));
-    const weekEnd = new Date(weekStart);
-    weekEnd.setDate(weekEnd.getDate() + 6);
-    rangeLabel.textContent = formatWeekRange(weekStart, weekEnd);
+    for (let i = 0; i < WEEKS_PER_PAGE; i++) {
+      const start = new Date(weekStart);
+      start.setDate(start.getDate() + i * 7);
+      monthsEl.appendChild(buildWeekTable(start));
+    }
+    const blockEnd = new Date(weekStart);
+    blockEnd.setDate(blockEnd.getDate() + WEEKS_PER_PAGE * 7 - 1);
+    rangeLabel.textContent = formatWeekRange(weekStart, blockEnd);
   } else {
     FIXED_MONTHS.forEach(({ year, month }) => {
       monthsEl.appendChild(buildMonthTable(year, month, 'md'));
@@ -832,46 +920,42 @@ function render() {
 
 function updateToolbar() {
   const week = viewMode === 'week';
-  zoomLabel.textContent = week ? 'Week' : 'Trip';
-  zoomOutBtn.disabled = !week;
-  zoomInBtn.disabled = week;
-  prevBtn.style.visibility = week ? 'visible' : 'hidden';
-  nextBtn.style.visibility = week ? 'visible' : 'hidden';
+  tripViewBtn.setAttribute('aria-selected', String(!week));
+  weekViewBtn.setAttribute('aria-selected', String(week));
+  weekNav.classList.toggle('visible', week);
   prevBtn.disabled = week && weekStart <= TRIP_FIRST_WEEK;
-  nextBtn.disabled = week && weekStart >= TRIP_LAST_WEEK;
+  nextBtn.disabled = week && weekStart >= MAX_BLOCK_START;
 }
 
-function zoomIn() {
-  if (viewMode !== 'trip') return;
-  if (!weekStart) weekStart = new Date(TRIP_FIRST_WEEK);
-  viewMode = 'week';
+function setViewMode(mode) {
+  if (mode === viewMode) return;
+  if (mode === 'week' && !weekStart) weekStart = new Date(TRIP_FIRST_WEEK);
+  viewMode = mode;
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function zoomOut() {
-  if (viewMode !== 'week') return;
-  viewMode = 'trip';
-  render();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function shiftWeek(deltaWeeks) {
+// direction: -1 (prev) or +1 (next) — pages the whole WEEKS_PER_PAGE block.
+function shiftWeekBlock(direction) {
   if (viewMode !== 'week') return;
   const next = new Date(weekStart);
-  next.setDate(next.getDate() + deltaWeeks * 7);
-  weekStart = clampWeek(next);
+  next.setDate(next.getDate() + direction * WEEKS_PER_PAGE * 7);
+  weekStart = clampBlockStart(next);
   render();
 }
 
-zoomInBtn.addEventListener('click', zoomIn);
-zoomOutBtn.addEventListener('click', zoomOut);
-prevBtn.addEventListener('click', () => shiftWeek(-1));
-nextBtn.addEventListener('click', () => shiftWeek(1));
+tripViewBtn.addEventListener('click', () => setViewMode('trip'));
+weekViewBtn.addEventListener('click', () => setViewMode('week'));
+prevBtn.addEventListener('click', () => shiftWeekBlock(-1));
+nextBtn.addEventListener('click', () => shiftWeekBlock(1));
 document.addEventListener('keydown', (e) => {
   if (overlay.classList.contains('open')) return;
-  if (e.key === 'Escape' && viewMode === 'week') zoomOut();
+  if (e.key === 'Escape' && viewMode === 'week') setViewMode('trip');
 });
+
+// ============================================================
+// MODAL — day editor (entries + country/city tag)
+// ============================================================
 
 function openModal(key) {
   currentKey = key;
@@ -1011,6 +1095,10 @@ document.getElementById('closeModal').addEventListener('click', () => {
 overlay.addEventListener('click', (e) => {
   if (e.target === overlay) overlay.classList.remove('open');
 });
+
+// ============================================================
+// INIT
+// ============================================================
 
 loadData();
 </script>
