@@ -58,7 +58,7 @@
       "treno — ca. 5 chf",
       "Osaka — FDS Azur — 172 chf / 34.000 Y; Riservato - Pagamento visa il 6.11 / cxl gratis fino al 8.11"
     ],
-    "country": "Japan",
+    "country": "Travel",
     "city": "Osaka"
   },
   "2026-11-13": {
@@ -145,7 +145,7 @@
       "volo — ca. 100 chf",
       "Beijing — base-Beijing Sanlitun Serviced Apartment — 335 chf / 2.812,92 CNY; Riservato - Pagamento visa? / cxl gratis fino al 27.11"
     ],
-    "country": "China",
+    "country": "Travel",
     "city": "Beijing"
   },
   "2026-11-28": {
@@ -178,7 +178,7 @@
       "treno www.trip.com — ca. 70 chf; da riservare a fine settembre",
       "Xi'an"
     ],
-    "country": "China",
+    "country": "Travel",
     "city": "Xi'an"
   },
   "2026-12-04": {
@@ -260,7 +260,7 @@
       "treno www.trip.com — ca. 90 chf; da riservare a fine settembre",
       "Hongkong — iclub ? — 515 chf; Non rimborsabile"
     ],
-    "country": "Hong Kong",
+    "country": "Travel",
     "city": "Hongkong"
   },
   "2026-12-18": {
@@ -396,6 +396,13 @@
   "2027-01-10": {
     "entries": [],
     "country": "Thailand",
+    "city": "Bkk"
+  },
+  "2027-01-11": {
+    "entries": [
+      "Bkk - Zurich"
+    ],
+    "country": "Travel",
     "city": "Bkk"
   }
 }
