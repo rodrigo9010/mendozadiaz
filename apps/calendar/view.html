@@ -17,151 +17,191 @@
   </style>
 <style>
   /* ==================== THEME TOKENS ====================
-     Colors and typeface for the whole page. Edit here to reskin. */
+     Obsidian/Outlook-dark palette. Edit here to reskin. */
   :root {
-    --ink: #eef0ea;        /* primary text — light on dark */
-    --paper: #0f1a1a;      /* page background — dark */
-    --surface: #1b2a2b;    /* raised panels: cards, modal, inputs */
-    --line: #33413f;       /* borders / hairlines on dark */
-    --teal: #4f938a;       /* accent, brightened for dark */
-    --coral: #d67350;      /* accent, brightened for dark */
-    --muted: #8c9490;      /* secondary text */
-    --on-accent: #f7f5ef;  /* text on a teal/coral fill */
+    --ink: #dcddde;          /* primary text */
+    --paper: #1e1e1e;        /* page background */
+    --surface: #262626;      /* raised panels: sidebar, modal, inputs */
+    --line: #363636;         /* grid hairlines / borders */
+    --line-strong: #454545;  /* header hairlines, input borders */
+    --accent: #8b6ff0;       /* interactive accent (today, active view) */
+    --accent-tint: rgba(139,111,240,0.10);
+    --hover: rgba(255,255,255,0.05);
+    --muted: #9a9a9a;        /* secondary text */
+    --faint: #5c5c5c;        /* de-emphasised text */
+    --on-accent: #ffffff;    /* text on an accent fill */
+    --coral: #d67350;        /* drop-target / danger states */
+    --sidebar-w: 232px;
     --font-stack: "Jost", "Century Gothic", Futura, Avenir, Helvetica, Arial, sans-serif;
   }
   * { box-sizing: border-box; }
+  html, body { height: 100%; }
   body {
     margin: 0;
-    /* Side padding shrinks as a share of viewport width (down to 12px,
-       up to 40px) so the page uses the full width on wide screens
-       without the content ever touching the edge on narrow ones. */
-    padding: 32px clamp(12px, 3vw, 40px) 80px;
+    padding: 0;
     background: var(--paper);
     color: var(--ink);
     font-family: var(--font-stack);
+    font-size: 14px;
+    overflow: hidden;
   }
-  /* Wider than a phone/tablet column so each month card gets bigger on a
-     laptop/desktop screen — still one stacked column, just scaled up. */
-  .wrap { max-width: 1440px; margin: 0 auto; }
 
-  /* ==================== HEADER & TOOLBAR ==================== */
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 12px;
-    border-bottom: 1px solid var(--line);
-    padding-bottom: 14px;
-    margin-bottom: 24px;
-  }
-  h1 { font-size: 1.6rem; margin: 0; letter-spacing: 0.02em; }
-  .badge {
-    font-family: var(--font-stack);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    background: var(--coral);
-    color: var(--on-accent);
-    padding: 3px 8px;
-    border-radius: 3px;
-  }
-  #rangeLabel {
-    font-family: var(--font-stack);
-    font-size: 0.85rem;
-    color: var(--muted);
-  }
-  .toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    margin-bottom: 26px;
-    font-family: var(--font-stack);
-  }
-  /* Two-way switch for Trip / Week — the active side is filled solid,
-     so which mode you're in is legible at a glance (no +/- guessing). */
-  .view-toggle {
-    display: flex;
+  /* ==================== APP SHELL (sidebar | main) ==================== */
+  .app { display: flex; height: 100vh; }
+  .main { flex: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+  /* The scrolling region: months stack here in trip view, the week grid
+     fills it in week view. */
+  .months { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; }
+
+  /* ==================== SIDEBAR ==================== */
+  .sidebar {
+    width: var(--sidebar-w);
+    flex: none;
     background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 20px;
-    padding: 3px;
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
-  .view-btn {
+  .sidebar-section { padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .sidebar-title {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin: 0 0 8px;
+    font-weight: 400;
+  }
+
+  /* ---- Mini month calendar ---- */
+  .mini-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  #miniTitle { font-size: 0.8rem; color: var(--ink); }
+  .mini-nav {
     border: none;
     background: none;
     color: var(--muted);
-    font-family: inherit;
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 6px 16px;
-    border-radius: 16px;
     cursor: pointer;
-  }
-  .view-btn:hover { color: var(--ink); }
-  .view-btn[aria-selected="true"] { background: var(--teal); color: var(--on-accent); }
-  .week-nav { display: none; align-items: center; gap: 8px; }
-  .week-nav.visible { display: flex; }
-  .nav-btn {
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    font-size: 1.15rem;
-    border: 1px solid var(--line);
-    background: none;
-    color: var(--ink);
-    cursor: pointer;
+    font-size: 0.95rem;
     line-height: 1;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: inherit;
+  }
+  .mini-nav:hover { background: var(--hover); color: var(--ink); }
+  .mini-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
+  .mini-dow {
+    font-size: 0.6rem;
+    color: var(--muted);
+    text-align: center;
+    padding-bottom: 3px;
+  }
+  .mini-day {
+    position: relative;
+    font-family: inherit;
+    font-size: 0.68rem;
+    color: var(--ink);
+    background: none;
+    border: none;
+    border-radius: 50%;
+    aspect-ratio: 1;
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    padding: 0;
   }
-  .nav-btn:hover:not(:disabled) { background: var(--teal); color: var(--on-accent); border-color: var(--teal); }
-  .nav-btn:disabled { opacity: 0.3; cursor: default; }
-  /* ==================== LEGEND (country tags) ==================== */
-  .legend {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px 18px;
-    margin: -10px 0 26px;
-    font-family: var(--font-stack);
-    font-size: 0.74rem;
-    color: var(--ink);
-  }
-  .legend-item { display: flex; align-items: center; gap: 6px; }
-  .legend-swatch {
-    width: 12px;
-    height: 12px;
+  .mini-day:hover { background: var(--hover); }
+  .mini-day.out { color: var(--faint); }
+  /* Days inside the range the main view is currently showing. */
+  .mini-day.in-view { background: rgba(255,255,255,0.08); }
+  .mini-day.today { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+  /* A dot under any day that has entries or a country tag. */
+  .mini-day.has-data::after {
+    content: '';
+    position: absolute;
+    bottom: 1px;
+    width: 3px;
+    height: 3px;
     border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.2);
+    background: var(--accent);
+  }
+  .mini-day.today.has-data::after { background: var(--on-accent); }
+
+  /* ---- Calendar list (the countries, as toggleable calendars) ---- */
+  .legend { display: flex; flex-direction: column; gap: 2px; }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 3px 4px;
+    border-radius: 3px;
+    font-size: 0.78rem;
+    min-width: 0;
+  }
+  .legend-item:hover { background: var(--hover); }
+  /* Checkbox styled as a hollow ring that fills with the country colour
+     when the calendar is switched on. */
+  .legend-check {
+    appearance: none;
+    -webkit-appearance: none;
+    flex: none;
+    width: 13px;
+    height: 13px;
+    margin: 0;
+    border-radius: 50%;
+    border: 1.5px solid var(--c, var(--muted));
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+  }
+  .legend-check:checked { background: var(--c, var(--muted)); }
+  .legend-check:checked::after {
+    content: '';
+    position: absolute;
+    left: 3.5px;
+    top: 1px;
+    width: 3px;
+    height: 6px;
+    border: solid #fff;
+    border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg);
+  }
+  .legend-swatch {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
     display: inline-block;
     flex: none;
   }
   input.legend-swatch {
-    width: 16px;
-    height: 16px;
+    width: 13px;
+    height: 13px;
     cursor: pointer;
     -webkit-appearance: none;
     appearance: none;
-    border: 1px solid var(--line);
+    border: 1px solid var(--line-strong);
     background: none;
     padding: 0;
   }
   input.legend-swatch::-webkit-color-swatch-wrapper { padding: 0; }
   input.legend-swatch::-webkit-color-swatch { border: none; border-radius: 50%; }
-
   .legend-name {
     font: inherit;
-    font-size: 0.74rem;
+    font-size: 0.78rem;
     color: var(--ink);
     border: none;
     border-bottom: 1px dashed transparent;
     background: transparent;
     padding: 0;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
+  .legend-item.off .legend-name { color: var(--faint); }
   .legend-name:hover, .legend-name:focus { border-bottom-color: var(--muted); outline: none; }
   .legend-remove {
     border: none;
@@ -170,103 +210,334 @@
     cursor: pointer;
     font-size: 0.95rem;
     line-height: 1;
-    padding: 0 0 0 1px;
+    padding: 0 2px;
+    flex: none;
   }
   .legend-remove:hover { color: var(--coral); }
   .legend-add {
-    border: 1px dashed var(--line);
+    border: none;
     background: none;
     color: var(--muted);
     cursor: pointer;
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     font-family: inherit;
-    border-radius: 12px;
-    padding: 3px 10px;
+    text-align: left;
+    padding: 4px;
+    margin-top: 2px;
+    border-radius: 3px;
   }
-  .legend-add:hover { border-color: var(--teal); color: var(--teal); }
+  .legend-add:hover { background: var(--hover); color: var(--accent); }
 
-  /* ==================== CALENDAR GRID (month & week tables) ==================== */
-  .day-top { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+  /* ==================== TOP BAR ==================== */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line);
+    flex: none;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  h1 { font-size: 0.95rem; font-weight: 500; margin: 0; letter-spacing: 0.01em; }
+  .badge {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    border: 1px solid var(--line-strong);
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .status { font-size: 0.72rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* Sidebar toggle — only shown when the sidebar is collapsed on narrow screens. */
+  .hamburger { display: none; }
+  .sidebar-backdrop { display: none; }
+
+  /* ==================== TOOLBAR ==================== */
+  .toolbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--line);
+    flex: none;
+  }
+  .tb-chunk { display: flex; align-items: center; gap: 2px; min-width: 0; }
+  .tb-chunk.right { justify-content: flex-end; }
+  #rangeLabel {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--ink);
+    white-space: nowrap;
+    padding: 4px 10px;
+    text-align: center;
+  }
+  .tb-btn {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 400;
+    line-height: 1.2;
+    padding: 5px 9px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+  }
+  .tb-btn:hover:not(:disabled) { background: var(--hover); color: var(--ink); }
+  .tb-btn:disabled { opacity: 0.4; cursor: default; }
+  .tb-btn[aria-selected="true"] { background: var(--accent); color: var(--on-accent); }
+  .tb-btn.arrow { font-size: 1.1rem; padding: 2px 10px; }
+  .week-nav { display: none; align-items: center; gap: 2px; }
+  .week-nav.visible { display: flex; }
+
+  /* ==================== MONTH GRID ==================== */
+  .month-card { border-bottom: 1px solid var(--line); flex: none; }
+  .month-card:last-child { border-bottom: none; }
+  .month-title {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin: 0;
+    padding: 8px 12px;
+    text-align: center;
+  }
+  table { width: 100%; border-collapse: collapse; border-spacing: 0; table-layout: fixed; }
+  th {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    padding: 8px 6px;
+    border-top: 1px solid var(--line-strong);
+    border-bottom: 1px solid var(--line-strong);
+    border-left: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+  }
+  th:first-child { border-left: none; }
+  th:last-child { border-right: none; }
+  td {
+    border: 1px solid var(--line);
+    background: transparent;
+    height: 76px;
+    vertical-align: top;
+    padding: 3px;
+    position: relative;
+  }
+  tr td:first-child { border-left: none; }
+  tr td:last-child { border-right: none; }
+  tbody tr:last-child td { border-bottom: none; }
+  td.clickable { cursor: pointer; transition: background 0.15s; }
+  td.clickable:hover { background: var(--hover); }
+  /* Days outside the month: blank cells, so the grid stays a clean 6x7. */
+  td.other-month { background: transparent; }
+
+  /* row-reverse puts the day number top-right while keeping it first in
+     the DOM; the city tag sits top-left. */
+  .day-top { display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between; gap: 4px; min-height: 22px; }
+  .daynum {
+    font-size: 0.9rem;
+    color: var(--ink);
+    padding: 2px 5px;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
   .citytag {
-    font-size: 0.58rem;
+    font-size: 0.62rem;
     padding: 1px 6px;
-    border-radius: 8px;
+    border-radius: 3px;
     color: #fff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 62%;
+    margin-left: 3px;
   }
-  table.size-md .citytag { font-size: 0.72rem; padding: 2px 8px; }
 
-  .months { display: grid; grid-template-columns: 1fr; gap: 32px; }
-  .month-card {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 22px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  /* Today: accent tint, 2px accent frame (inset so collapsed borders
+     don't shift), a dot top-right, accent day number. */
+  td.today { background: var(--accent-tint); box-shadow: inset 0 0 0 2px var(--accent); }
+  td.today .daynum { color: var(--accent); font-weight: 600; }
+  td.today::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    z-index: 1;
   }
-  .month-title { font-size: 1.3rem; margin: 0 0 16px; font-weight: bold; color: var(--ink); }
-  table { width: 100%; border-collapse: separate; border-spacing: 4px; table-layout: fixed; }
-  th {
-    font-family: var(--font-stack);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: rgba(247,247,244,0.45);
-    font-weight: normal;
-    padding-bottom: 6px;
-  }
-  td {
-    border: none;
-    background: rgba(247,247,244,0.06);
-    border-radius: 10px;
-    height: 76px;
-    vertical-align: top;
-    padding: 6px;
-    position: relative;
-  }
-  td.clickable { cursor: pointer; transition: background 0.15s; }
-  td.clickable:hover { background: rgba(247,247,244,0.15); }
-  td.empty { background: transparent; }
-  .daynum { font-family: var(--font-stack); font-size: 0.7rem; color: rgba(247,247,244,0.55); }
-  .entries { margin-top: 2px; font-family: var(--font-stack); font-size: 0.68rem; line-height: 1.3; }
+
+  /* Entries are outlined chips in the country colour (--c), with a dot. */
+  .entries { margin-top: 2px; font-size: 0.78rem; line-height: 1.3; padding: 0 2px; }
   .entry {
-    background: var(--coral);
-    color: var(--on-accent);
-    border-radius: 6px;
-    padding: 1px 4px;
-    margin-bottom: 2px;
+    --c: var(--accent);
+    background: color-mix(in srgb, var(--c) 16%, var(--paper));
+    border: 1px solid var(--c);
+    color: var(--ink);
+    border-radius: 3px;
+    padding: 2px 6px;
+    margin-bottom: 3px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
   }
-  .more { color: rgba(247,247,244,0.7); font-size: 0.62rem; }
+  .entry::before {
+    content: '';
+    flex: none;
+    width: 6px;
+    height: 6px;
+    margin-top: 0.42em; /* sits on the first text line even when the chip wraps */
+    border-radius: 50%;
+    background: var(--c);
+  }
+  .entry-text { overflow: hidden; text-overflow: ellipsis; white-space: inherit; }
+  .entry:hover { box-shadow: 0 1px 4px rgba(0,0,0,0.35); }
+  .more { color: var(--muted); font-size: 0.7rem; padding-left: 4px; }
   .entry[draggable="true"] { cursor: grab; }
   .entry[draggable="true"]:active { cursor: grabbing; }
-  td.drop-target { outline: 2px dashed var(--teal); outline-offset: -2px; background: rgba(247,247,244,0.12); }
+  td.drop-target, .wv-col.drop-target { outline: 2px dashed var(--accent); outline-offset: -2px; background: var(--accent-tint); }
 
-  table.size-md td { height: 138px; }
-  table.size-md .daynum { font-size: 0.85rem; }
-  table.size-md .entries { font-size: 0.8rem; }
+  /* Month view: 6 rows share the scroll area, so one month fills the
+     screen; never below a usable minimum. */
+  table.size-md td { height: calc((100vh - 130px) / 6); min-height: 96px; }
+  table.size-md .citytag { font-size: 0.66rem; }
 
-  table.size-lg td { height: auto; min-height: 150px; }
-  table.size-lg .daynum { font-size: 0.85rem; }
-  table.size-lg .entries { font-size: 0.8rem; line-height: 1.4; }
-  table.size-lg .entry { white-space: normal; overflow: visible; text-overflow: unset; }
+  /* ==================== WEEK VIEW (Outlook-style day columns) ==================== */
+  .weekview { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .weekview-head {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-bottom: 1px solid var(--line-strong);
+    flex: none;
+  }
+  .wv-col-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 7px;
+    padding: 9px 6px;
+    border-left: 1px solid var(--line);
+    min-width: 0;
+  }
+  .wv-col-head:first-child { border-left: none; }
+  .wv-dow { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .wv-date { font-size: 1.05rem; color: var(--ink); }
+  /* Today's column header: date in a filled accent pill, like Outlook. */
+  .wv-col-head.today .wv-dow { color: var(--accent); }
+  .wv-col-head.today .wv-date {
+    background: var(--accent);
+    color: var(--on-accent);
+    border-radius: 50%;
+    width: 1.7em;
+    height: 1.7em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+  }
+  .weekview-body {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  .wv-col {
+    border-left: 1px solid var(--line);
+    padding: 6px 5px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-content: start;
+  }
+  .wv-col:first-child { border-left: none; }
+  .wv-col.today { background: var(--accent-tint); }
+  .wv-col.clickable { cursor: pointer; }
+  .wv-col.clickable:hover { background: var(--hover); }
+  .wv-col.today.clickable:hover { background: var(--accent-tint); }
+  .wv-citytag {
+    align-self: flex-start;
+    font-size: 0.68rem;
+    padding: 2px 8px;
+    border-radius: 3px;
+    color: #fff;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* Week columns are tall, so chips wrap to full text instead of clipping. */
+  .weekview .entry { white-space: normal; overflow: visible; text-overflow: unset; margin-bottom: 0; font-size: 0.78rem; }
+  .weekview .entry-text { white-space: normal; overflow-wrap: anywhere; }
+
+  /* ==================== NARROW SCREENS ==================== */
+  @media (max-width: 900px) {
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 20;
+      transform: translateX(-100%);
+      transition: transform 0.2s ease;
+      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    }
+    .sidebar.open { transform: none; }
+    /* Tap outside to close — the open drawer covers the toggle button. */
+    .sidebar-backdrop.show {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: 19;
+      background: rgba(0,0,0,0.5);
+    }
+    .hamburger {
+      display: block;
+      border: none;
+      background: none;
+      color: var(--muted);
+      font-size: 1.1rem;
+      line-height: 1;
+      padding: 4px 8px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .hamburger:hover { background: var(--hover); color: var(--ink); }
+  }
 
   @media (max-width: 560px) {
-    body { padding: 20px 10px 60px; }
-    .month-card { padding: 12px 10px; }
-    table { border-spacing: 3px; }
-    td { padding: 4px; border-radius: 8px; }
-    table.size-md td { height: 72px; }
+    .toolbar { grid-template-columns: auto 1fr auto; padding: 4px; }
+    #rangeLabel { font-size: 0.85rem; padding: 4px; white-space: normal; }
+    .status { display: none; }
+    td { padding: 2px; }
+    .daynum { font-size: 0.8rem; }
+    table.size-md td { height: 72px; min-height: 0; }
     table.size-md .entries { font-size: 0.68rem; }
-    table.size-lg { display: block; }
-    table.size-lg thead { display: none; }
-    table.size-lg tbody, table.size-lg tr { display: block; }
-    table.size-lg td { display: block; width: 100%; min-height: 0; margin-bottom: 6px; }
+    /* Week view becomes a vertical list of days. */
+    .weekview-head { display: none; }
+    .weekview-body { display: block; overflow-y: visible; }
+    .wv-col { border-left: none; border-bottom: 1px solid var(--line); min-height: 84px; }
+    .wv-col::before {
+      content: attr(data-label);
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .wv-col.today::before { color: var(--accent); }
   }
 
   /* ==================== MODAL (day editor) ==================== */
@@ -278,29 +549,28 @@
     align-items: center;
     justify-content: center;
     padding: 16px;
-    z-index: 10;
+    z-index: 30;
   }
   .overlay.open { display: flex; }
   .modal {
     background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: 4px;
     max-width: 420px;
     width: 100%;
     max-height: calc(100vh - 32px);
     overflow-y: auto;
-    padding: 24px;
+    padding: 20px;
     box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-    font-family: var(--font-stack);
   }
-  .modal h2 { font-size: 1.1rem; margin: 0 0 14px; color: var(--ink); }
+  .modal h2 { font-size: 1rem; font-weight: 500; margin: 0 0 14px; color: var(--ink); }
 
   /* Mobile: modal becomes a bottom sheet, inputs stay 16px to stop iOS zoom */
   @media (max-width: 560px) {
     .overlay { align-items: flex-end; padding: 0; }
     .modal {
       max-width: none;
-      border-radius: 18px 18px 0 0;
+      border-radius: 0;
       border-bottom: none;
       max-height: 88vh;
       padding: 22px 18px calc(22px + env(safe-area-inset-bottom));
@@ -315,8 +585,8 @@
     .modal button.add { padding: 10px 16px; }
     .close-row button { padding: 9px 16px; font-size: 0.9rem; }
   }
-  #tagRow input[type=text], #tagRow select { flex: 1; padding: 7px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); font-family: inherit; font-size: 0.85rem; color: var(--ink); }
-  #tagRow input[type=text]:focus, #tagRow select:focus { outline: 2px solid var(--teal); }
+  #tagRow input[type=text], #tagRow select { flex: 1; padding: 7px 8px; border: 1px solid var(--line-strong); border-radius: 3px; background: var(--paper); font-family: inherit; font-size: 0.85rem; color: var(--ink); }
+  #tagRow input[type=text]:focus, #tagRow select:focus { outline: 2px solid var(--accent); }
   .modal ul { list-style: none; padding: 0; margin: 0 0 14px; max-height: 220px; overflow-y: auto; }
   .modal li {
     display: flex;
@@ -329,37 +599,57 @@
   }
   .modal li button { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.9rem; }
   .modal li button:hover { color: var(--coral); }
-  .modal input[type=text] { flex: 1; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); font-family: inherit; }
-  .modal input[type=text]:focus { outline: 2px solid var(--teal); }
-  .modal button.add { background: var(--teal); color: var(--on-accent); border: none; border-radius: 8px; padding: 8px 14px; cursor: pointer; }
-  .modal button.add:hover { filter: brightness(1.15); }
+  .modal input[type=text] { flex: 1; padding: 8px; border: 1px solid var(--line-strong); border-radius: 3px; background: var(--paper); color: var(--ink); font-family: inherit; }
+  .modal input[type=text]:focus { outline: 2px solid var(--accent); }
+  .modal button.add { background: var(--accent); color: var(--on-accent); border: none; border-radius: 3px; padding: 8px 14px; cursor: pointer; font-family: inherit; }
+  .modal button.add:hover { filter: brightness(1.12); }
   .close-row { text-align: right; margin-top: 12px; }
-  .close-row button { background: none; border: 1px solid var(--muted); border-radius: 8px; color: var(--muted); padding: 5px 12px; cursor: pointer; font-size: 0.8rem; }
-  .status { font-family: var(--font-stack); font-size: 0.7rem; color: var(--muted); margin-top: 24px; }
+  .close-row button { background: none; border: 1px solid var(--line-strong); border-radius: 3px; color: var(--muted); padding: 5px 12px; cursor: pointer; font-size: 0.8rem; font-family: inherit; }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div style="display:flex; align-items:center; gap:10px;">
-      <h1>Calendar</h1>
-      <span class="badge" id="modeBadge">loading…</span>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-section">
+      <div class="mini-head">
+        <button type="button" class="mini-nav" id="miniPrev" aria-label="Previous month">&lsaquo;</button>
+        <span id="miniTitle"></span>
+        <button type="button" class="mini-nav" id="miniNext" aria-label="Next month">&rsaquo;</button>
+      </div>
+      <div class="mini-grid" id="miniGrid"></div>
     </div>
-    <span id="rangeLabel"></span>
-  </header>
-  <div class="toolbar" id="toolbar">
-    <div class="view-toggle" role="tablist" aria-label="Calendar view">
-      <button id="tripViewBtn" class="view-btn" role="tab" aria-selected="true">Trip</button>
-      <button id="weekViewBtn" class="view-btn" role="tab" aria-selected="false">Week</button>
+    <div class="sidebar-section">
+      <h2 class="sidebar-title">My calendars</h2>
+      <div class="legend" id="legend"></div>
     </div>
-    <div class="week-nav" id="weekNav">
-      <button id="prevBtn" class="nav-btn" aria-label="Previous week">‹</button>
-      <button id="nextBtn" class="nav-btn" aria-label="Next week">›</button>
+  </aside>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button type="button" class="hamburger" id="sidebarToggle" aria-label="Toggle sidebar">&#9776;</button>
+        <h1>Calendar</h1>
+        <span class="badge" id="modeBadge">loading&hellip;</span>
+      </div>
+      <span class="status" id="status">Loading...</span>
     </div>
-  </div>
-  <div class="legend" id="legend"></div>
-  <div class="months" id="months"></div>
-  <div class="status" id="status">Loading...</div>
+    <div class="toolbar" id="toolbar">
+      <div class="tb-chunk">
+        <div class="week-nav" id="weekNav">
+          <button id="prevBtn" class="tb-btn arrow" aria-label="Previous week">&lsaquo;</button>
+          <button id="nextBtn" class="tb-btn arrow" aria-label="Next week">&rsaquo;</button>
+        </div>
+        <button id="todayBtn" class="tb-btn">Today</button>
+      </div>
+      <span id="rangeLabel"></span>
+      <div class="tb-chunk right" role="tablist" aria-label="Calendar view">
+        <button id="tripViewBtn" class="tb-btn" role="tab" aria-selected="true">Trip</button>
+        <button id="weekViewBtn" class="tb-btn" role="tab" aria-selected="false">Week</button>
+      </div>
+    </div>
+    <div class="months" id="months"></div>
+  </main>
 </div>
 
 <div class="overlay" id="overlay">
@@ -405,10 +695,19 @@ const FIXED_MONTHS = [
 // this only applies the first time a country is added via "+ Add country".
 const PLACEHOLDER_COLORS = ['#7a8f99', '#a97d5d', '#6b9b7a', '#9b6b8f', '#7d8f5d', '#5d7d8f'];
 
-// How many weeks the "week" view shows stacked at once. Prev/next page
-// by this many weeks (a whole new block), same way trip view pages by
-// its fixed set of months.
-const WEEKS_PER_PAGE = 3;
+// Week view shows one week at a time (Outlook-style columns); prev/next
+// step by a single week.
+const WEEKS_PER_PAGE = 1;
+
+// First day of the week: 0 = Sunday, 1 = Monday. Drives the month grid,
+// the week view and the mini calendar alike — change this one number to
+// switch the whole page over.
+const WEEK_START_DOW = 1;
+
+const DOW_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const DOW_MINI = ['S','M','T','W','T','F','S'];
+// The 7 weekday indices in display order, rotated to WEEK_START_DOW.
+const DOW_ORDER = Array.from({ length: 7 }, (_, i) => (WEEK_START_DOW + i) % 7);
 
 const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
@@ -421,12 +720,17 @@ let currentKey = null;
 let dragPayload = null; // { fromKey, index } of the entry currently being dragged
 let editable = false;
 
-// Two views only: 'trip' (the fixed 3-month overview) and 'week' (a
-// stacked block of WEEKS_PER_PAGE weeks). The Trip/Week toggle switches
-// between them; the ‹ › arrows (only shown in week view) page the whole
-// block forward/back by WEEKS_PER_PAGE weeks.
+// Two views only: 'trip' (the fixed 3-month overview) and 'week' (one
+// week as Outlook-style day columns). The Trip/Week toggle switches
+// between them; the ‹ › arrows (week view only) step a week at a time.
 let viewMode = 'trip';
-let weekStart = null;                  // Date (Sunday) — start of the first week in the visible block
+const _now = new Date();
+const TODAY_KEY = keyFor(_now.getFullYear(), _now.getMonth(), _now.getDate());
+let weekStart = null;                  // Date — first day of the week shown in week view
+// Countries switched off in the sidebar. Their days keep their number and
+// stay clickable; only their tag and entries are hidden from the grid.
+const hiddenCountries = new Set();
+let miniMonth = null;                  // Date — the 1st of the month the mini calendar shows
 let pendingFocusCountry = null;        // legend name to focus on the next renderLegend()
 
 // ============================================================
@@ -445,6 +749,14 @@ const addRow = document.getElementById('addRow');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const weekNav = document.getElementById('weekNav');
+const todayBtn = document.getElementById('todayBtn');
+const sidebar = document.getElementById('sidebar');
+const sidebarToggle = document.getElementById('sidebarToggle');
+const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+const miniGrid = document.getElementById('miniGrid');
+const miniTitle = document.getElementById('miniTitle');
+const miniPrev = document.getElementById('miniPrev');
+const miniNext = document.getElementById('miniNext');
 const tripViewBtn = document.getElementById('tripViewBtn');
 const weekViewBtn = document.getElementById('weekViewBtn');
 const legendEl = document.getElementById('legend');
@@ -550,9 +862,9 @@ async function saveData() {
 function buildWeekdayHeaderRow() {
   const thead = document.createElement('thead');
   const trh = document.createElement('tr');
-  ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d => {
+  DOW_ORDER.forEach(dow => {
     const th = document.createElement('th');
-    th.textContent = d;
+    th.textContent = DOW_SHORT[dow];
     trh.appendChild(th);
   });
   thead.appendChild(trh);
@@ -560,8 +872,70 @@ function buildWeekdayHeaderRow() {
 }
 
 // size: 'md' (single month, incl. trip overview), 'lg' (single week).
+// A country switched off in the sidebar is hidden from the grid.
+function isHidden(country) { return !!country && hiddenCountries.has(country); }
+
+// One entry chip. Shared by the month cells and the week columns so both
+// look and drag the same way.
+function buildEntryChip(key, txt, idx, color) {
+  const e = document.createElement('div');
+  e.className = 'entry';
+  const label = document.createElement('span');
+  label.className = 'entry-text';
+  label.textContent = txt;
+  e.appendChild(label);
+  if (color) e.style.setProperty('--c', color);
+  if (editable) {
+    e.draggable = true;
+    e.addEventListener('dragstart', (ev) => {
+      dragPayload = { fromKey: key, index: idx };
+      ev.dataTransfer.effectAllowed = 'move';
+      ev.dataTransfer.setData('text/plain', txt);
+      ev.stopPropagation();
+    });
+    e.addEventListener('dragend', () => { dragPayload = null; });
+  }
+  return e;
+}
+
+// Click-to-open plus drag-and-drop of entries between days. Shared by the
+// month cells (td) and the week columns (div).
+function attachDayInteractions(el, key, hasEntries) {
+  if (editable || hasEntries) {
+    el.classList.add('clickable');
+    el.addEventListener('click', () => openModal(key));
+  }
+  if (!editable) return;
+  el.addEventListener('dragover', (ev) => {
+    if (!dragPayload) return;
+    ev.preventDefault();
+    ev.dataTransfer.dropEffect = 'move';
+    el.classList.add('drop-target');
+  });
+  el.addEventListener('dragleave', () => el.classList.remove('drop-target'));
+  el.addEventListener('drop', async (ev) => {
+    ev.preventDefault();
+    el.classList.remove('drop-target');
+    if (!dragPayload) return;
+    const { fromKey, index } = dragPayload;
+    dragPayload = null;
+    if (fromKey === key) return;
+    const fromEntries = getDay(fromKey).entries.slice();
+    const moved = fromEntries.splice(index, 1)[0];
+    if (moved === undefined) return;
+    setDayEntries(fromKey, fromEntries);
+    const toEntries = getDay(key).entries.slice();
+    toEntries.push(moved);
+    setDayEntries(key, toEntries);
+    await saveData();
+    render();
+  });
+}
+
 function buildDayCell(key, dayNum, size) {
   const td = document.createElement('td');
+  td.dataset.key = key;
+  if (key === TODAY_KEY) td.classList.add('today');
   const day = getDay(key);
 
   const topRow = document.createElement('div');
@@ -577,8 +951,9 @@ function buildDayCell(key, dayNum, size) {
   }
   topRow.appendChild(num);
 
+  const muteDay = isHidden(day.country);
   const entryColor = day.country ? countryColor(day.country) : null;
-  if (day.country) {
+  if (day.country && !muteDay) {
     td.title = day.city ? `${day.country} — ${day.city}` : day.country;
     if (day.city) {
       const tag = document.createElement('span');
@@ -590,26 +965,12 @@ function buildDayCell(key, dayNum, size) {
   }
   td.appendChild(topRow);
 
-  const entries = day.entries;
+  const entries = muteDay ? [] : day.entries;
   const maxShown = size === 'lg' ? entries.length : (size === 'md' ? 4 : 2);
   const entriesDiv = document.createElement('div');
   entriesDiv.className = 'entries';
   entries.slice(0, maxShown).forEach((txt, idx) => {
-    const e = document.createElement('div');
-    e.className = 'entry';
-    e.textContent = txt;
-    if (entryColor) e.style.background = entryColor;
-    if (editable) {
-      e.draggable = true;
-      e.addEventListener('dragstart', (ev) => {
-        dragPayload = { fromKey: key, index: idx };
-        ev.dataTransfer.effectAllowed = 'move';
-        ev.dataTransfer.setData('text/plain', txt);
-        ev.stopPropagation();
-      });
-      e.addEventListener('dragend', () => { dragPayload = null; });
-    }
-    entriesDiv.appendChild(e);
+    entriesDiv.appendChild(buildEntryChip(key, txt, idx, entryColor));
   });
   if (entries.length > maxShown) {
     const more = document.createElement('div');
@@ -618,42 +979,14 @@ function buildDayCell(key, dayNum, size) {
     entriesDiv.appendChild(more);
   }
   td.appendChild(entriesDiv);
-  if (editable || entries.length > 0) {
-    td.classList.add('clickable');
-    td.addEventListener('click', () => openModal(key));
-  }
-  if (editable) {
-    td.addEventListener('dragover', (ev) => {
-      if (!dragPayload) return;
-      ev.preventDefault();
-      ev.dataTransfer.dropEffect = 'move';
-      td.classList.add('drop-target');
-    });
-    td.addEventListener('dragleave', () => td.classList.remove('drop-target'));
-    td.addEventListener('drop', async (ev) => {
-      ev.preventDefault();
-      td.classList.remove('drop-target');
-      if (!dragPayload) return;
-      const { fromKey, index } = dragPayload;
-      dragPayload = null;
-      if (fromKey === key) return;
-      const fromEntries = getDay(fromKey).entries.slice();
-      const moved = fromEntries.splice(index, 1)[0];
-      if (moved === undefined) return;
-      setDayEntries(fromKey, fromEntries);
-      const toEntries = getDay(key).entries.slice();
-      toEntries.push(moved);
-      setDayEntries(key, toEntries);
-      await saveData();
-      render();
-    });
-  }
+  attachDayInteractions(td, key, entries.length > 0);
   return td;
 }
 
 function buildMonthTable(year, month, size) {
   const first = new Date(year, month, 1);
-  const startDow = first.getDay();
+  // Columns before the 1st, given the configured first day of the week.
+  const startDow = (first.getDay() - WEEK_START_DOW + 7) % 7;
   const daysInMonth = new Date(year, month+1, 0).getDate();
 
   const container = document.createElement('div');
@@ -668,19 +1001,20 @@ function buildMonthTable(year, month, size) {
   table.appendChild(buildWeekdayHeaderRow());
 
   const tbody = document.createElement('tbody');
-  let day = 1;
-  let started = false;
-  for (let row = 0; row < 6 && day <= daysInMonth; row++) {
+  // Always 6 rows so every month is the same height; cells outside the
+  // month show the neighbouring month's day number, faint (like TaskNotes).
+  for (let row = 0; row < 6; row++) {
     const tr = document.createElement('tr');
     for (let dow = 0; dow < 7; dow++) {
-      if (!started && dow === startDow) started = true;
-      if (!started || day > daysInMonth) {
+      const offset = row * 7 + dow - startDow; // 0 = the 1st of this month
+      if (offset < 0 || offset >= daysInMonth) {
+        // Outside this month: the cell stays so the 6x7 grid keeps its
+        // shape, but it's left blank — no day number to misread.
         const td = document.createElement('td');
-        td.className = 'empty';
+        td.className = 'empty other-month';
         tr.appendChild(td);
       } else {
-        tr.appendChild(buildDayCell(keyFor(year, month, day), day, size));
-        day++;
+        tr.appendChild(buildDayCell(keyFor(year, month, 1 + offset), 1 + offset, size));
       }
     }
     tbody.appendChild(tr);
@@ -702,32 +1036,64 @@ function formatWeekRange(start, end) {
   return `${MONTH_NAMES[m1]} ${start.getDate()}, ${y1} – ${MONTH_NAMES[m2]} ${end.getDate()}, ${y2}`;
 }
 
-function buildWeekTable(start) {
+// Week view, Outlook-style: seven full-height day columns under a header
+// row of weekday + date. Entries have no clock times in this calendar,
+// so there's no hour gutter — each column just lists its day.
+function buildWeekView(start) {
   const container = document.createElement('div');
-  container.className = 'month-card';
-  const end = new Date(start);
-  end.setDate(end.getDate() + 6);
+  container.className = 'weekview';
 
-  const title = document.createElement('h3');
-  title.className = 'month-title';
-  title.textContent = `Week of ${formatWeekRange(start, end)}`;
-  container.appendChild(title);
+  const head = document.createElement('div');
+  head.className = 'weekview-head';
+  const body = document.createElement('div');
+  body.className = 'weekview-body';
 
-  const table = document.createElement('table');
-  table.className = 'size-lg';
-  table.appendChild(buildWeekdayHeaderRow());
-
-  const tbody = document.createElement('tbody');
-  const tr = document.createElement('tr');
   for (let i = 0; i < 7; i++) {
     const d = new Date(start);
     d.setDate(d.getDate() + i);
     const key = keyFor(d.getFullYear(), d.getMonth(), d.getDate());
-    tr.appendChild(buildDayCell(key, d.getDate(), 'lg'));
+    const day = getDay(key);
+    const isToday = key === TODAY_KEY;
+    const muteDay = isHidden(day.country);
+    const color = day.country ? countryColor(day.country) : null;
+
+    const ch = document.createElement('div');
+    ch.className = 'wv-col-head' + (isToday ? ' today' : '');
+    const dow = document.createElement('span');
+    dow.className = 'wv-dow';
+    dow.textContent = DOW_SHORT[d.getDay()];
+    const date = document.createElement('span');
+    date.className = 'wv-date';
+    date.textContent = d.getDate();
+    ch.appendChild(dow);
+    ch.appendChild(date);
+    head.appendChild(ch);
+
+    const col = document.createElement('div');
+    col.className = 'wv-col' + (isToday ? ' today' : '');
+    col.dataset.key = key;
+    col.dataset.label = `${DOW_SHORT[d.getDay()]} ${d.getDate()}`;
+
+    if (day.country && !muteDay) {
+      col.title = day.city ? `${day.country} — ${day.city}` : day.country;
+      if (day.city) {
+        const tag = document.createElement('div');
+        tag.className = 'wv-citytag';
+        tag.textContent = day.city;
+        tag.style.background = color || 'var(--muted)';
+        col.appendChild(tag);
+      }
+    }
+
+    const entries = muteDay ? [] : day.entries;
+    entries.forEach((txt, idx) => col.appendChild(buildEntryChip(key, txt, idx, color)));
+
+    attachDayInteractions(col, key, entries.length > 0);
+    body.appendChild(col);
   }
-  tbody.appendChild(tr);
-  table.appendChild(tbody);
-  container.appendChild(table);
+
+  container.appendChild(head);
+  container.appendChild(body);
   return container;
 }
 
@@ -780,6 +1146,8 @@ function addCountry() {
   return name;
 }
 
+// The sidebar "My calendars" list: one row per country, with a coloured
+// checkbox that shows/hides that country's days in the grid.
 function renderLegend() {
   legendEl.innerHTML = '';
   const countries = data._countries || {};
@@ -789,37 +1157,45 @@ function renderLegend() {
   Object.keys(countries).forEach(name => {
     const item = document.createElement('div');
     item.className = 'legend-item';
+    const color = countries[name];
+    if (color) item.style.setProperty('--c', color);
+    const on = !hiddenCountries.has(name);
+    if (!on) item.classList.add('off');
 
-    let swatch;
+    const check = document.createElement('input');
+    check.type = 'checkbox';
+    check.className = 'legend-check';
+    check.checked = on;
+    check.title = on ? `Hide ${name}` : `Show ${name}`;
+    check.addEventListener('change', () => {
+      if (check.checked) hiddenCountries.delete(name);
+      else hiddenCountries.add(name);
+      render();
+    });
+    item.appendChild(check);
+
     if (editable) {
-      swatch = document.createElement('input');
+      const swatch = document.createElement('input');
       swatch.type = 'color';
-      swatch.value = countries[name];
+      swatch.className = 'legend-swatch';
+      swatch.value = color || '#888888';
       swatch.title = `Recolor ${name}`;
       swatch.addEventListener('change', async () => {
         data._countries[name] = swatch.value;
         await saveData();
         render();
       });
-    } else {
-      swatch = document.createElement('span');
-      swatch.style.background = countries[name];
-    }
-    swatch.className = 'legend-swatch';
-    item.appendChild(swatch);
+      item.appendChild(swatch);
 
-    if (editable) {
       const label = document.createElement('input');
       label.type = 'text';
       label.className = 'legend-name';
       label.value = name;
-      label.style.width = (name.length + 1) + 'ch';
-      label.addEventListener('input', () => {
-        label.style.width = (label.value.length + 1) + 'ch';
-      });
       label.addEventListener('change', async () => {
         const ok = renameCountry(name, label.value);
-        if (!ok) label.value = name;
+        if (!ok) { label.value = name; return; }
+        // Keep the filter pointed at the renamed country.
+        if (hiddenCountries.delete(name)) hiddenCountries.add(label.value.trim());
         await saveData();
         render();
       });
@@ -837,12 +1213,14 @@ function renderLegend() {
       removeBtn.addEventListener('click', async () => {
         if (!confirm(`Remove "${name}"? Days tagged with it will become untagged.`)) return;
         removeCountry(name);
+        hiddenCountries.delete(name);
         await saveData();
         render();
       });
       item.appendChild(removeBtn);
     } else {
       const label = document.createElement('span');
+      label.className = 'legend-name';
       label.textContent = name;
       item.appendChild(label);
     }
@@ -865,20 +1243,85 @@ function renderLegend() {
 }
 
 // ============================================================
+// MINI CALENDAR (sidebar)
+// ============================================================
+
+// Always 6 rows so the sidebar doesn't jump height between months.
+function renderMini() {
+  if (!miniMonth) miniMonth = new Date(FIXED_MONTHS[0].year, FIXED_MONTHS[0].month, 1);
+  const y = miniMonth.getFullYear();
+  const m = miniMonth.getMonth();
+  miniTitle.textContent = `${MONTH_NAMES[m]} ${y}`;
+  miniGrid.innerHTML = '';
+
+  DOW_ORDER.forEach(dow => {
+    const h = document.createElement('div');
+    h.className = 'mini-dow';
+    h.textContent = DOW_MINI[dow];
+    miniGrid.appendChild(h);
+  });
+
+  // Highlight the week the main view is showing (week view only — in trip
+  // view whole months are on screen, so a highlight says nothing).
+  let viewFrom = null, viewTo = null;
+  if (viewMode === 'week' && weekStart) {
+    viewFrom = new Date(weekStart);
+    viewTo = new Date(weekStart);
+    viewTo.setDate(viewTo.getDate() + 6);
+  }
+
+  const startDow = (new Date(y, m, 1).getDay() - WEEK_START_DOW + 7) % 7;
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(y, m, 1 + i - startDow);
+    const key = keyFor(d.getFullYear(), d.getMonth(), d.getDate());
+    const day = getDay(key);
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'mini-day';
+    btn.textContent = d.getDate();
+    if (d.getMonth() !== m) btn.classList.add('out');
+    if (key === TODAY_KEY) btn.classList.add('today');
+    if (viewFrom && d >= viewFrom && d <= viewTo) btn.classList.add('in-view');
+    if ((day.entries.length > 0 || day.country) && !isHidden(day.country)) {
+      btn.classList.add('has-data');
+    }
+    btn.addEventListener('click', () => goToDate(d));
+    miniGrid.appendChild(btn);
+  }
+}
+
+// Point the main view at a date: jump to its week in week view, or scroll
+// to its cell in trip view.
+function goToDate(d) {
+  miniMonth = new Date(d.getFullYear(), d.getMonth(), 1);
+  setSidebar(false);
+  if (viewMode === 'week') {
+    weekStart = clampBlockStart(weekStartOf(d));
+    render();
+    return;
+  }
+  renderMini();
+  const key = keyFor(d.getFullYear(), d.getMonth(), d.getDate());
+  const cell = monthsEl.querySelector(`td[data-key="${key}"]`);
+  if (cell) cell.scrollIntoView({ block: 'center', behavior: 'smooth' });
+}
+
+// ============================================================
 // TRIP RANGE & WEEK NAVIGATION
 // ============================================================
 
-// Sunday on or before a given date, at local midnight.
-function sundayOf(date) {
+// Start of the week containing a date (per WEEK_START_DOW), at local midnight.
+function weekStartOf(date) {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() - d.getDay());
+  d.setDate(d.getDate() - ((d.getDay() - WEEK_START_DOW + 7) % 7));
   return d;
 }
 
-const TRIP_FIRST_WEEK = sundayOf(new Date(FIXED_MONTHS[0].year, FIXED_MONTHS[0].month, 1));
+const TRIP_FIRST_WEEK = weekStartOf(new Date(FIXED_MONTHS[0].year, FIXED_MONTHS[0].month, 1));
 const LAST_MONTH = FIXED_MONTHS[FIXED_MONTHS.length - 1];
-const TRIP_LAST_WEEK = sundayOf(new Date(LAST_MONTH.year, LAST_MONTH.month + 1, 0));
+const TRIP_LAST_WEEK = weekStartOf(new Date(LAST_MONTH.year, LAST_MONTH.month + 1, 0));
 
 // Week view shows a block of WEEKS_PER_PAGE consecutive weeks starting at
 // weekStart. The block can't slide past the trip's range, so the latest
@@ -901,20 +1344,18 @@ function render() {
 
   if (viewMode === 'week') {
     if (!weekStart) weekStart = new Date(TRIP_FIRST_WEEK);
-    for (let i = 0; i < WEEKS_PER_PAGE; i++) {
-      const start = new Date(weekStart);
-      start.setDate(start.getDate() + i * 7);
-      monthsEl.appendChild(buildWeekTable(start));
-    }
-    const blockEnd = new Date(weekStart);
-    blockEnd.setDate(blockEnd.getDate() + WEEKS_PER_PAGE * 7 - 1);
-    rangeLabel.textContent = formatWeekRange(weekStart, blockEnd);
+    monthsEl.appendChild(buildWeekView(weekStart));
+    const end = new Date(weekStart);
+    end.setDate(end.getDate() + 6);
+    rangeLabel.textContent = formatWeekRange(weekStart, end);
   } else {
     FIXED_MONTHS.forEach(({ year, month }) => {
       monthsEl.appendChild(buildMonthTable(year, month, 'md'));
     });
-    rangeLabel.textContent = 'November 2026 – January 2027';
+    const a = FIXED_MONTHS[0], b = FIXED_MONTHS[FIXED_MONTHS.length - 1];
+    rangeLabel.textContent = `${MONTH_NAMES[a.month]} ${a.year} – ${MONTH_NAMES[b.month]} ${b.year}`;
   }
+  renderMini();
   updateToolbar();
 }
 
@@ -925,22 +1366,47 @@ function updateToolbar() {
   weekNav.classList.toggle('visible', week);
   prevBtn.disabled = week && weekStart <= TRIP_FIRST_WEEK;
   nextBtn.disabled = week && weekStart >= MAX_BLOCK_START;
+  // Today is only reachable when it falls inside the trip's date range.
+  const inRange = _now >= TRIP_FIRST_WEEK && _now <= new Date(MAX_BLOCK_START.getTime() + WEEKS_PER_PAGE * 7 * 86400000);
+  todayBtn.disabled = !inRange;
+}
+
+function goToToday() {
+  miniMonth = new Date(_now.getFullYear(), _now.getMonth(), 1);
+  if (viewMode === 'week') {
+    weekStart = clampBlockStart(weekStartOf(_now));
+    render();
+  } else {
+    renderMini();
+  }
+  const cell = monthsEl.querySelector('.today');
+  if (cell) cell.scrollIntoView({ block: 'center', behavior: 'smooth' });
 }
 
 function setViewMode(mode) {
   if (mode === viewMode) return;
-  if (mode === 'week' && !weekStart) weekStart = new Date(TRIP_FIRST_WEEK);
+  if (mode === 'week' && !weekStart) {
+    // Open on the week the mini calendar is showing, or today's week if
+    // that falls inside the trip; otherwise the trip's first week.
+    const seed = (_now >= TRIP_FIRST_WEEK && _now <= TRIP_LAST_WEEK) ? _now : (miniMonth || TRIP_FIRST_WEEK);
+    weekStart = clampBlockStart(weekStartOf(seed));
+  }
   viewMode = mode;
+  miniMonth = viewMode === 'week'
+    ? new Date(weekStart.getFullYear(), weekStart.getMonth(), 1)
+    : miniMonth;
   render();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // The scroll region is the calendar pane, not the page.
+  monthsEl.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// direction: -1 (prev) or +1 (next) — pages the whole WEEKS_PER_PAGE block.
+// direction: -1 (prev) or +1 (next) — steps one week in week view.
 function shiftWeekBlock(direction) {
   if (viewMode !== 'week') return;
   const next = new Date(weekStart);
   next.setDate(next.getDate() + direction * WEEKS_PER_PAGE * 7);
   weekStart = clampBlockStart(next);
+  miniMonth = new Date(weekStart.getFullYear(), weekStart.getMonth(), 1);
   render();
 }
 
@@ -948,8 +1414,24 @@ tripViewBtn.addEventListener('click', () => setViewMode('trip'));
 weekViewBtn.addEventListener('click', () => setViewMode('week'));
 prevBtn.addEventListener('click', () => shiftWeekBlock(-1));
 nextBtn.addEventListener('click', () => shiftWeekBlock(1));
+todayBtn.addEventListener('click', goToToday);
+function setSidebar(open) {
+  sidebar.classList.toggle('open', open);
+  sidebarBackdrop.classList.toggle('show', open);
+}
+sidebarToggle.addEventListener('click', () => setSidebar(!sidebar.classList.contains('open')));
+sidebarBackdrop.addEventListener('click', () => setSidebar(false));
+miniPrev.addEventListener('click', () => {
+  miniMonth = new Date(miniMonth.getFullYear(), miniMonth.getMonth() - 1, 1);
+  renderMini();
+});
+miniNext.addEventListener('click', () => {
+  miniMonth = new Date(miniMonth.getFullYear(), miniMonth.getMonth() + 1, 1);
+  renderMini();
+});
 document.addEventListener('keydown', (e) => {
   if (overlay.classList.contains('open')) return;
+  if (e.key === 'Escape' && sidebar.classList.contains('open')) { setSidebar(false); return; }
   if (e.key === 'Escape' && viewMode === 'week') setViewMode('trip');
 });
 

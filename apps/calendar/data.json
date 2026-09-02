@@ -9,427 +9,393 @@
     "Thailand": "#b85a8c"
   },
   "2026-11-04": {
-    "country": "Japan",
-    "city": "Tokyo",
     "entries": [
-      "Accommodation: Fare Metallo ?",
-      "Cost: 369 chf",
-      "Currency: Yen, 198 JPY = 1 chf",
-      "Payment: Revolut o cash --> Sì, una quota media. Ristoranti tradizionali, templi, ricariche delle carte IC (Suica/Pasmo) e piccoli negozi richiedono spesso contanti."
-    ]
+      "Tokyo — Fare Metallo ? — 369 chf; da pagare entro il 19.10"
+    ],
+    "country": "Travel",
+    "city": "Tokyo"
   },
   "2026-11-05": {
+    "entries": [],
     "country": "Japan",
-    "city": "Tokyo",
-    "entries": []
+    "city": "Tokyo"
   },
   "2026-11-06": {
+    "entries": [],
     "country": "Japan",
-    "city": "Tokyo",
-    "entries": []
+    "city": "Tokyo"
   },
   "2026-11-07": {
+    "entries": [],
     "country": "Japan",
-    "city": "Tokyo",
-    "entries": []
+    "city": "Tokyo"
   },
   "2026-11-08": {
+    "entries": [],
     "country": "Japan",
-    "city": "Tokyo",
-    "entries": []
+    "city": "Tokyo"
   },
   "2026-11-09": {
-    "country": "Travel",
-    "city": "Tokyo → Kyoto",
     "entries": [
-      "Treno: Tokyo → Kyoto",
-      "Cost: ca. 70 chf",
-      "Accommodation: Onyado ?",
-      "Cost: 277 chf"
-    ]
+      "treno — ca. 70 chf",
+      "Kyoto — Onyado ? — 419 chf; Pagamento in alloggio"
+    ],
+    "country": "Japan",
+    "city": "Kyoto"
   },
   "2026-11-10": {
+    "entries": [],
     "country": "Japan",
-    "city": "Kyoto",
-    "entries": []
+    "city": "Kyoto"
   },
   "2026-11-11": {
+    "entries": [],
     "country": "Japan",
-    "city": "Kyoto",
-    "entries": []
+    "city": "Kyoto"
   },
   "2026-11-12": {
-    "country": "Travel",
-    "city": "Kyoto → Osaka",
     "entries": [
-      "Treno: Kyoto → Osaka",
-      "Cost: ca. 5 chf"
-    ]
+      "treno — ca. 5 chf",
+      "Osaka — FDS Azur — 172 chf / 34.000 Y; Riservato - Pagamento visa il 6.11 / cxl gratis fino al 8.11"
+    ],
+    "country": "Japan",
+    "city": "Osaka"
   },
   "2026-11-13": {
+    "entries": [],
     "country": "Japan",
-    "city": "Osaka",
-    "entries": []
+    "city": "Osaka"
   },
   "2026-11-14": {
+    "entries": [],
     "country": "Japan",
-    "city": "Osaka",
-    "entries": []
+    "city": "Osaka"
   },
   "2026-11-15": {
+    "entries": [],
     "country": "Japan",
-    "city": "Osaka",
-    "entries": []
+    "city": "Osaka"
   },
   "2026-11-16": {
-    "country": "Travel",
-    "city": "Osaka → Hiroshima",
     "entries": [
-      "Treno: Osaka → Hiroshima",
-      "Accommodation: FDS Azur",
-      "Cost: 161 chf / 31.940  Y",
-      "Notes: Pagamento caricato su VISA il 7.11 / cxl gratis fino al 9.11"
-    ]
+      "treno — ca. 60 chf",
+      "Hiroshima — Mercure ? — 253 chf; Non rimborsabile"
+    ],
+    "country": "Japan",
+    "city": "Hiroshima"
   },
   "2026-11-17": {
+    "entries": [],
     "country": "Japan",
-    "city": "Hiroshima",
-    "entries": []
+    "city": "Hiroshima"
   },
   "2026-11-18": {
+    "entries": [],
     "country": "Japan",
-    "city": "Hiroshima",
-    "entries": []
+    "city": "Hiroshima"
   },
   "2026-11-19": {
-    "country": "Travel",
-    "city": "Hiroshima → Fukuoka",
     "entries": [
-      "Treno: Hiroshima → Fukuoka",
-      "Cost: ca. 200 chf"
-    ]
+      "treno — ca. 60 chf",
+      "Fukuoka — Base ? — 281 chf; Non rimborsabile"
+    ],
+    "country": "Japan",
+    "city": "Fukuoka"
   },
   "2026-11-20": {
+    "entries": [],
     "country": "Japan",
-    "city": "Fukuoka",
-    "entries": []
+    "city": "Fukuoka"
   },
   "2026-11-21": {
+    "entries": [],
     "country": "Japan",
-    "city": "Fukuoka",
-    "entries": []
+    "city": "Fukuoka"
   },
   "2026-11-22": {
-    "country": "Travel",
-    "city": "Fukuoka → Seoul",
     "entries": [
-      "Volo: Fukuoka → Seoul",
-      "Accommodation: app ?",
-      "Cost: 378 chf",
-      "Currency: Won, 1.730 KRW = 1 chf"
-    ]
+      "volo — ca. 150 chf",
+      "Seoul — airbnb — 526 chf; Pagamento visa il 9.11"
+    ],
+    "country": "South Korea",
+    "city": "Seoul"
   },
   "2026-11-23": {
+    "entries": [],
     "country": "South Korea",
-    "city": "Seoul",
-    "entries": []
+    "city": "Seoul"
   },
   "2026-11-24": {
+    "entries": [],
     "country": "South Korea",
-    "city": "Seoul",
-    "entries": []
+    "city": "Seoul"
   },
   "2026-11-25": {
+    "entries": [],
     "country": "South Korea",
-    "city": "Seoul",
-    "entries": []
+    "city": "Seoul"
   },
   "2026-11-26": {
+    "entries": [],
     "country": "South Korea",
-    "city": "Seoul",
-    "entries": []
+    "city": "Seoul"
   },
   "2026-11-27": {
-    "country": "Travel",
-    "city": "Seoul → Beijing",
     "entries": [
-      "Volo: Seoul → Beijing",
-      "Cost: ca. 100 chf",
-      "Accommodation: base-Beijing Sanlitun Serviced Apartment",
-      "Cost: 282 chf / 2.366,18 CNY",
-      "Notes: Pagamento con VISA? / cxl gratis fino al 22.11",
-      "Currency: Yuan, 8.4 CNY = 1 chf"
-    ]
+      "volo — ca. 100 chf",
+      "Beijing — base-Beijing Sanlitun Serviced Apartment — 335 chf / 2.812,92 CNY; Riservato - Pagamento visa? / cxl gratis fino al 27.11"
+    ],
+    "country": "China",
+    "city": "Beijing"
   },
   "2026-11-28": {
+    "entries": [],
     "country": "China",
-    "city": "Beijing",
-    "entries": []
+    "city": "Beijing"
   },
   "2026-11-29": {
+    "entries": [],
     "country": "China",
-    "city": "Beijing",
-    "entries": []
+    "city": "Beijing"
   },
   "2026-11-30": {
+    "entries": [],
     "country": "China",
-    "city": "Beijing",
-    "entries": []
+    "city": "Beijing"
   },
   "2026-12-01": {
+    "entries": [],
     "country": "China",
-    "city": "Beijing",
-    "entries": []
+    "city": "Beijing"
   },
   "2026-12-02": {
-    "country": "Travel",
-    "city": "Beijing → Shanghai",
-    "entries": [
-      "Treno: Beijing → Shanghai",
-      "Provider: www.trip.com",
-      "Cost: ca. 80 chf",
-      "Notes: da riservare a fine settembre",
-      "Accommodation: Sidihome Selected City Apartment",
-      "Cost: 225,53 chf / 1.892,36 CNY",
-      "Notes: Pagamento con VISA? / cxl gratis fino al 25.11"
-    ]
+    "entries": [],
+    "country": "China",
+    "city": "Beijing"
   },
   "2026-12-03": {
+    "entries": [
+      "treno www.trip.com — ca. 70 chf; da riservare a fine settembre",
+      "Xi'an"
+    ],
     "country": "China",
-    "city": "Shanghai",
-    "entries": []
+    "city": "Xi'an"
   },
   "2026-12-04": {
+    "entries": [],
     "country": "China",
-    "city": "Shanghai",
-    "entries": []
+    "city": "Xi'an"
   },
   "2026-12-05": {
+    "entries": [
+      "treno www.trip.com — ca. 90 chf; da riservare a fine settembre",
+      "Shanghai — Sidihome Selected City Apartment — 217 chf / 1807 CNY; Riservato - Pagamento visa? / cxl gratis fino al 01.12"
+    ],
     "country": "China",
-    "city": "Shanghai",
-    "entries": []
+    "city": "Shanghai"
   },
   "2026-12-06": {
+    "entries": [],
     "country": "China",
-    "city": "Shanghai",
-    "entries": []
+    "city": "Shanghai"
   },
   "2026-12-07": {
-    "country": "Travel",
-    "city": "Shanghai → Zhangjiajie",
-    "entries": [
-      "Treno: Shanghai → Zhangjiajie",
-      "Provider: www.trip.com",
-      "Cost: ca. 100 chf",
-      "Notes: da riservare a fine settembre",
-      "Accommodation: XMAN Sunrise Peaks Resort",
-      "Cost: 109,40 chf / 917,95 CNY",
-      "Notes: Pagamento in alloggio / cxl gratis"
-    ]
+    "entries": [],
+    "country": "China",
+    "city": "Shanghai"
   },
   "2026-12-08": {
+    "entries": [],
     "country": "China",
-    "city": "Zhangjiajie",
-    "entries": []
+    "city": "Shanghai"
   },
   "2026-12-09": {
+    "entries": [],
     "country": "China",
-    "city": "Zhangjiajie",
-    "entries": []
+    "city": "Shanghai"
+  },
+  "2026-12-10": {
+    "entries": [
+      "treno www.trip.com — ca. 70 chf; da riservare a fine settembre",
+      "Chongqing"
+    ],
+    "country": "China",
+    "city": "Chongqing"
+  },
+  "2026-12-11": {
+    "entries": [],
+    "country": "China",
+    "city": "Chongqing"
   },
   "2026-12-12": {
-    "country": "Travel",
-    "city": "Zhangjiajie → Guilin",
-    "entries": [
-      "Treno: Zhangjiajie → Guilin",
-      "Provider: www.trip.com",
-      "Cost: ca. 50 chf",
-      "Notes: da riservare a fine settembre",
-      "Accommodation: Riverside Inn Guilin Central",
-      "Cost: 119,70 chf / 1.0004,37 CNY",
-      "Notes: Pagamento in alloggio / cxl gratis fino al 02.12"
-    ]
+    "entries": [],
+    "country": "China",
+    "city": "Chongqing"
   },
   "2026-12-13": {
+    "entries": [],
     "country": "China",
-    "city": "Guilin",
-    "entries": []
+    "city": "Chongqing"
   },
   "2026-12-14": {
+    "entries": [
+      "treno www.trip.com — ca. 30 chf; da riservare a fine settembre",
+      "Zhangjiajie / Wu Lingyuan — XMAN Sunrise Peaks Resort — 160 chf / 1.340 CNY; Riservato - Pagamento in alloggio / cxl gratis"
+    ],
     "country": "China",
-    "city": "Guilin",
-    "entries": []
+    "city": "Zhangjiajie / Wu Lingyuan"
   },
   "2026-12-15": {
-    "country": "Travel",
-    "city": "Guilin → Shenzen",
-    "entries": [
-      "Treno: Guilin → Shenzen",
-      "Provider: www.trip.com",
-      "Cost: ca. 60 chf",
-      "Notes: da riservare a fine settembre"
-    ]
+    "entries": [],
+    "country": "China",
+    "city": "Zhangjiajie / Wu Lingyuan"
   },
   "2026-12-16": {
+    "entries": [],
     "country": "China",
-    "city": "Shenzen",
-    "entries": []
+    "city": "Zhangjiajie / Wu Lingyuan"
   },
   "2026-12-17": {
-    "country": "Travel",
-    "city": "Shenzen → Hongkong",
     "entries": [
-      "Treno: Shenzen → Hongkong",
-      "Accommodation: 99 Bonham?",
-      "Cost: 535 chf"
-    ]
+      "treno www.trip.com — ca. 90 chf; da riservare a fine settembre",
+      "Hongkong — iclub ? — 515 chf; Non rimborsabile"
+    ],
+    "country": "Hong Kong",
+    "city": "Hongkong"
   },
   "2026-12-18": {
+    "entries": [],
     "country": "Hong Kong",
-    "city": "Hongkong",
-    "entries": []
+    "city": "Hongkong"
   },
   "2026-12-19": {
+    "entries": [],
     "country": "Hong Kong",
-    "city": "Hongkong",
-    "entries": []
+    "city": "Hongkong"
   },
   "2026-12-20": {
+    "entries": [],
     "country": "Hong Kong",
-    "city": "Hongkong",
-    "entries": []
+    "city": "Hongkong"
   },
   "2026-12-21": {
+    "entries": [],
     "country": "Hong Kong",
-    "city": "Hongkong",
-    "entries": []
+    "city": "Hongkong"
   },
   "2026-12-22": {
-    "country": "Travel",
-    "city": "Hongkong → Bohol/Panglao",
     "entries": [
-      "Volo: Hongkong → Bohol/Panglao",
-      "Cost: ca. 100 chf",
-      "Accommodation: Air Residence Makati ? Moana ?",
-      "Cost: 86 chf"
-    ]
+      "volo — ca. 100 chf",
+      "Bohol/Panglao — Moana — 323 chf; Riservato - Pagamento visa il 5.12"
+    ],
+    "country": "Philippines",
+    "city": "Bohol/Panglao"
   },
   "2026-12-23": {
+    "entries": [],
     "country": "Philippines",
-    "city": "Bohol/Panglao",
-    "entries": []
+    "city": "Bohol/Panglao"
   },
   "2026-12-24": {
+    "entries": [],
     "country": "Philippines",
-    "city": "Bohol/Panglao",
-    "entries": []
+    "city": "Bohol/Panglao"
   },
   "2026-12-25": {
+    "entries": [],
     "country": "Philippines",
-    "city": "Bohol/Panglao",
-    "entries": []
+    "city": "Bohol/Panglao"
   },
   "2026-12-26": {
+    "entries": [],
     "country": "Philippines",
-    "city": "Bohol/Panglao",
-    "entries": []
+    "city": "Bohol/Panglao"
   },
   "2026-12-27": {
+    "entries": [],
     "country": "Philippines",
-    "city": "Bohol/Panglao",
-    "entries": []
+    "city": "Bohol/Panglao"
   },
   "2026-12-28": {
-    "country": "Travel",
-    "city": "Bohol/Panglao → Manila",
     "entries": [
-      "Volo: Bohol/Panglao → Manila",
-      "Cost: ca. 50 chf",
-      "Accommodation: City Garden Hotel ?",
-      "Cost: 74 chf"
-    ]
+      "volo — ca. 50 chf",
+      "Manila — City Garden Hotel ? — 133 chf; cxl gratis fino al 24.12"
+    ],
+    "country": "Philippines",
+    "city": "Manila"
   },
   "2026-12-29": {
+    "entries": [],
     "country": "Philippines",
-    "city": "Manila",
-    "entries": []
+    "city": "Manila"
   },
   "2026-12-30": {
-    "country": "Travel",
-    "city": "Manila → Bkk",
     "entries": [
-      "Volo: Manila → Bkk",
-      "Cost: ca. 300 chf",
-      "Accommodation: Somerset Ekamai",
-      "Cost: 290,26 chf / 11.847,60 THB",
-      "Notes: Pagamento con VISA il 27.12 / cxl gratis fino al 29.12"
-    ]
+      "volo — ca. 150 chf",
+      "Bkk — Somerset Ekamai — 462 chf / 18.832 THB; Riservato - Pagamento visa 26.12 / cxl gratis fino al 29.12"
+    ],
+    "country": "Thailand",
+    "city": "Bkk"
   },
   "2026-12-31": {
+    "entries": [],
     "country": "Thailand",
-    "city": "Bkk",
-    "entries": []
+    "city": "Bkk"
   },
   "2027-01-01": {
+    "entries": [],
     "country": "Thailand",
-    "city": "Bkk",
-    "entries": []
+    "city": "Bkk"
   },
   "2027-01-02": {
+    "entries": [],
     "country": "Thailand",
-    "city": "Bkk",
-    "entries": []
+    "city": "Bkk"
   },
   "2027-01-03": {
-    "country": "Travel",
-    "city": "Bkk → Ko Chang",
     "entries": [
-      "Bus + Ferry: Bkk → Ko Chang",
-      "Provider: https://boonsiriferry.com/",
-      "Cost: ca. 40 chf / 1700 THB",
-      "Accommodation: Kae Beaxh resort",
-      "Cost: 657 chf /26.784 THB",
-      "Notes: Pagamento con VISA il 28.12 / cxl gratis fino al 30.12"
-    ]
+      "bus + ferry https://boonsiriferry.com/ — ca. 40 chf / 1700 THB",
+      "Ko Chang — Kae Beaxh resort — 657 chf /26.784 THB; Riservato - Pagamento visa il 28.12 / cxl gratis fino al 30.12"
+    ],
+    "country": "Thailand",
+    "city": "Ko Chang"
   },
   "2027-01-04": {
+    "entries": [],
     "country": "Thailand",
-    "city": "Ko Chang",
-    "entries": []
+    "city": "Ko Chang"
   },
   "2027-01-05": {
+    "entries": [],
     "country": "Thailand",
-    "city": "Ko Chang",
-    "entries": []
+    "city": "Ko Chang"
   },
   "2027-01-06": {
+    "entries": [],
     "country": "Thailand",
-    "city": "Ko Chang",
-    "entries": []
+    "city": "Ko Chang"
   },
   "2027-01-07": {
+    "entries": [],
     "country": "Thailand",
-    "city": "Ko Chang",
-    "entries": []
+    "city": "Ko Chang"
   },
   "2027-01-08": {
+    "entries": [],
     "country": "Thailand",
-    "city": "Ko Chang",
-    "entries": []
+    "city": "Ko Chang"
   },
   "2027-01-09": {
-    "country": "Travel",
-    "city": "Ko Chang → Bkk",
     "entries": [
-      "Ferry + Bus: Ko Chang → Bkk",
-      "Provider: https://boonsiriferry.com/",
-      "Accommodation: grandre centre point ?",
-      "Cost: 254 chf"
-    ]
+      "https://boonsiriferry.com/",
+      "Bkk — grandre centre point ? — 254 chf"
+    ],
+    "country": "Thailand",
+    "city": "Bkk"
   },
   "2027-01-10": {
+    "entries": [],
     "country": "Thailand",
-    "city": "Bkk",
-    "entries": []
+    "city": "Bkk"
   }
 }

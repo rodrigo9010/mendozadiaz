@@ -40,7 +40,9 @@ and does the actual `fs.writeFileSync` on your behalf.
 | File | Purpose | Status |
 |---|---|---|
 | `data.json` | The data store: a `_countries` color legend plus one entry per date, `{ "YYYY-MM-DD": { "country", "city", "entries": [...] } }` | done |
-| `itinerary.md` | Readable, English source for the trip — dated headings, optionally tagged `[Country / City]`, with bullets underneath. Hand-edit this, not `data.json` | done |
+| `Itinerario-v2.csv` | Canonical booking itinerary, maintained in a spreadsheet. It is imported directly into `data.json` | done |
+| `csv-to-json.js` | Imports the CSV into `data.json`, including quoted multi-line cells, accommodation ranges, transport days, and country/city tags | done |
+| `itinerary.md` | Optional readable, English source for manually curated day-by-day entries | done |
 | `md-to-json.js` | Regenerates `data.json` from `itinerary.md` — run with `node md-to-json.js` | done |
 | `try-write.js` | Minimal proof-of-concept: a Node script that reads, modifies, and writes `data.json` directly — no server, no browser yet | done (throwaway, not used by the app) |
 | `server.js` | Local HTTP server: serves `view.html` and exposes `/data` (read) and `/save` (write) endpoints | done |
@@ -213,9 +215,9 @@ including this one.
 
 ## Workflow summary
 
-1. `cd apps/calendar && node server.js`, edit at `http://localhost:5500`.
-2. Stop the server (`Ctrl+C`) when done editing.
-3. From the repo root: `git add`, `commit`, `push`.
+1. Edit `Itinerario-v2.csv` in a spreadsheet, then run `cd apps/calendar && node csv-to-json.js`.
+2. Optionally run `node server.js` and make small manual changes at `http://localhost:5500`.
+3. Stop the server (`Ctrl+C`) when done editing, then from the repo root: `git add`, `commit`, `push`.
 4. The public page at `mendozadiaz.ch/apps/calendar/view.html`
    now reflects your changes (read-only there, since it's the same file
    running in view mode).
