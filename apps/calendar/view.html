@@ -599,6 +599,10 @@
   }
   .modal li button { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.9rem; }
   .modal li button:hover { color: var(--coral); }
+  .entry-actions { display: flex; align-items: center; gap: 5px; flex: none; }
+  .modal li button.edit-entry:hover, .modal li button.save-entry:hover { color: var(--accent); }
+  .modal li button.cancel-entry:hover { color: var(--ink); }
+  .entry-edit-input { min-width: 0; width: 100%; }
   .modal input[type=text] { flex: 1; padding: 8px; border: 1px solid var(--line-strong); border-radius: 3px; background: var(--paper); color: var(--ink); font-family: inherit; }
   .modal input[type=text]:focus { outline: 2px solid var(--accent); }
   .modal button.add { background: var(--accent); color: var(--on-accent); border: none; border-radius: 3px; padding: 8px 14px; cursor: pointer; font-family: inherit; }
@@ -1534,9 +1538,20 @@ function renderEntryList() {
     span.textContent = txt;
     li.appendChild(span);
     if (editable) {
-      const btn = document.createElement('button');
-      btn.textContent = 'remove';
-      btn.addEventListener('click', async () => {
+      const actions = document.createElement('div');
+      actions.className = 'entry-actions';
+      const editBtn = document.createElement('button');
+      editBtn.type = 'button';
+      editBtn.className = 'edit-entry';
+      editBtn.textContent = 'edit';
+      editBtn.addEventListener('click', () => startEditingEntry(li, span, actions, idx, txt));
+      actions.appendChild(editBtn);
+
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'remove-entry';
+      removeBtn.textContent = 'remove';
+      removeBtn.addEventListener('click', async () => {
         const updated = entries.slice();
         updated.splice(idx, 1);
         setDayEntries(currentKey, updated);
@@ -1544,10 +1559,52 @@ function renderEntryList() {
         renderEntryList();
         render();
       });
-      li.appendChild(btn);
+      actions.appendChild(removeBtn);
+      li.appendChild(actions);
     }
     entryList.appendChild(li);
   });
+}
+
+function startEditingEntry(li, span, actions, idx, originalText) {
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'entry-edit-input';
+  input.value = originalText;
+  input.setAttribute('aria-label', 'Edit calendar entry');
+  li.replaceChild(input, span);
+  actions.innerHTML = '';
+
+  const finish = async (save) => {
+    const value = input.value.trim();
+    if (save && value && value !== originalText) {
+      const updated = getDay(currentKey).entries.slice();
+      updated[idx] = value;
+      setDayEntries(currentKey, updated);
+      await saveData();
+      render();
+    }
+    renderEntryList();
+  };
+
+  const saveBtn = document.createElement('button');
+  saveBtn.type = 'button';
+  saveBtn.className = 'save-entry';
+  saveBtn.textContent = 'save';
+  saveBtn.addEventListener('click', () => finish(true));
+  const cancelBtn = document.createElement('button');
+  cancelBtn.type = 'button';
+  cancelBtn.className = 'cancel-entry';
+  cancelBtn.textContent = 'cancel';
+  cancelBtn.addEventListener('click', () => finish(false));
+  actions.append(saveBtn, cancelBtn);
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+    if (e.key === 'Escape') { e.preventDefault(); finish(false); }
+  });
+  input.focus();
+  input.select();
 }
 
 async function addEntry() {
