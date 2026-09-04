@@ -44,7 +44,9 @@
     "city": "Kyoto"
   },
   "2026-11-10": {
-    "entries": [],
+    "entries": [
+      "Tanias BDAY!"
+    ],
     "country": "Japan",
     "city": "Kyoto"
   },
@@ -143,7 +145,8 @@
   "2026-11-27": {
     "entries": [
       "volo — ca. 100 chf",
-      "Beijing — base-Beijing Sanlitun Serviced Apartment — 335 chf / 2.812,92 CNY; Riservato - Pagamento visa? / cxl gratis fino al 27.11"
+      "Beijing — base-Beijing Sanlitun Serviced Apartment — 335 chf / 2.812,92 CNY; Riservato - Pagamento visa? / cxl gratis fino al 27.11",
+      "https://www.booking.com/Share-CwjJE4"
     ],
     "country": "Travel",
     "city": "Beijing"
@@ -175,11 +178,11 @@
   },
   "2026-12-03": {
     "entries": [
-      "treno www.trip.com — ca. 70 chf; da riservare a fine settembre",
-      "Xi'an"
+      "Xi'an",
+      "treno www.trip.com — ca. 70 chf; da riservare a fine settembre"
     ],
     "country": "Travel",
-    "city": "Xi'an"
+    "city": "Xian"
   },
   "2026-12-04": {
     "entries": [],
@@ -187,15 +190,15 @@
     "city": "Xi'an"
   },
   "2026-12-05": {
+    "entries": [],
+    "country": "China",
+    "city": "Xian"
+  },
+  "2026-12-06": {
     "entries": [
       "treno www.trip.com — ca. 90 chf; da riservare a fine settembre",
       "Shanghai — Sidihome Selected City Apartment — 217 chf / 1807 CNY; Riservato - Pagamento visa? / cxl gratis fino al 01.12"
     ],
-    "country": "China",
-    "city": "Shanghai"
-  },
-  "2026-12-06": {
-    "entries": [],
     "country": "China",
     "city": "Shanghai"
   },
@@ -219,7 +222,7 @@
       "treno www.trip.com — ca. 70 chf; da riservare a fine settembre",
       "Chongqing"
     ],
-    "country": "China",
+    "country": "Travel",
     "city": "Chongqing"
   },
   "2026-12-11": {
@@ -233,16 +236,16 @@
     "city": "Chongqing"
   },
   "2026-12-13": {
-    "entries": [],
-    "country": "China",
-    "city": "Chongqing"
-  },
-  "2026-12-14": {
     "entries": [
       "treno www.trip.com — ca. 30 chf; da riservare a fine settembre",
       "Zhangjiajie / Wu Lingyuan — XMAN Sunrise Peaks Resort — 160 chf / 1.340 CNY; Riservato - Pagamento in alloggio / cxl gratis"
     ],
-    "country": "China",
+    "country": "Travel",
+    "city": "Chongqing"
+  },
+  "2026-12-14": {
+    "entries": [],
+    "country": "Travel",
     "city": "Zhangjiajie / Wu Lingyuan"
   },
   "2026-12-15": {
@@ -251,21 +254,23 @@
     "city": "Zhangjiajie / Wu Lingyuan"
   },
   "2026-12-16": {
-    "entries": [],
-    "country": "China",
-    "city": "Zhangjiajie / Wu Lingyuan"
+    "entries": [
+      "treno www.trip.com — ca. 90 chf; da riservare a fine settembre"
+    ],
+    "country": "Travel",
+    "city": "Shenzen"
   },
   "2026-12-17": {
     "entries": [
-      "treno www.trip.com — ca. 90 chf; da riservare a fine settembre",
+      "treno ww.trip.com - cs 11CHF",
       "Hongkong — iclub ? — 515 chf; Non rimborsabile"
     ],
-    "country": "Travel",
-    "city": "Hongkong"
+    "country": "China",
+    "city": "Shenzen"
   },
   "2026-12-18": {
     "entries": [],
-    "country": "Hong Kong",
+    "country": "Travel",
     "city": "Hongkong"
   },
   "2026-12-19": {
@@ -285,11 +290,11 @@
   },
   "2026-12-22": {
     "entries": [
-      "volo — ca. 100 chf",
-      "Bohol/Panglao — Moana — 323 chf; Riservato - Pagamento visa il 5.12"
+      "Bohol/Panglao — Moana — 323 chf; Riservato - Pagamento visa il 5.12",
+      "volo — ca. 100 chf"
     ],
-    "country": "Philippines",
-    "city": "Bohol/Panglao"
+    "country": "Travel",
+    "city": "Bohol"
   },
   "2026-12-23": {
     "entries": [],
