@@ -81,6 +81,8 @@
     display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 1.25rem;
   }
   .control { flex: 1; min-width: 180px; }
+  .control-wide { flex-basis: 100%; }
+  .hint { font-size: 11px; color: var(--text-dim); margin: 8px 0 0; line-height: 1.6; }
   .control label {
     display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 5px;
   }
@@ -226,6 +228,17 @@
     </div>
   </div>
 
+  <div class="timer">
+    <div class="timer-label">Work time left</div>
+    <div class="timer-grid">
+      <div class="tcard"><div class="tnum" id="w-dd">--</div><div class="cap">Workdays</div></div>
+      <div class="tcard"><div class="tnum" id="w-hh">--</div><div class="cap">Hours</div></div>
+      <div class="tcard"><div class="tnum" id="w-mm">--</div><div class="cap">Min</div></div>
+      <div class="tcard"><div class="tnum" id="w-ss">--</div><div class="cap">Sec</div></div>
+    </div>
+    <p class="hint" id="work-status" aria-live="polite"></p>
+  </div>
+
   <div class="controls">
     <div class="control">
       <label for="dday">Exfiltration date</label>
@@ -234,6 +247,12 @@
     <div class="control">
       <label for="mpw">Boss meetings per week</label>
       <input type="number" id="mpw" value="3" min="0" max="20" step="1">
+    </div>
+    <div class="control control-wide">
+      <label for="hpd">Working hours per day</label>
+      <input type="number" id="hpd" value="7.65" min="0.01" max="15.5" step="0.01" aria-describedby="work-help">
+      <p class="hint" id="work-help">Mon–Fri · 08:30 start · Switzerland time. Decimal hours: 7.65 = 7 h 39 min.
+        Each workday above equals your daily hours. Ends at the start of the exfiltration date.</p>
     </div>
   </div>
 
@@ -270,16 +289,45 @@ const MS_DAY = 86400000;
 const ddayInput = $('dday');
 const mpwInput = $('mpw');
 
-let target = new Date(2026, 9, 31);
-ddayInput.value = target.toISOString().slice(0, 10);
+const hpdInput = $('hpd');
+ddayInput.value = '2026-10-30';
+const swissFormatter = new Intl.DateTimeFormat('en-GB', {
+  timeZone: 'Europe/Zurich', year: 'numeric', month: '2-digit', day: '2-digit',
+  hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
+});
+// UTC fields represent Swiss wall time, independent of the browser timezone.
+function swissWallTime(date) {
+  const p = Object.fromEntries(swissFormatter.formatToParts(date).map(p => [p.type, p.value]));
+  return new Date(Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second));
+}
+function deadline() {
+  const wall = new Date(ddayInput.value + 'T00:00:00Z');
+  let instant = new Date(wall);
+  for (let i = 0; i < 3; i++) instant = new Date(+instant + (+wall - swissWallTime(instant)));
+  return instant;
+}
+function workTimeRemaining(now, end, dailyHours) {
+  const day = new Date(now);
+  day.setUTCHours(0, 0, 0, 0);
+  let remaining = 0;
+  while (day < end) {
+    if (isWorkday(day.getUTCDay())) {
+      const start = +day + 8.5 * 3600000;
+      const finish = Math.min(start + dailyHours * 3600000, +end);
+      remaining += Math.max(0, finish - Math.max(start, +now));
+    }
+    day.setUTCDate(day.getUTCDate() + 1);
+  }
+  return remaining;
+}
 
 function countDays(start, end, predicate) {
   let n = 0;
-  const d = new Date(start); d.setHours(0,0,0,0);
-  const e = new Date(end); e.setHours(0,0,0,0);
+  const d = new Date(start); d.setUTCHours(0,0,0,0);
+  const e = new Date(end); e.setUTCHours(0,0,0,0);
   while (d < e) {
-    if (predicate(d.getDay())) n++;
-    d.setDate(d.getDate() + 1);
+    if (predicate(d.getUTCDay())) n++;
+    d.setUTCDate(d.getUTCDate() + 1);
   }
   return n;
 }
@@ -287,11 +335,11 @@ function countDays(start, end, predicate) {
 const isWorkday = day => day !== 0 && day !== 6;
 const isFriday = day => day === 5;
 
-const fmt = d => d.toLocaleDateString('en-CH', { day: 'numeric', month: 'long', year: 'numeric' });
+const fmt = d => d.toLocaleDateString('en-CH', { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' });
 
 function update() {
-  const now = new Date();
-  const dday = new Date(ddayInput.value + 'T00:00:00');
+  const now = swissWallTime(new Date());
+  const dday = new Date(ddayInput.value + 'T00:00:00Z');
   if (isNaN(dday)) return;
 
   const days = Math.max(0, Math.ceil((dday - now) / MS_DAY));
@@ -302,7 +350,7 @@ function update() {
   const perWeek = Number(mpwInput.value) || 0;
   const boss = Math.round(workdays * (perWeek / 5));
 
-  const yearStart = new Date(dday.getFullYear(), 0, 1);
+  const yearStart = new Date(Date.UTC(dday.getUTCFullYear(), 0, 1));
   const pct = Math.max(0, Math.min(100,
     Math.round(((now - yearStart) / (dday - yearStart)) * 100)));
 
@@ -322,23 +370,43 @@ function update() {
   $('title').textContent = days > 0 ? days + ' days to exfiltration' : 'Mission complete';
 }
 
+function renderTimer(prefix, milliseconds, daySeconds = 86400) {
+  let seconds = Math.max(0, Math.ceil(milliseconds / 1000));
+  const days = Math.floor(seconds / daySeconds);
+  seconds -= days * daySeconds;
+  const hours = Math.floor(seconds / 3600);
+  seconds -= hours * 3600;
+  const minutes = Math.floor(seconds / 60);
+  seconds -= minutes * 60;
+  ['dd', 'hh', 'mm', 'ss'].forEach((unit, i) => {
+    $(prefix + '-' + unit).textContent = String([days, hours, minutes, seconds][i]).padStart(2, '0');
+  });
+}
 function tick() {
-  const dday = new Date(ddayInput.value + 'T00:00:00');
-  if (isNaN(dday)) return;
-
-  let diff = Math.max(0, dday - new Date());
-  const dd = Math.floor(diff / 86400000); diff -= dd * 86400000;
-  const hh = Math.floor(diff / 3600000); diff -= hh * 3600000;
-  const mm = Math.floor(diff / 60000); diff -= mm * 60000;
-  const ss = Math.floor(diff / 1000);
-
-  $('t-dd').textContent = String(dd).padStart(2, '0');
-  $('t-hh').textContent = String(hh).padStart(2, '0');
-  $('t-mm').textContent = String(mm).padStart(2, '0');
-  $('t-ss').textContent = String(ss).padStart(2, '0');
+  const end = new Date(ddayInput.value + 'T00:00:00Z');
+  if (isNaN(end)) return;
+  const instant = new Date();
+  const now = swissWallTime(instant);
+  renderTimer('t', deadline() - instant);
+  if (!hpdInput.value || !hpdInput.checkValidity()) {
+    ['dd', 'hh', 'mm', 'ss'].forEach(unit => $('w-' + unit).textContent = '--');
+    $('work-status').textContent = 'Enter daily hours between 0.01 and 15.5.';
+    return;
+  }
+  const hours = Number(hpdInput.value);
+  const remaining = workTimeRemaining(now, end, hours);
+  renderTimer('w', remaining, Math.round(hours * 3600));
+  const time = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600;
+  const active = isWorkday(now.getUTCDay()) && time >= 8.5 && time < 8.5 + hours;
+  $('work-status').textContent = remaining === 0 ? 'Work complete' : active
+    ? 'Working hours · countdown active' : 'Paused · resumes next weekday at 08:30';
+  if (remaining > 0 && isWorkday(now.getUTCDay()) && time < 8.5) {
+    $('work-status').textContent = 'Paused · resumes today at 08:30';
+  }
 }
 
-ddayInput.addEventListener('change', update);
+ddayInput.addEventListener('change', () => { update(); tick(); });
+hpdInput.addEventListener('input', tick);
 mpwInput.addEventListener('input', update);
 
 update();
