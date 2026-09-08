@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Operation Controlled Exit</title>
+<title>Time left</title>
 <style>
   /* -----------------------------------------------------------------
      COMMIT MONO TYPEFACE  (SIL Open Font License 1.1)
@@ -68,9 +68,10 @@
     font-family: "Commit Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
     display: flex;
     justify-content: center;
+    min-height: 100svh;
     padding: 2rem 1rem;
   }
-  .dash { width: 100%; max-width: 640px; }
+  .dash { width: 100%; max-width: 640px; margin-block: auto; text-align: center; }
   .header { text-align: center; margin-bottom: 1.5rem; }
   .label {
     font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
@@ -91,6 +92,21 @@
     background: var(--surface); color: var(--text);
     border: 1px solid var(--border); border-radius: 8px;
     font-size: 14px; font-family: inherit;
+  }
+  input { text-align: center; min-width: 0; }
+  .calculators { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 1.25rem; }
+  .calculators .control { min-width: 0; padding: 1rem; }
+  .balance { display: block; margin: 16px 0 6px; color: var(--accent); font-size: 22px; overflow-wrap: anywhere; }
+  @media (max-width: 480px) {
+    body { padding: 1.5rem 12px; }
+    .timer-grid, .grid { gap: 6px; }
+    .tnum { font-size: clamp(20px, 7vw, 34px) !important; }
+    .num { font-size: 24px; }
+    .cap { font-size: 9px; letter-spacing: 0.03em; }
+    .row { gap: 12px; font-size: 11px; text-align: left; }
+    .row .v { text-align: right; }
+    .prog-head { gap: 12px; font-size: 11px; }
+    .balance { font-size: 18px; }
   }
   input:focus { outline: none; border-color: var(--accent); }
   .grid {
@@ -213,13 +229,8 @@
 </script>
 
 <div class="dash">
-  <div class="header">
-    <div class="label">Operation Controlled Exit</div>
-    <div class="title" id="title">Mission clock</div>
-  </div>
-
   <div class="timer">
-    <div class="timer-label">Time to exfiltration</div>
+    <div class="timer-label">TIME LEFT</div>
     <div class="timer-grid">
       <div class="tcard"><div class="tnum" id="t-dd">--</div><div class="cap">Days</div></div>
       <div class="tcard"><div class="tnum" id="t-hh">--</div><div class="cap">Hours</div></div>
@@ -250,9 +261,7 @@
     </div>
     <div class="control control-wide">
       <label for="hpd">Working hours per day</label>
-      <input type="number" id="hpd" value="7.65" min="0.01" max="15.5" step="0.01" aria-describedby="work-help">
-      <p class="hint" id="work-help">Mon–Fri · 08:30 start · Switzerland time. Decimal hours: 7.65 = 7 h 39 min.
-        Each workday above equals your daily hours. Ends at the start of the exfiltration date.</p>
+      <input type="number" id="hpd" value="7.65" min="0.01" max="15.5" step="0.01">
     </div>
   </div>
 
@@ -261,6 +270,21 @@
     <div class="card"><div class="num" id="c-weeks">--</div><div class="cap">Weeks</div></div>
     <div class="card"><div class="num" id="c-work">--</div><div class="cap">Workdays</div></div>
     <div class="card"><div class="num" id="c-pct">--%</div><div class="cap">Year done</div></div>
+  </div>
+
+  <div class="calculators">
+    <div class="card control">
+      <label for="overtime">Overtime hours</label>
+      <input type="number" id="overtime" value="0" min="0" step="any">
+      <output class="balance" id="compensate" for="overtime hpd" aria-live="polite">0 days</output>
+      <div class="cap">To compensate</div>
+    </div>
+    <div class="card control">
+      <label for="vacation">Vacation hours</label>
+      <input type="number" id="vacation" value="0" min="0" step="any">
+      <output class="balance" id="vacations-left" for="vacation hpd" aria-live="polite">0 days</output>
+      <div class="cap">Vacations left</div>
+    </div>
   </div>
 
   <div class="prog-head">
@@ -367,7 +391,7 @@ function update() {
   $('i-boss').textContent = boss + ' (estimated)';
   $('i-fri').textContent = fridays;
 
-  $('title').textContent = days > 0 ? days + ' days to exfiltration' : 'Mission complete';
+
 }
 
 function renderTimer(prefix, milliseconds, daySeconds = 86400) {
@@ -406,7 +430,22 @@ function tick() {
 }
 
 ddayInput.addEventListener('change', () => { update(); tick(); });
-hpdInput.addEventListener('input', tick);
+function updateBalances() {
+  const dailyHours = Number(hpdInput.value);
+  const validDailyHours = hpdInput.value !== '' && hpdInput.checkValidity();
+  [['overtime', 'compensate'], ['vacation', 'vacations-left']].forEach(([inputId, outputId]) => {
+    const input = $(inputId);
+    const valid = validDailyHours && input.value !== '' && input.checkValidity();
+    const days = Number(input.value) / dailyHours;
+    $(outputId).textContent = valid
+      ? new Intl.NumberFormat('en-CH', { maximumFractionDigits: 2 }).format(days) + (days === 1 ? ' day' : ' days')
+      : '—';
+  });
+}
+hpdInput.addEventListener('input', () => { tick(); updateBalances(); });
+$('overtime').addEventListener('input', updateBalances);
+$('vacation').addEventListener('input', updateBalances);
+updateBalances();
 mpwInput.addEventListener('input', update);
 
 update();
