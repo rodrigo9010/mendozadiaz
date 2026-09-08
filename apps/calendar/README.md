@@ -39,7 +39,7 @@ and does the actual `fs.writeFileSync` on your behalf.
 
 | File | Purpose | Status |
 |---|---|---|
-| `data.json` | The data store: a `_countries` color legend plus one entry per date, `{ "YYYY-MM-DD": { "country", "city", "entries": [...] } }` | done |
+| `data.json` | The data store: a `_countries` color legend plus one entry per date, `{ "YYYY-MM-DD": { "country", "city", "reserved", "entries": [...] } }`. An entry is a string, or `{ "text", "reserved": true }` once booked | done |
 | `Itinerary-v3.csv` | Canonical booking itinerary, maintained in a spreadsheet. It is imported directly into `data.json` | done |
 | `csv-to-json.js` | Imports the CSV into `data.json`, including quoted multi-line cells, accommodation ranges, transport days, and country/city tags | done |
 | `itinerary.md` | Optional readable, English source for manually curated day-by-day entries | done |
@@ -141,16 +141,38 @@ navigating Month view to bring both into view first).
 
 **Step 2.10 — trip stats in the sidebar.**
 Under "My calendars" a "Trip" box lists, per country, how many days are
-tagged with it and how many CHF were spent there, followed by the trip
-total and the per-person share (`TRAVELLERS` in the config block, 2 by
-default). Nothing is stored for this: costs are read straight out of the
-entry text, any `<number> chf` an entry contains (`treno — 140 chf`,
+tagged with it and how many CHF were spent there; then how much is
+already booked ("Reserved", see Step 2.11) and how much is still "To
+book"; then the trip total, the per-person share (`TRAVELLERS` in the
+config block, 2 by default) and the average per day. Nothing is stored
+for this: costs are read straight out of the entry text, any
+`<number> chf` an entry contains (`treno — 140 chf`,
 `Kyoto — Onyado — 486 chf; …`), so the numbers follow whatever is in
 `data.json`. Swiss and Italian number spellings (`1'200`, `1.200`,
 `40,5`) all parse. Switching a country off in "My calendars" dims its
 row and drops it from the totals, so the box always agrees with the
 grid. A cost on a day with no country tag is still counted, under an
 "Untagged" row.
+
+**Step 2.11 — a "reserved" flag, from the CSV to the grid.**
+Booking status used to live only as the word "Riservato" inside the
+comments. It is now a real flag in three places. In the spreadsheet, a
+`Riservato` column (any of `sì`, `yes`, `x`, `1`, `✓`) marks a row as
+booked. The importer turns that into two things in `data.json`: the
+row's entry becomes `{ "text": …, "reserved": true }` instead of a plain
+string, and if the row is a stay, every day of that stay gets
+`"reserved": true`. In the calendar a reserved day's whole cell is
+tinted light green (month and week view alike), a reserved entry chip
+gets a small green check, and the day modal shows a "reserved" badge.
+The stats box counts reserved days and sums the CHF of reserved
+entries, so "Reserved" vs "To book" shows how much of the budget is
+committed. In the local editor the day modal has a "Reserved" checkbox
+next to the country/city tag (the day's flag) and a checkbox in front of
+each entry (that entry's flag), and editing an entry's text keeps its
+flag. The old "Reservado" pseudo-country, which only tagged the two
+Zurich days, was retired in favour of "Travel"; and a stale 369 CHF
+Tokyo entry left over from the v2 import was removed so the total
+matches the spreadsheet again (6727 CHF).
 
 **Step 3 → Step 4 — one file, auto-detecting mode.**
 Originally the editor (`editor.html`) and the public viewer

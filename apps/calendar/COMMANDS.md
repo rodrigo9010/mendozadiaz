@@ -22,7 +22,9 @@ cd apps/calendar && node csv-to-json.js
 
 This handles spreadsheet-style quoted cells and multi-line notes. It replaces
 only the dates represented by the CSV, preserves the country colour legend,
-and leaves hand-added entries on other dates alone. For a future trip year or
+and leaves hand-added entries on other dates alone. Put `sì` (or `yes`, `x`,
+`1`) in the `Riservato` column to mark a row as booked: the calendar tints
+the stay's days green and counts its cost under "Reserved" in the sidebar. For a future trip year or
 another source file, use `node csv-to-json.js filename.csv 2027`.
 
 `itinerary.md` and `md-to-json.js` remain available for manually curated,

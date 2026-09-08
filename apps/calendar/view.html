@@ -46,6 +46,9 @@
     --faint: #5c5c5c;        /* de-emphasised text */
     --on-accent: #ffffff;    /* text on an accent fill */
     --coral: #d67350;        /* drop-target / danger states */
+    --reserved: #5fc482;     /* booked: entry check marks, stats */
+    --reserved-tint: rgba(95,196,130,0.14);       /* booked day cells */
+    --reserved-tint-hover: rgba(95,196,130,0.22);
     --sidebar-w: 232px;
     --font-stack: "Commit Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   }
@@ -266,10 +269,8 @@
   /* Countries switched off in the calendar list drop out of the totals. */
   .stat-row.off .stat-name, .stat-row.off .stat-num { color: var(--faint); }
   .stat-row.off .stat-dot { opacity: 0.35; }
-  .stat-row.total { margin-top: 5px; padding-top: 6px; border-top: 1px solid var(--line); border-radius: 0; }
-  .stat-row.total .stat-num { color: var(--ink); }
-  .stat-row.total + .stat-row.total { margin-top: 0; padding-top: 3px; border-top: none; }
-  .stat-row.total .stat-name { color: var(--ink); }
+  .stat-row.group { margin-top: 5px; padding-top: 6px; border-top: 1px solid var(--line); border-radius: 0; }
+  .stat-row.total .stat-num, .stat-row.total .stat-name { color: var(--ink); }
   .stat-empty { font-size: 0.75rem; color: var(--faint); padding: 3px 4px; }
 
   /* ==================== TOP BAR ==================== */
@@ -379,6 +380,9 @@
   tbody tr:last-child td { border-bottom: none; }
   td.clickable { cursor: pointer; transition: background 0.15s; }
   td.clickable:hover { background: var(--hover); }
+  /* Days whose stay is booked: a light green wash over the whole cell. */
+  td.reserved { background: var(--reserved-tint); }
+  td.reserved.clickable:hover { background: var(--reserved-tint-hover); }
   /* Days outside the month: blank cells, so the grid stays a clean 6x7. */
   td.other-month { background: transparent; }
 
@@ -448,6 +452,8 @@
     background: var(--c);
   }
   .entry-text { overflow: hidden; text-overflow: ellipsis; white-space: inherit; }
+  /* Booked entries carry a small green check after the text. */
+  .entry-mark { flex: none; color: var(--reserved); font-size: 0.85em; margin-left: auto; padding-left: 4px; }
   .entry:hover { box-shadow: 0 1px 4px rgba(0,0,0,0.35); }
   .more { color: var(--muted); font-size: 0.7rem; padding-left: 4px; }
   .entry[draggable="true"] { cursor: grab; }
@@ -509,9 +515,11 @@
     align-content: start;
   }
   .wv-col:first-child { border-left: none; }
-  .wv-col.today { background: var(--accent-tint); }
   .wv-col.clickable { cursor: pointer; }
   .wv-col.clickable:hover { background: var(--hover); }
+  .wv-col.reserved { background: var(--reserved-tint); }
+  .wv-col.reserved.clickable:hover { background: var(--reserved-tint-hover); }
+  .wv-col.today { background: var(--accent-tint); }
   .wv-col.today.clickable:hover { background: var(--accent-tint); }
   .wv-citytag {
     align-self: flex-start;
@@ -629,8 +637,14 @@
     .modal button.add { padding: 10px 16px; }
     .close-row button { padding: 9px 16px; font-size: 0.9rem; }
   }
-  #tagRow input[type=text], #tagRow select { flex: 1; padding: 7px 8px; border: 1px solid var(--line-strong); border-radius: 3px; background: var(--paper); font-family: inherit; font-size: 0.85rem; color: var(--ink); }
+  #tagRow input[type=text], #tagRow select { flex: 1; min-width: 0; padding: 7px 8px; border: 1px solid var(--line-strong); border-radius: 3px; background: var(--paper); font-family: inherit; font-size: 0.85rem; color: var(--ink); }
   #tagRow input[type=text]:focus, #tagRow select:focus { outline: 2px solid var(--accent); }
+  .reserved-toggle { display: flex; align-items: center; gap: 5px; flex: none; font-size: 0.8rem; color: var(--muted); cursor: pointer; white-space: nowrap; }
+  .reserved-toggle input { accent-color: var(--reserved); margin: 0; }
+  .reserved-badge { margin-left: 8px; color: var(--reserved); border-color: var(--reserved); vertical-align: middle; }
+  .modal li .entry-body { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; }
+  .modal li input.entry-reserved { accent-color: var(--reserved); margin: 0; flex: none; }
+  .modal li .entry-mark { margin-left: 0; }
   .modal ul { list-style: none; padding: 0; margin: 0 0 14px; max-height: 220px; overflow-y: auto; }
   .modal li {
     display: flex;
@@ -711,6 +725,7 @@
       <select id="countrySelect"></select>
       <input type="text" id="newCountryInput" placeholder="New country name" style="display:none;" autocomplete="off">
       <input type="text" id="cityInput" placeholder="City" autocomplete="off">
+      <label class="reserved-toggle" title="Accommodation booked for this day"><input type="checkbox" id="reservedInput"> Reserved</label>
     </div>
     <ul id="entryList"></ul>
     <div id="addRow" style="display:flex; gap:8px;">
@@ -824,6 +839,7 @@ const tagRow = document.getElementById('tagRow');
 const countrySelect = document.getElementById('countrySelect');
 const newCountryInput = document.getElementById('newCountryInput');
 const cityInput = document.getElementById('cityInput');
+const reservedInput = document.getElementById('reservedInput');
 
 // ============================================================
 // DATA MODEL HELPERS
@@ -833,35 +849,44 @@ function pad(n) { return String(n).padStart(2,'0'); }
 function keyFor(y,m,d) { return `${y}-${pad(m+1)}-${pad(d)}`; }
 
 // A day in data.json is either a plain array of entries (legacy) or
-// { entries, country, city }. getDay() normalizes either shape.
+// { entries, country, city, reserved }. getDay() normalizes either shape.
+// `reserved` means the stay is booked; the grid tints the whole day green.
 function getDay(key) {
   const raw = data[key];
-  if (!raw) return { entries: [], country: null, city: null };
-  if (Array.isArray(raw)) return { entries: raw, country: null, city: null };
-  return { entries: raw.entries || [], country: raw.country || null, city: raw.city || null };
+  if (!raw) return { entries: [], country: null, city: null, reserved: false };
+  if (Array.isArray(raw)) return { entries: raw, country: null, city: null, reserved: false };
+  return { entries: raw.entries || [], country: raw.country || null, city: raw.city || null, reserved: !!raw.reserved };
 }
+
+// An entry is a plain string, or { text, reserved: true } once it's booked.
+// Everything that shows or edits an entry goes through these three.
+function entryText(e) { return typeof e === 'string' ? e : (e && e.text) || ''; }
+function entryReserved(e) { return !!(e && typeof e === 'object' && e.reserved); }
+function makeEntry(text, reserved) { return reserved ? { text, reserved: true } : text; }
 
 function setDayEntries(key, entries) {
   const day = getDay(key);
-  if (entries.length === 0 && !day.country && !day.city) {
+  if (entries.length === 0 && !day.country && !day.city && !day.reserved) {
     delete data[key];
     return;
   }
   const next = { entries };
   if (day.country) next.country = day.country;
   if (day.city) next.city = day.city;
+  if (day.reserved) next.reserved = true;
   data[key] = next;
 }
 
-function setDayTag(key, country, city) {
+function setDayTag(key, country, city, reserved) {
   const day = getDay(key);
-  if (day.entries.length === 0 && !country && !city) {
+  if (day.entries.length === 0 && !country && !city && !reserved) {
     delete data[key];
     return;
   }
   const next = { entries: day.entries };
   if (country) next.country = country;
   if (city) next.city = city;
+  if (reserved) next.reserved = true;
   data[key] = next;
 }
 
@@ -937,13 +962,18 @@ function isHidden(country) { return !!country && hiddenCountries.has(country); }
 
 // One entry chip. Shared by the month cells and the week columns so both
 // look and drag the same way.
-function buildEntryChip(key, txt, idx, color) {
+function buildEntryChip(key, entry, idx, color) {
+  const txt = entryText(entry);
   const e = document.createElement('div');
   e.className = 'entry';
   const label = document.createElement('span');
   label.className = 'entry-text';
   label.textContent = txt;
   e.appendChild(label);
+  if (entryReserved(entry)) {
+    e.classList.add('reserved');
+    e.appendChild(buildReservedMark());
+  }
   if (color) e.style.setProperty('--c', color);
   if (editable) {
     e.draggable = true;
@@ -956,6 +986,15 @@ function buildEntryChip(key, txt, idx, color) {
     e.addEventListener('dragend', () => { dragPayload = null; });
   }
   return e;
+}
+
+// The small green check that marks a booked entry.
+function buildReservedMark() {
+  const mark = document.createElement('span');
+  mark.className = 'entry-mark';
+  mark.textContent = '\u2713';
+  mark.title = 'Reserved';
+  return mark;
 }
 
 // Click-to-open plus drag-and-drop of entries between days. Shared by the
@@ -1013,6 +1052,7 @@ function buildDayCell(key, dayNum, size) {
 
   const muteDay = isHidden(day.country);
   const entryColor = day.country ? countryColor(day.country) : null;
+  if (day.reserved && !muteDay) td.classList.add('reserved');
   if (day.country && !muteDay) {
     td.title = day.city ? `${day.country} — ${day.city}` : day.country;
     if (day.city) {
@@ -1029,8 +1069,8 @@ function buildDayCell(key, dayNum, size) {
   const maxShown = size === 'lg' ? entries.length : (size === 'md' ? 4 : 2);
   const entriesDiv = document.createElement('div');
   entriesDiv.className = 'entries';
-  entries.slice(0, maxShown).forEach((txt, idx) => {
-    entriesDiv.appendChild(buildEntryChip(key, txt, idx, entryColor));
+  entries.slice(0, maxShown).forEach((entry, idx) => {
+    entriesDiv.appendChild(buildEntryChip(key, entry, idx, entryColor));
   });
   if (entries.length > maxShown) {
     const more = document.createElement('div');
@@ -1131,6 +1171,7 @@ function buildWeekView(start) {
 
     const col = document.createElement('div');
     col.className = 'wv-col' + (isToday ? ' today' : '');
+    if (day.reserved && !muteDay) col.classList.add('reserved');
     col.dataset.key = key;
     col.dataset.label = `${DOW_SHORT[d.getDay()]} ${d.getDate()}`;
 
@@ -1146,7 +1187,7 @@ function buildWeekView(start) {
     }
 
     const entries = muteDay ? [] : day.entries;
-    entries.forEach((txt, idx) => col.appendChild(buildEntryChip(key, txt, idx, color)));
+    entries.forEach((entry, idx) => col.appendChild(buildEntryChip(key, entry, idx, color)));
 
     attachDayInteractions(col, key, entries.length > 0);
     body.appendChild(col);
@@ -1320,8 +1361,10 @@ function entryCost(txt) {
 }
 
 // Days and cost per country, in the order the countries appear in the
-// trip. Untagged days have no country to sit under, but any cost they
-// carry still belongs to the trip, so they get an "Untagged" bucket.
+// trip, plus how much of each is already booked: reservedDays counts
+// days flagged reserved, reservedCost sums the entries flagged reserved.
+// Untagged days have no country to sit under, but any cost they carry
+// still belongs to the trip, so they get an "Untagged" bucket.
 function tripStats() {
   const rows = new Map();
   Object.keys(data)
@@ -1329,12 +1372,19 @@ function tripStats() {
     .sort()
     .forEach(key => {
       const day = getDay(key);
-      const cost = day.entries.reduce((sum, txt) => sum + entryCost(txt), 0);
+      let cost = 0, reservedCost = 0;
+      day.entries.forEach(e => {
+        const c = entryCost(entryText(e));
+        cost += c;
+        if (entryReserved(e)) reservedCost += c;
+      });
       if (!day.country && cost === 0) return;
       const name = day.country || '';
-      const row = rows.get(name) || { name, days: 0, cost: 0 };
+      const row = rows.get(name) || { name, days: 0, cost: 0, reservedDays: 0, reservedCost: 0 };
       if (day.country) row.days++;
+      if (day.country && day.reserved) row.reservedDays++;
       row.cost += cost;
+      row.reservedCost += reservedCost;
       rows.set(name, row);
     });
   return [...rows.values()];
@@ -1371,9 +1421,10 @@ function buildStatRow(label, days, cost, opts = {}) {
 }
 
 // The sidebar "Trip" box: one row per country (days there, CHF spent
-// there), then the trip total and the per-person share. Countries
-// switched off in "My calendars" stay listed but leave the totals, so
-// the box always agrees with what the grid is showing.
+// there); then what's booked vs. still to book; then the trip total,
+// the per-person share and the average per day. Countries switched off
+// in "My calendars" stay listed but leave the totals, so the box always
+// agrees with what the grid is showing.
 function renderStats() {
   statsEl.innerHTML = '';
   const rows = tripStats();
@@ -1387,10 +1438,13 @@ function renderStats() {
 
   statsEl.appendChild(buildStatRow('', 'days', 'chf', { className: 'head' }));
 
-  let totalDays = 0, totalCost = 0;
+  let totalDays = 0, totalCost = 0, reservedDays = 0, reservedCost = 0;
   rows.forEach(r => {
     const off = r.name && isHidden(r.name);
-    if (!off) { totalDays += r.days; totalCost += r.cost; }
+    if (!off) {
+      totalDays += r.days; totalCost += r.cost;
+      reservedDays += r.reservedDays; reservedCost += r.reservedCost;
+    }
     statsEl.appendChild(buildStatRow(
       r.name || 'Untagged',
       r.name ? r.days : '–',
@@ -1399,9 +1453,19 @@ function renderStats() {
     ));
   });
 
-  statsEl.appendChild(buildStatRow('Total', totalDays, formatChf(totalCost), { className: 'total' }));
+  statsEl.appendChild(buildStatRow('Reserved', reservedDays, formatChf(reservedCost), {
+    className: 'group', color: 'var(--reserved)', title: 'Days with the stay booked, and CHF of booked entries'
+  }));
+  statsEl.appendChild(buildStatRow('To book', '', formatChf(totalCost - reservedCost), {
+    title: 'CHF of entries not yet booked'
+  }));
+
+  statsEl.appendChild(buildStatRow('Total', totalDays, formatChf(totalCost), { className: 'group total' }));
   statsEl.appendChild(buildStatRow('Per person', '', formatChf(totalCost / TRAVELLERS), {
     className: 'total', title: `Total split between ${TRAVELLERS} people`
+  }));
+  statsEl.appendChild(buildStatRow('Per day', '', totalDays ? formatChf(Math.round(totalCost / totalDays)) : '–', {
+    className: 'total', title: 'Total divided by the number of days'
   }));
 }
 
@@ -1605,12 +1669,11 @@ document.addEventListener('keydown', (e) => {
 
 function openModal(key) {
   currentKey = key;
-  const [y,m,d] = key.split('-').map(Number);
-  modalDate.textContent = `${MONTH_NAMES[m-1]} ${d}, ${y}`;
+  const day = getDay(key);
+  renderModalTitle(key);
 
   tagRow.style.display = editable ? 'flex' : 'none';
   if (editable) {
-    const day = getDay(key);
     countrySelect.innerHTML = '';
     const noneOpt = document.createElement('option');
     noneOpt.value = '';
@@ -1631,6 +1694,7 @@ function openModal(key) {
     newCountryInput.style.display = 'none';
     newCountryInput.value = '';
     cityInput.value = day.city || '';
+    reservedInput.checked = day.reserved;
   }
 
   renderEntryList();
@@ -1638,6 +1702,18 @@ function openModal(key) {
   if (editable) {
     entryInput.value = '';
     entryInput.focus();
+  }
+}
+
+// Date heading, with a green "reserved" badge when the day's stay is booked.
+function renderModalTitle(key) {
+  const [y,m,d] = key.split('-').map(Number);
+  modalDate.textContent = `${MONTH_NAMES[m-1]} ${d}, ${y}`;
+  if (getDay(key).reserved) {
+    const badge = document.createElement('span');
+    badge.className = 'badge reserved-badge';
+    badge.textContent = 'reserved';
+    modalDate.appendChild(badge);
   }
 }
 
@@ -1649,9 +1725,10 @@ async function saveTag(newCountryName) {
     const used = Object.keys(data._countries).length;
     data._countries[country] = PLACEHOLDER_COLORS[used % PLACEHOLDER_COLORS.length];
   }
-  setDayTag(currentKey, country, cityInput.value.trim());
+  setDayTag(currentKey, country, cityInput.value.trim(), reservedInput.checked);
   await saveData();
   render();
+  renderModalTitle(currentKey);
 }
 
 countrySelect.addEventListener('change', () => {
@@ -1676,6 +1753,7 @@ newCountryInput.addEventListener('keydown', (e) => {
   }
 });
 cityInput.addEventListener('change', () => saveTag());
+reservedInput.addEventListener('change', () => saveTag());
 cityInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     e.preventDefault();
@@ -1692,11 +1770,35 @@ function renderEntryList() {
     li.style.color = 'var(--muted)';
     entryList.appendChild(li);
   }
-  entries.forEach((txt, idx) => {
+  entries.forEach((entry, idx) => {
+    const txt = entryText(entry);
+    const reserved = entryReserved(entry);
     const li = document.createElement('li');
+    const body = document.createElement('div');
+    body.className = 'entry-body';
+    if (editable) {
+      // Tick to mark this booking as done; the cost then counts as reserved.
+      const check = document.createElement('input');
+      check.type = 'checkbox';
+      check.className = 'entry-reserved';
+      check.checked = reserved;
+      check.title = reserved ? 'Reserved — untick to mark as not booked' : 'Mark as reserved';
+      check.addEventListener('change', async () => {
+        const updated = getDay(currentKey).entries.slice();
+        updated[idx] = makeEntry(txt, check.checked);
+        setDayEntries(currentKey, updated);
+        await saveData();
+        renderEntryList();
+        render();
+      });
+      body.appendChild(check);
+    } else if (reserved) {
+      body.appendChild(buildReservedMark());
+    }
     const span = document.createElement('span');
     span.textContent = txt;
-    li.appendChild(span);
+    body.appendChild(span);
+    li.appendChild(body);
     if (editable) {
       const actions = document.createElement('div');
       actions.className = 'entry-actions';
@@ -1732,14 +1834,15 @@ function startEditingEntry(li, span, actions, idx, originalText) {
   input.className = 'entry-edit-input';
   input.value = originalText;
   input.setAttribute('aria-label', 'Edit calendar entry');
-  li.replaceChild(input, span);
+  span.parentNode.replaceChild(input, span);
   actions.innerHTML = '';
 
   const finish = async (save) => {
     const value = input.value.trim();
     if (save && value && value !== originalText) {
       const updated = getDay(currentKey).entries.slice();
-      updated[idx] = value;
+      // Editing the text keeps the entry's reserved flag.
+      updated[idx] = makeEntry(value, entryReserved(updated[idx]));
       setDayEntries(currentKey, updated);
       await saveData();
       render();

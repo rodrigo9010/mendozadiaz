@@ -6,240 +6,313 @@
     "China": "#a97d2e",
     "Hong Kong": "#6f5497",
     "Philippines": "#358f70",
-    "Thailand": "#b85a8c",
-    "Reservado": "#00c23a"
+    "Thailand": "#b85a8c"
   },
   "2026-11-03": {
     "entries": [
-      "Vuelo reservado",
-      "Tokyo — Fare Metallo ? — 369 chf; da pagare entro il 19.10"
+      "Vuelo reservado"
     ],
-    "country": "Reservado",
+    "country": "Travel",
     "city": "Zurich"
   },
   "2026-11-04": {
     "entries": [
-      "Tokyo — airbnb — 400 chf; Riservato - pagare entro il 6 ottobre"
+      {
+        "text": "Tokyo — airbnb — 400 chf; Riservato - pagare entro il 6 ottobre",
+        "reserved": true
+      }
     ],
     "country": "Japan",
-    "city": "Tokyo"
+    "city": "Tokyo",
+    "reserved": true
   },
   "2026-11-05": {
     "entries": [],
     "country": "Japan",
-    "city": "Tokyo"
+    "city": "Tokyo",
+    "reserved": true
   },
   "2026-11-06": {
     "entries": [],
     "country": "Japan",
-    "city": "Tokyo"
+    "city": "Tokyo",
+    "reserved": true
   },
   "2026-11-07": {
     "entries": [],
     "country": "Japan",
-    "city": "Tokyo"
+    "city": "Tokyo",
+    "reserved": true
   },
   "2026-11-08": {
     "entries": [],
     "country": "Japan",
-    "city": "Tokyo"
+    "city": "Tokyo",
+    "reserved": true
   },
   "2026-11-09": {
     "entries": [
       "treno — 140 chf",
-      "Kyoto — Onyado ? — 486 chf; Riservato - Pagamento in alloggio / cxl gratis fino al 7.11"
+      {
+        "text": "Kyoto — Onyado ? — 486 chf; Riservato - Pagamento in alloggio / cxl gratis fino al 7.11",
+        "reserved": true
+      }
     ],
     "country": "Japan",
-    "city": "Kyoto"
+    "city": "Kyoto",
+    "reserved": true
   },
   "2026-11-10": {
     "entries": [],
     "country": "Japan",
-    "city": "Kyoto"
+    "city": "Kyoto",
+    "reserved": true
   },
   "2026-11-11": {
     "entries": [],
     "country": "Japan",
-    "city": "Kyoto"
+    "city": "Kyoto",
+    "reserved": true
   },
   "2026-11-12": {
     "entries": [
       "treno — 10 chf",
-      "Osaka — FDS Azur — 145 chf; Riservato - Pagamento visa il 6.11 / cxl gratis fino al 8.11"
+      {
+        "text": "Osaka — FDS Azur — 145 chf; Riservato - Pagamento visa il 6.11 / cxl gratis fino al 8.11",
+        "reserved": true
+      }
     ],
     "country": "Japan",
-    "city": "Osaka"
+    "city": "Osaka",
+    "reserved": true
   },
   "2026-11-13": {
     "entries": [],
     "country": "Japan",
-    "city": "Osaka"
+    "city": "Osaka",
+    "reserved": true
   },
   "2026-11-14": {
     "entries": [],
     "country": "Japan",
-    "city": "Osaka"
+    "city": "Osaka",
+    "reserved": true
   },
   "2026-11-15": {
     "entries": [],
     "country": "Japan",
-    "city": "Osaka"
+    "city": "Osaka",
+    "reserved": true
   },
   "2026-11-16": {
     "entries": [
       "treno — 120 chf",
-      "Hiroshima — https://www.airbnb.ch/properties/1715243639291438115?check_in=2026-11-16&check_out=2026-11-19&guests=2&adults=2&anchor_room_id=1537444940833431479&s=67&unique_share_id=80806da8-5b37-469a-9975-4a8e1fc812d6 — 225 chf; Riservato - pagare entro il 6 ottobre"
+      {
+        "text": "Hiroshima — https://www.airbnb.ch/properties/1715243639291438115?check_in=2026-11-16&check_out=2026-11-19&guests=2&adults=2&anchor_room_id=1537444940833431479&s=67&unique_share_id=80806da8-5b37-469a-9975-4a8e1fc812d6 — 225 chf; Riservato - pagare entro il 6 ottobre",
+        "reserved": true
+      }
     ],
     "country": "Japan",
-    "city": "Hiroshima"
+    "city": "Hiroshima",
+    "reserved": true
   },
   "2026-11-17": {
     "entries": [],
     "country": "Japan",
-    "city": "Hiroshima"
+    "city": "Hiroshima",
+    "reserved": true
   },
   "2026-11-18": {
     "entries": [],
     "country": "Japan",
-    "city": "Hiroshima"
+    "city": "Hiroshima",
+    "reserved": true
   },
   "2026-11-19": {
     "entries": [
       "treno — 120 chf",
-      "Fukuoka — airbnb — 362 chf; Riservato - pagare entro il 6 ottobre"
+      {
+        "text": "Fukuoka — airbnb — 362 chf; Riservato - pagare entro il 6 ottobre",
+        "reserved": true
+      }
     ],
     "country": "Japan",
-    "city": "Fukuoka"
+    "city": "Fukuoka",
+    "reserved": true
   },
   "2026-11-20": {
     "entries": [],
     "country": "Japan",
-    "city": "Fukuoka"
+    "city": "Fukuoka",
+    "reserved": true
   },
   "2026-11-21": {
     "entries": [],
     "country": "Japan",
-    "city": "Fukuoka"
+    "city": "Fukuoka",
+    "reserved": true
   },
   "2026-11-22": {
     "entries": [
-      "volo — 360 chf; Riservato",
-      "Seoul — airbnb — 565 chf; Riservato - Pagamento visa il 09.11 (cxl gratis fino al 17.11)"
+      {
+        "text": "volo — 360 chf; Riservato",
+        "reserved": true
+      },
+      {
+        "text": "Seoul — airbnb — 565 chf; Riservato - Pagamento visa il 09.11 (cxl gratis fino al 17.11)",
+        "reserved": true
+      }
     ],
     "country": "South Korea",
-    "city": "Seoul"
+    "city": "Seoul",
+    "reserved": true
   },
   "2026-11-23": {
     "entries": [],
     "country": "South Korea",
-    "city": "Seoul"
+    "city": "Seoul",
+    "reserved": true
   },
   "2026-11-24": {
     "entries": [],
     "country": "South Korea",
-    "city": "Seoul"
+    "city": "Seoul",
+    "reserved": true
   },
   "2026-11-25": {
     "entries": [],
     "country": "South Korea",
-    "city": "Seoul"
+    "city": "Seoul",
+    "reserved": true
   },
   "2026-11-26": {
     "entries": [],
     "country": "South Korea",
-    "city": "Seoul"
+    "city": "Seoul",
+    "reserved": true
   },
   "2026-11-27": {
     "entries": [
-      "volo — 228 chf; Riservato",
-      "Beijing — base-Beijing Sanlitun Serviced Apartment — 282 chf; Riservato - Pagamento visa 23.11 (cxl gratis fino al 25.11)"
+      {
+        "text": "volo — 228 chf; Riservato",
+        "reserved": true
+      },
+      {
+        "text": "Beijing — base-Beijing Sanlitun Serviced Apartment — 282 chf; Riservato - Pagamento visa 23.11 (cxl gratis fino al 25.11)",
+        "reserved": true
+      }
     ],
     "country": "China",
-    "city": "Beijing"
+    "city": "Beijing",
+    "reserved": true
   },
   "2026-11-28": {
     "entries": [],
     "country": "China",
-    "city": "Beijing"
+    "city": "Beijing",
+    "reserved": true
   },
   "2026-11-29": {
     "entries": [],
     "country": "China",
-    "city": "Beijing"
+    "city": "Beijing",
+    "reserved": true
   },
   "2026-11-30": {
     "entries": [],
     "country": "China",
-    "city": "Beijing"
+    "city": "Beijing",
+    "reserved": true
   },
   "2026-12-01": {
     "entries": [],
     "country": "China",
-    "city": "Beijing"
+    "city": "Beijing",
+    "reserved": true
   },
   "2026-12-02": {
     "entries": [
       "treno www.trip.com — 140 chf; da riservare a fine ottobre",
-      "Xi'an — Xi'an Firefly — 62 chf; Riservato - Pagamento visa? / cxl gratis fino al 02.12"
+      {
+        "text": "Xi'an — Xi'an Firefly — 62 chf; Riservato - Pagamento visa? / cxl gratis fino al 02.12",
+        "reserved": true
+      }
     ],
     "country": "China",
-    "city": "Xi'an"
+    "city": "Xi'an",
+    "reserved": true
   },
   "2026-12-03": {
     "entries": [],
     "country": "China",
-    "city": "Xi'an"
+    "city": "Xi'an",
+    "reserved": true
   },
   "2026-12-04": {
     "entries": [],
     "country": "China",
-    "city": "Xi'an"
+    "city": "Xi'an",
+    "reserved": true
   },
   "2026-12-05": {
     "entries": [
       "treno www.trip.com — 180 chf; da riservare a fine ottobre",
-      "Shanghai — Sidihome Selected City Apartment — 218 chf; Riservato - Pagamento visa? / cxl gratis fino al 01.12"
+      {
+        "text": "Shanghai — Sidihome Selected City Apartment — 218 chf; Riservato - Pagamento visa? / cxl gratis fino al 01.12",
+        "reserved": true
+      }
     ],
     "country": "China",
-    "city": "Shanghai"
+    "city": "Shanghai",
+    "reserved": true
   },
   "2026-12-06": {
     "entries": [],
     "country": "China",
-    "city": "Shanghai"
+    "city": "Shanghai",
+    "reserved": true
   },
   "2026-12-07": {
     "entries": [],
     "country": "China",
-    "city": "Shanghai"
+    "city": "Shanghai",
+    "reserved": true
   },
   "2026-12-08": {
     "entries": [],
     "country": "China",
-    "city": "Shanghai"
+    "city": "Shanghai",
+    "reserved": true
   },
   "2026-12-09": {
     "entries": [
       "treno www.trip.com — 140 chf; da riservare a fine ottobre",
-      "Chongqing — Somerset Yangtze River — 180 chf; Riservato - Pagamento in alloggio / cxl gratis fino al 08.12"
+      {
+        "text": "Chongqing — Somerset Yangtze River — 180 chf; Riservato - Pagamento in alloggio / cxl gratis fino al 08.12",
+        "reserved": true
+      }
     ],
     "country": "China",
-    "city": "Chongqing"
+    "city": "Chongqing",
+    "reserved": true
   },
   "2026-12-10": {
     "entries": [],
     "country": "China",
-    "city": "Chongqing"
+    "city": "Chongqing",
+    "reserved": true
   },
   "2026-12-11": {
     "entries": [],
     "country": "China",
-    "city": "Chongqing"
+    "city": "Chongqing",
+    "reserved": true
   },
   "2026-12-12": {
     "entries": [],
     "country": "China",
-    "city": "Chongqing"
+    "city": "Chongqing",
+    "reserved": true
   },
   "2026-12-13": {
     "entries": [
@@ -294,36 +367,48 @@
   },
   "2026-12-22": {
     "entries": [
-      "volo — 406 chf; Riservato",
-      "Bohol/Panglao — Moana — 323 chf; Riservato - Pagamento visa il 5.12"
+      {
+        "text": "volo — 406 chf; Riservato",
+        "reserved": true
+      },
+      {
+        "text": "Bohol/Panglao — Moana — 323 chf; Riservato - Pagamento visa il 5.12",
+        "reserved": true
+      }
     ],
     "country": "Philippines",
-    "city": "Bohol/Panglao"
+    "city": "Bohol/Panglao",
+    "reserved": true
   },
   "2026-12-23": {
     "entries": [],
     "country": "Philippines",
-    "city": "Bohol/Panglao"
+    "city": "Bohol/Panglao",
+    "reserved": true
   },
   "2026-12-24": {
     "entries": [],
     "country": "Philippines",
-    "city": "Bohol/Panglao"
+    "city": "Bohol/Panglao",
+    "reserved": true
   },
   "2026-12-25": {
     "entries": [],
     "country": "Philippines",
-    "city": "Bohol/Panglao"
+    "city": "Bohol/Panglao",
+    "reserved": true
   },
   "2026-12-26": {
     "entries": [],
     "country": "Philippines",
-    "city": "Bohol/Panglao"
+    "city": "Bohol/Panglao",
+    "reserved": true
   },
   "2026-12-27": {
     "entries": [],
     "country": "Philippines",
-    "city": "Bohol/Panglao"
+    "city": "Bohol/Panglao",
+    "reserved": true
   },
   "2026-12-28": {
     "entries": [
@@ -411,7 +496,7 @@
     "entries": [
       "Fly back home"
     ],
-    "country": "Reservado",
+    "country": "Travel",
     "city": "Zurich"
   }
 }

@@ -1,28 +1,28 @@
-,,,,,,,,,,,,
-,nights,Date,Location,Alloggio /  / tipo di trasporto,Costi -CHF,Per notte / person,Comments,Valuta,Payment app / cash,Internet ,Passaporto CH,Passaporto COL
-,5,04-09.11,Tokyo,airbnb,400,"40,0",Riservato - pagare entro il 6 ottobre,"Yen, 198 JPY = 1 chf","Revolut o cash --> Sì, una quota media. 
+,,,,,,,,,,,,,
+,nights,Date,Location,Alloggio /  / tipo di trasporto,Costi -CHF,Riservato,Per notte / person,Comments,Valuta,Payment app / cash,Internet ,Passaporto CH,Passaporto COL
+,5,04-09.11,Tokyo,airbnb,400,sì,"40,0",Riservato - pagare entro il 6 ottobre,"Yen, 198 JPY = 1 chf","Revolut o cash --> Sì, una quota media. 
 Ristoranti tradizionali, templi, ricariche 
 delle carte IC (Suica/Pasmo) e piccoli 
 negozi richiedono spesso contanti.",Revolut/Holafly/Airalo,"No visto, compilare 
 https://www.vjw.digital.go.jp/main/#/vjwplo001","Visto a Berna, compilare 
-https://www.vjw.digital.go.jp/main/#/vjwplo001"
-,1,09.11,,treno,140,"70,0",,,,,,
-,3,09-12.11,Kyoto,Onyado ?,486,"81,0",Riservato - Pagamento in alloggio / cxl gratis fino al 7.11,,,,,
-,1,12.11,,treno,10,"5,0",,,,,,
-,4,12-16.11,Osaka,FDS Azur,145,"18,1",Riservato - Pagamento visa il 6.11 / cxl gratis fino al 8.11,,,,,
-,1,16.11,,treno,120,"60,0",,,,,,
-,3,16-19.11,Hiroshima,https://www.airbnb.ch/properties/1715243639291438115?check_in=2026-11-16&check_out=2026-11-19&guests=2&adults=2&anchor_room_id=1537444940833431479&s=67&unique_share_id=80806da8-5b37-469a-9975-4a8e1fc812d6,225,"37,5",Riservato - pagare entro il 6 ottobre,,,,,
-,1,19.11,,treno,120,"60,0",,,,,,
-,3,19-22.11,Fukuoka,airbnb,362,"60,3",Riservato - pagare entro il 6 ottobre,,,,,
-,1,22.11,,volo,360,"180,0",Riservato,,,,,
-,5,22-27.11,Seoul,airbnb,565,"56,5",Riservato - Pagamento visa il 09.11 (cxl gratis fino al 17.11),"Won, 1.730 KRW = 1 chf","Sì, una piccola quota. La carta si usa 
+https://www.vjw.digital.go.jp/main/#/vjwplo001",
+,1,09.11,,treno,140,,"70,0",,,,,,,
+,3,09-12.11,Kyoto,Onyado ?,486,sì,"81,0",Riservato - Pagamento in alloggio / cxl gratis fino al 7.11,,,,,,
+,1,12.11,,treno,10,,"5,0",,,,,,,
+,4,12-16.11,Osaka,FDS Azur,145,sì,"18,1",Riservato - Pagamento visa il 6.11 / cxl gratis fino al 8.11,,,,,,
+,1,16.11,,treno,120,,"60,0",,,,,,,
+,3,16-19.11,Hiroshima,https://www.airbnb.ch/properties/1715243639291438115?check_in=2026-11-16&check_out=2026-11-19&guests=2&adults=2&anchor_room_id=1537444940833431479&s=67&unique_share_id=80806da8-5b37-469a-9975-4a8e1fc812d6,225,sì,"37,5",Riservato - pagare entro il 6 ottobre,,,,,,
+,1,19.11,,treno,120,,"60,0",,,,,,,
+,3,19-22.11,Fukuoka,airbnb,362,sì,"60,3",Riservato - pagare entro il 6 ottobre,,,,,,
+,1,22.11,,volo,360,sì,"180,0",Riservato,,,,,,
+,5,22-27.11,Seoul,airbnb,565,sì,"56,5",Riservato - Pagamento visa il 09.11 (cxl gratis fino al 17.11),"Won, 1.730 KRW = 1 chf","Sì, una piccola quota. La carta si usa 
 quasi ovunque, ma il contante serve 
 per ricaricare la carta dei trasporti 
 (T-Money) e nei mercati di strada.",Con E-SIM funziona internet,"No visto, compilare l'e-card 
 https://www.e-arrivalcard.go.kr/portal/main/index.do","No visto, ma k-eta obbligatorio: 
-https://www.k-eta.go.kr/portal/newapply/index.do"
-,1,27.11,,volo,228,"114,0",Riservato,,,,,
-,5,27.11-02.12,Beijing,base-Beijing Sanlitun Serviced Apartment,282,"28,2",Riservato - Pagamento visa 23.11 (cxl gratis fino al 25.11),"Yuan, 8.4 CNY = 1 chf","No cash. Devi collegare la tua carta Revolut 
+https://www.k-eta.go.kr/portal/newapply/index.do",
+,1,27.11,,volo,228,sì,"114,0",Riservato,,,,,,
+,5,27.11-02.12,Beijing,base-Beijing Sanlitun Serviced Apartment,282,sì,"28,2",Riservato - Pagamento visa 23.11 (cxl gratis fino al 25.11),"Yuan, 8.4 CNY = 1 chf","No cash. Devi collegare la tua carta Revolut 
 alle app Alipay e WeChat Pay. Una volta 
 collegate, pagherai in Cina semplicemente 
 mostrando o scansionando i QR code tramite
@@ -30,45 +30,45 @@ Alipay/WeChat Pay, ed i soldi verranno scalati
 direttamente dal tuo conto Revolut.",Revolut/Holafly/Airalo,"No visto,  arrival card
 https://s.nia.gov.cn/ArrivalCardFillingPhone/service-instruction","Visto visaforchina.cn,
 arrival card
-https://s.nia.gov.cn/ArrivalCardFillingPhone/service-instruction"
-,1,2.12,,treno www.trip.com,140,"70,0", da riservare a fine ottobre,,,,,
-,3,02.12-05.12,Xi'an,Xi'an Firefly,62,"10,3",Riservato - Pagamento visa? / cxl gratis fino al 02.12,,,,,
-,1,05.12,,treno www.trip.com,180,"90,0", da riservare a fine ottobre,,,,,
-,5,05.12-09.12,Shanghai,Sidihome Selected City Apartment,218,"21,8",Riservato - Pagamento visa? / cxl gratis fino al 01.12,,,,,
-,1,09.12,,treno www.trip.com,140,"70,0", da riservare a fine ottobre,,,,,
-,4,09-13.12,Chongqing,Somerset Yangtze River ,180,"22,5",Riservato - Pagamento in alloggio / cxl gratis fino al 08.12,,,,,
-,1,13.12,,treno www.trip.com,120,"60,0", da riservare a fine ottobre,,,,,
+https://s.nia.gov.cn/ArrivalCardFillingPhone/service-instruction",
+,1,2.12,,treno www.trip.com,140,,"70,0", da riservare a fine ottobre,,,,,,
+,3,02.12-05.12,Xi'an,Xi'an Firefly,62,sì,"10,3",Riservato - Pagamento visa? / cxl gratis fino al 02.12,,,,,,
+,1,05.12,,treno www.trip.com,180,,"90,0", da riservare a fine ottobre,,,,,,
+,5,05.12-09.12,Shanghai,Sidihome Selected City Apartment,218,sì,"21,8",Riservato - Pagamento visa? / cxl gratis fino al 01.12,,,,,,
+,1,09.12,,treno www.trip.com,140,,"70,0", da riservare a fine ottobre,,,,,,
+,4,09-13.12,Chongqing,Somerset Yangtze River ,180,sì,"22,5",Riservato - Pagamento in alloggio / cxl gratis fino al 08.12,,,,,,
+,1,13.12,,treno www.trip.com,120,,"60,0", da riservare a fine ottobre,,,,,,
 ,3,13-18.12,Guangzhou,"hotel
 hotel
-hotel",,,,,,,,
-,1,18.12,,treno www.trip.com,50,, da riservare a fine ottobre,,,,,
+hotel",,,,,,,,,,
+,1,18.12,,treno www.trip.com,50,,, da riservare a fine ottobre,,,,,,
 ,5,18-22.12,Hongkong,"hotel
-airbnb ",,"0,0",,"Dollaro, 9.8 HKD = 1 chf","Octopus Card per trasporti, minimarket ecc",Revolut/Holafly/Airalo,"No visto, no arrival card","No visto, no arrival card"
-,1,22.12,,volo,406,"203,0",Riservato,,,,,
-,6,22-28.12,Bohol/Panglao,Moana,323,"26,9",Riservato - Pagamento visa il 5.12,"Peso, 77 PHP = 1 chf","Sì, una quota alta. Fuori dai grandi centri 
+airbnb ",,,"0,0",,"Dollaro, 9.8 HKD = 1 chf","Octopus Card per trasporti, minimarket ecc",Revolut/Holafly/Airalo,"No visto, no arrival card","No visto, no arrival card",
+,1,22.12,,volo,406,sì,"203,0",Riservato,,,,,,
+,6,22-28.12,Bohol/Panglao,Moana,323,sì,"26,9",Riservato - Pagamento visa il 5.12,"Peso, 77 PHP = 1 chf","Sì, una quota alta. Fuori dai grandi centri 
 e sulle isole (es. el Nido, Bohol, Siargao) 
 per tricicli, tour e piccolissimi locali serve 
 contante.",Revolut/Holafly/Airalo,"No visto, compilare l'e-card
 https://etravel.gov.ph/","No visto, compilare l'e-card
-https://etravel.gov.ph/"
-,1,28.12,,ferry,20,"10,0",da riservare un mese prima!!,,,,,
-,2,28-31.12,Cebu,hotel,130,"32,5",,,,,,
-,1,31.12,,volo,100,"50,0",,,,,,
-,5,31.12-06.01,Boracay,hotel,400,"40,0",,"Bath, 41 THB = 1 chf","Sì, una quota medio-alta. Per street food, 
+https://etravel.gov.ph/",
+,1,28.12,,ferry,20,,"10,0",da riservare un mese prima!!,,,,,,
+,2,28-31.12,Cebu,hotel,130,,"32,5",,,,,,,
+,1,31.12,,volo,100,,"50,0",,,,,,,
+,5,31.12-06.01,Boracay,hotel,400,,"40,0",,"Bath, 41 THB = 1 chf","Sì, una quota medio-alta. Per street food, 
 mercati, taxi/tuk-tuk e massaggi serve il 
 contante. I bancomat applicano una 
 commissione fissa di 220 THB (~5.50 CHF) 
 a ritiro.",Revolut/Holafly/Airalo,"No visto, compilare l'e-card
 https://www.ivisa.com/thailand/ppc-lp/dac?lpid=l-apply-now-131&ivclid=Cj0KCQjw16_UBhCqARIsAIdOaXxOhIFvu245ee3yjeF4nMT3e_cXUzRJu5IizZhkM7AIyq1RxC--9qwaApmkEALw_wcB&utm_source=google&utm_medium=cpc&utm_campaign=23308890943&utm_term=thailand%20digital%20arrival%20card&utm_content=190150699438&lid=1003297&product_id=11109&nationality=&gad_source=1&gad_campaignid=23308890943&gbraid=0AAAAA9l3Hab3EN5e_NSfgm9GxSy0PabCW&gclid=Cj0KCQjw16_UBhCqARIsAIdOaXxOhIFvu245ee3yjeF4nMT3e_cXUzRJu5IizZhkM7AIyq1RxC--9qwaApmkEALw_wcB","No visto, compilare l'e-card
-https://www.ivisa.com/thailand/ppc-lp/dac?lpid=l-apply-now-131&ivclid=Cj0KCQjw16_UBhCqARIsAIdOaXxOhIFvu245ee3yjeF4nMT3e_cXUzRJu5IizZhkM7AIyq1RxC--9qwaApmkEALw_wcB&utm_source=google&utm_medium=cpc&utm_campaign=23308890943&utm_term=thailand%20digital%20arrival%20card&utm_content=190150699438&lid=1003297&product_id=11109&nationality=&gad_source=1&gad_campaignid=23308890943&gbraid=0AAAAA9l3Hab3EN5e_NSfgm9GxSy0PabCW&gclid=Cj0KCQjw16_UBhCqARIsAIdOaXxOhIFvu245ee3yjeF4nMT3e_cXUzRJu5IizZhkM7AIyq1RxC--9qwaApmkEALw_wcB"
-,1,06.01,,volo,100,"50,0",,,,,,
-,6,06-07.01,Manila,City Garden,70,"5,8",,,,,,
-,1,07.01,,volo,300,"150,0",,,,,,
-,2,07-11.01,Bkk,Somerset,345,"86,3",,,,,,
-,,,,totale,6727,"3363,5",,,,,,
-,,,,,,,,,,,,
-,,,,,,,,,,,,
-,,,,,270,,,,,,,
-,,,,,,,,,,,,
-,,,,,,,,,,,,
-,,,,,,"58,4",,,,,,
+https://www.ivisa.com/thailand/ppc-lp/dac?lpid=l-apply-now-131&ivclid=Cj0KCQjw16_UBhCqARIsAIdOaXxOhIFvu245ee3yjeF4nMT3e_cXUzRJu5IizZhkM7AIyq1RxC--9qwaApmkEALw_wcB&utm_source=google&utm_medium=cpc&utm_campaign=23308890943&utm_term=thailand%20digital%20arrival%20card&utm_content=190150699438&lid=1003297&product_id=11109&nationality=&gad_source=1&gad_campaignid=23308890943&gbraid=0AAAAA9l3Hab3EN5e_NSfgm9GxSy0PabCW&gclid=Cj0KCQjw16_UBhCqARIsAIdOaXxOhIFvu245ee3yjeF4nMT3e_cXUzRJu5IizZhkM7AIyq1RxC--9qwaApmkEALw_wcB",
+,1,06.01,,volo,100,,"50,0",,,,,,,
+,6,06-07.01,Manila,City Garden,70,,"5,8",,,,,,,
+,1,07.01,,volo,300,,"150,0",,,,,,,
+,2,07-11.01,Bkk,Somerset,345,,"86,3",,,,,,,
+,,,,totale,6727,,"3363,5",,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,270,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,"58,4",,,,,,,

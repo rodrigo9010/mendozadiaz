@@ -6,6 +6,9 @@
 // The CSV may have quoted, multi-line cells (as exported by spreadsheet apps).
 // Add an optional `Country` column for new destinations. Without it, the
 // COUNTRY_BY_LOCATION map below supplies the country for the current itinerary.
+// A `Riservato` column marks a row as booked: its entry is written as
+// { text, reserved: true } instead of a plain string, and a booked stay also
+// flags each of its days with reserved: true (the calendar tints them green).
 const fs = require('fs');
 const path = require('path');
 
@@ -70,6 +73,12 @@ function findHeader(headers, prefix, fallback) {
   return headers.find(header => header.toLowerCase().startsWith(prefix)) || fallback;
 }
 
+// The Riservato column is a yes/no cell; accept the spellings a sheet is
+// likely to hold. Anything else (including empty) means not booked.
+function isReserved(value) {
+  return /^(s[iì]|yes|y|x|true|1|ok|\u2713)$/i.test(clean(value));
+}
+
 function isoDate(year, month, day) {
   return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
@@ -123,7 +132,8 @@ function main() {
   if (!headers.includes('Location')) throw new Error('CSV must contain a Location column.');
   const columns = {
     stay: findHeader(headers, 'alloggio', 'Alloggio / / tipo di trasporto'),
-    cost: findHeader(headers, 'costi', 'Costi')
+    cost: findHeader(headers, 'costi', 'Costi'),
+    reserved: findHeader(headers, 'riservato', 'Riservato')
   };
   const dateIndex = rows.indexOf(headerRow);
   const imported = {};
@@ -141,7 +151,9 @@ function main() {
     if (!parsed.single && end <= start) throw new Error(`Row ${dateIndex + offset + 2}: end date must be after start date.`);
     const location = clean(row.Location);
     const country = clean(row.Country) || COUNTRY_BY_LOCATION[location];
-    const entry = buildEntry(row, location, columns);
+    const reserved = isReserved(row[columns.reserved]);
+    const text = buildEntry(row, location, columns);
+    const entry = text && reserved ? { text, reserved: true } : text;
     const dates = parsed.single ? [start] : Array.from({ length: Math.round((end - start) / 86400000) }, (_, i) => addDays(start, i));
     const rowEnd = parsed.single ? addDays(start, 1) : end;
     if (!windowStart || start < windowStart) windowStart = start;
@@ -152,6 +164,7 @@ function main() {
       const key = keyFor(date);
       const day = imported[key] || { entries: [] };
       if (location) { day.country = country; day.city = location; }
+      if (location && reserved) day.reserved = true;
       if (index === 0 && entry) day.entries.push(entry);
       imported[key] = day;
     });
