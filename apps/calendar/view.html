@@ -46,9 +46,9 @@
     --faint: #5c5c5c;        /* de-emphasised text */
     --on-accent: #ffffff;    /* text on an accent fill */
     --coral: #d67350;        /* drop-target / danger states */
-    --reserved: #5fc482;     /* booked: entry check marks, stats */
-    --reserved-tint: rgba(95,196,130,0.14);       /* booked day cells */
-    --reserved-tint-hover: rgba(95,196,130,0.22);
+    --reserved: #00c23a;     /* booked: day frame, check marks, stats */
+    --reserved-tint: rgba(0,194,58,0.25);         /* booked day fill, 25% */
+    --reserved-tint-hover: rgba(0,194,58,0.33);
     --sidebar-w: 232px;
     --font-stack: "Commit Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   }
@@ -380,8 +380,9 @@
   tbody tr:last-child td { border-bottom: none; }
   td.clickable { cursor: pointer; transition: background 0.15s; }
   td.clickable:hover { background: var(--hover); }
-  /* Days whose stay is booked: a light green wash over the whole cell. */
-  td.reserved { background: var(--reserved-tint); }
+  /* Days whose stay is booked: green fill at 25%, solid green frame
+     (inset so collapsed borders don't shift; today's frame wins). */
+  td.reserved { background: var(--reserved-tint); box-shadow: inset 0 0 0 1px var(--reserved); }
   td.reserved.clickable:hover { background: var(--reserved-tint-hover); }
   /* Days outside the month: blank cells, so the grid stays a clean 6x7. */
   td.other-month { background: transparent; }
@@ -517,7 +518,7 @@
   .wv-col:first-child { border-left: none; }
   .wv-col.clickable { cursor: pointer; }
   .wv-col.clickable:hover { background: var(--hover); }
-  .wv-col.reserved { background: var(--reserved-tint); }
+  .wv-col.reserved { background: var(--reserved-tint); box-shadow: inset 0 0 0 1px var(--reserved); }
   .wv-col.reserved.clickable:hover { background: var(--reserved-tint-hover); }
   .wv-col.today { background: var(--accent-tint); }
   .wv-col.today.clickable:hover { background: var(--accent-tint); }
