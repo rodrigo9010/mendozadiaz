@@ -17,8 +17,9 @@ const START_YEAR = Number(process.argv[3] || 2026);
 const COUNTRY_BY_LOCATION = {
   Tokyo: 'Japan', Kyoto: 'Japan', Osaka: 'Japan', Hiroshima: 'Japan', Fukuoka: 'Japan',
   Seoul: 'South Korea', Beijing: 'China', "Xi'an": 'China', Shanghai: 'China', Chongqing: 'China',
-  'Zhangjiajie / Wu Lingyuan': 'China', Hongkong: 'Hong Kong', 'Hong Kong': 'Hong Kong',
-  'Bohol/Panglao': 'Philippines', Manila: 'Philippines', Bkk: 'Thailand', Bangkok: 'Thailand', 'Ko Chang': 'Thailand'
+  Guangzhou: 'China', 'Zhangjiajie / Wu Lingyuan': 'China', Hongkong: 'Hong Kong', 'Hong Kong': 'Hong Kong',
+  'Bohol/Panglao': 'Philippines', Cebu: 'Philippines', Boracay: 'Philippines', Manila: 'Philippines',
+  Bkk: 'Thailand', Bangkok: 'Thailand', 'Ko Chang': 'Thailand'
 };
 
 const PLACEHOLDER_COLORS = ['#7a8f99', '#a97d5d', '#6b9b7a', '#9b6b8f', '#7d8f5d', '#5d7d8f'];
@@ -46,6 +47,27 @@ function parseCsv(text) {
 
 function clean(value) {
   return (value || '').replace(/\s+/g, ' ').trim();
+}
+
+// Spreadsheet cells may stack several values on their own lines ("hotel\nairbnb").
+// Keep them distinct instead of running the words together.
+function cleanLines(value) {
+  const parts = (value || '').split('\n').map(clean).filter(Boolean);
+  return [...new Set(parts)].join(' / ');
+}
+
+// Costs used to carry their unit ("369 chf"); newer sheets put the currency in
+// the column header and leave the cell a bare number.
+function formatCost(value) {
+  const text = clean(value);
+  if (!text) return '';
+  return /^[\d.,'\u2019]+$/.test(text) ? `${text} chf` : text;
+}
+
+// Header names drift between CSV versions (Costi -> "Costi -CHF"), so match on
+// the stable prefix rather than the exact string.
+function findHeader(headers, prefix, fallback) {
+  return headers.find(header => header.toLowerCase().startsWith(prefix)) || fallback;
 }
 
 function isoDate(year, month, day) {
@@ -83,9 +105,9 @@ function yearFor(month) {
   return START_YEAR + (month < 7 ? 1 : 0);
 }
 
-function buildEntry(row, location) {
-  const transportOrStay = clean(row['Alloggio / / tipo di trasporto']);
-  const costs = clean(row.Costi);
+function buildEntry(row, location, columns) {
+  const transportOrStay = cleanLines(row[columns.stay]);
+  const costs = formatCost(row[columns.cost]);
   const comments = clean(row.Comments);
   const details = [costs, comments].filter(Boolean).join('; ');
   if (!location) return [transportOrStay, details].filter(Boolean).join(' — ');
@@ -99,6 +121,10 @@ function main() {
   if (!headerRow) throw new Error('Could not find a header row containing a Date column.');
   const headers = headerRow.map(clean);
   if (!headers.includes('Location')) throw new Error('CSV must contain a Location column.');
+  const columns = {
+    stay: findHeader(headers, 'alloggio', 'Alloggio / / tipo di trasporto'),
+    cost: findHeader(headers, 'costi', 'Costi')
+  };
   const dateIndex = rows.indexOf(headerRow);
   const imported = {};
   let windowStart = null;
@@ -115,7 +141,7 @@ function main() {
     if (!parsed.single && end <= start) throw new Error(`Row ${dateIndex + offset + 2}: end date must be after start date.`);
     const location = clean(row.Location);
     const country = clean(row.Country) || COUNTRY_BY_LOCATION[location];
-    const entry = buildEntry(row, location);
+    const entry = buildEntry(row, location, columns);
     const dates = parsed.single ? [start] : Array.from({ length: Math.round((end - start) / 86400000) }, (_, i) => addDays(start, i));
     const rowEnd = parsed.single ? addDays(start, 1) : end;
     if (!windowStart || start < windowStart) windowStart = start;
