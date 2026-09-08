@@ -40,20 +40,18 @@ and does the actual `fs.writeFileSync` on your behalf.
 | File | Purpose | Status |
 |---|---|---|
 | `data.json` | The data store: a `_countries` color legend plus one entry per date, `{ "YYYY-MM-DD": { "country", "city", "entries": [...] } }` | done |
-| `Itinerario-v2.csv` | Canonical booking itinerary, maintained in a spreadsheet. It is imported directly into `data.json` | done |
+| `Itinerary-v3.csv` | Canonical booking itinerary, maintained in a spreadsheet. It is imported directly into `data.json` | done |
 | `csv-to-json.js` | Imports the CSV into `data.json`, including quoted multi-line cells, accommodation ranges, transport days, and country/city tags | done |
 | `itinerary.md` | Optional readable, English source for manually curated day-by-day entries | done |
 | `md-to-json.js` | Regenerates `data.json` from `itinerary.md` — run with `node md-to-json.js` | done |
-| `try-write.js` | Minimal proof-of-concept: a Node script that reads, modifies, and writes `data.json` directly — no server, no browser yet | done (throwaway, not used by the app) |
 | `server.js` | Local HTTP server: serves `view.html` and exposes `/data` (read) and `/save` (write) endpoints | done |
 | `view.html` | The calendar UI — edit mode locally (via `server.js`), read-only view mode on the public site (via static `data.json`) | done |
 | `COMMANDS.md` | Quick copy-paste command reference for running the local editor and regenerating `data.json` | done |
 
 ## Concepts covered so far
 
-**Step 1 — prove the write mechanism in isolation.**
-Before wiring up any UI, `try-write.js` shows the exact read/modify/write
-pattern everything else builds on:
+**Step 1 — the write mechanism in isolation.**
+Everything else builds on one read/modify/write pattern:
 
 ```js
 const data = JSON.parse(fs.readFileSync(dataPath, 'utf8')); // read
@@ -61,22 +59,9 @@ data[key].push('...');                                       // modify in memory
 fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));    // write back
 ```
 
-This is the same three-step pattern `server.js` runs every time the
-page asks it to save an entry — the only difference is *what triggers
-it* (running the script by hand vs. an HTTP request from a browser).
-
-### How to run `try-write.js`
-
-On your own machine, in a terminal, inside your local clone of this repo:
-
-```
-cd apps/calendar
-node try-write.js
-```
-
-This appends a test entry to `data.json` and prints the result. Reset
-`data.json` back to `{}` afterward so the next step starts clean — this
-script is a throwaway proof, not part of the final app.
+This is the three-step pattern `server.js` runs every time the page
+asks it to save an entry; the only question was ever *what triggers it*
+(a script run by hand vs. an HTTP request from a browser).
 
 **Step 2 — a browser-triggered version of the same write.**
 `server.js` is a plain Node `http` server (no npm install, no
@@ -86,9 +71,9 @@ three things:
 1. `GET /` → serves `view.html`.
 2. `GET /data` → reads `data.json` and sends it to the browser as JSON.
 3. `POST /save` → receives the browser's updated JSON in the request
-   body, and runs the exact same `fs.writeFileSync` pattern
-   `try-write.js` proved works — just triggered by an HTTP request
-   instead of you running a script.
+   body, and runs the exact same `fs.writeFileSync` pattern shown
+   above — just triggered by an HTTP request instead of you running
+   a script.
 
 ```js
 // before (didn't actually work in a plain browser):
@@ -215,7 +200,7 @@ including this one.
 
 ## Workflow summary
 
-1. Edit `Itinerario-v2.csv` in a spreadsheet, then run `cd apps/calendar && node csv-to-json.js`.
+1. Edit `Itinerary-v3.csv` in a spreadsheet, then run `cd apps/calendar && node csv-to-json.js`.
 2. Optionally run `node server.js` and make small manual changes at `http://localhost:5500`.
 3. Stop the server (`Ctrl+C`) when done editing, then from the repo root: `git add`, `commit`, `push`.
 4. The public page at `mendozadiaz.ch/apps/calendar/view.html`

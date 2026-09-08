@@ -14,7 +14,7 @@ when done.
 
 ## 2. Import the itinerary CSV into data.json
 
-Edit `apps/calendar/Itinerario-v2.csv`, then:
+Edit `apps/calendar/Itinerary-v3.csv`, then:
 
 ```
 cd apps/calendar && node csv-to-json.js

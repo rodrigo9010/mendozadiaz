@@ -1,7 +1,7 @@
 // Imports the trip-planning CSV into data.json.
 //
 // Usage: node csv-to-json.js [input.csv] [start-year]
-// Example: node csv-to-json.js Itinerario-v2.csv 2026
+// Example: node csv-to-json.js Itinerary-v3.csv 2026
 //
 // The CSV may have quoted, multi-line cells (as exported by spreadsheet apps).
 // Add an optional `Country` column for new destinations. Without it, the
@@ -10,7 +10,7 @@ const fs = require('fs');
 const path = require('path');
 
 const DATA_PATH = path.join(__dirname, 'data.json');
-const inputName = process.argv[2] || 'Itinerario-v2.csv';
+const inputName = process.argv[2] || 'Itinerary-v3.csv';
 const CSV_PATH = path.resolve(__dirname, inputName);
 const START_YEAR = Number(process.argv[3] || 2026);
 
@@ -165,11 +165,13 @@ function main() {
   Object.values(imported).forEach(day => {
     if (day.country && !countries[day.country]) countries[day.country] = PLACEHOLDER_COLORS[colorIndex++ % PLACEHOLDER_COLORS.length];
   });
-  // The CSV owns one continuous trip window. Clear old values through the
-  // checkout boundary first, so shortening a stay cannot leave stale calendar
-  // days behind.
+  // The CSV owns one continuous trip window. Clear old values inside it first,
+  // so shortening a stay cannot leave stale calendar days behind. The window
+  // ends on the last stay's checkout day, which no row ever writes to, so it is
+  // left alone — clearing it would only delete hand-added entries (the flight
+  // home, say) that the CSV knows nothing about.
   const merged = { ...existing };
-  for (let date = new Date(windowStart); date <= windowEnd; date = addDays(date, 1)) delete merged[keyFor(date)];
+  for (let date = new Date(windowStart); date < windowEnd; date = addDays(date, 1)) delete merged[keyFor(date)];
   Object.assign(merged, imported);
   delete merged._countries;
   const output = { _countries: countries };
