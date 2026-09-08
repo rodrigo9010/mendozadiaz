@@ -72,44 +72,33 @@
     padding: 2rem 1rem;
   }
   .dash { width: 100%; max-width: 640px; margin-block: auto; text-align: center; }
-  .header { text-align: center; margin-bottom: 1.5rem; }
-  .label {
-    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--text-dim); margin-bottom: 0.35rem;
-  }
-  .title { font-size: 26px; font-weight: 500; }
   .controls {
-    display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 1.25rem;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px; margin-bottom: 1.25rem;
   }
-  .control { flex: 1; min-width: 180px; }
-  .control-wide { flex-basis: 100%; }
+  .control { min-width: 0; }
+  .control-wide { grid-column: 1 / -1; }
   .hint { font-size: 11px; color: var(--text-dim); margin: 8px 0 0; line-height: 1.6; }
   .control label {
     display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 5px;
   }
   input {
-    width: 100%; padding: 8px 10px;
+    display: block; width: 100%; min-width: 0; max-width: 100%;
+    min-height: 38px; padding: 8px 10px; text-align: center;
     background: var(--surface); color: var(--text);
     border: 1px solid var(--border); border-radius: 8px;
     font-size: 14px; font-family: inherit;
   }
-  input { text-align: center; min-width: 0; }
+  input[type="date"] {
+    -webkit-appearance: none; appearance: none;
+  }
+  input[type="date"]::-webkit-date-and-time-value { text-align: center; }
+  input[type="date"]::-webkit-datetime-edit { min-width: 0; padding: 0; }
   .calculators { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 1.25rem; }
   .calculators .control { min-width: 0; padding: 1rem; }
   .balance { display: flex; flex-direction: column; align-items: center; gap: 5px; margin: 20px 0 10px; color: var(--accent); text-align: center; }
   .balance-value { font-size: clamp(28px, 5vw, 36px); line-height: 1.1; overflow-wrap: anywhere; max-width: 100%; }
   .balance-unit { font-size: 12px; line-height: 1.4; }
-  @media (max-width: 480px) {
-    body { padding: 1.5rem 12px; }
-    .timer-grid, .grid { gap: 6px; }
-    .tnum { font-size: clamp(20px, 7vw, 34px) !important; }
-    .num { font-size: 24px; }
-    .cap { font-size: 9px; letter-spacing: 0.03em; }
-    .row { gap: 12px; font-size: 11px; text-align: left; }
-    .row .v { text-align: right; }
-    .prog-head { gap: 12px; font-size: 11px; }
-    .balance { margin-top: 16px; }
-  }
   input:focus { outline: none; border-color: var(--accent); }
   .grid {
     display: grid; grid-template-columns: repeat(4, 1fr);
@@ -181,6 +170,18 @@
     background: var(--accent); animation: p 2s infinite;
   }
   @keyframes p { 0%,100%{opacity:1} 50%{opacity:0.25} }
+  @media (max-width: 480px) {
+    .controls { grid-template-columns: minmax(0, 1fr); }
+    body { padding: 1.5rem 12px; }
+    .timer-grid, .grid { gap: 6px; }
+    .tnum { font-size: clamp(20px, 7vw, 34px); }
+    .num { font-size: 24px; }
+    .cap { font-size: 9px; letter-spacing: 0.03em; }
+    .row { gap: 12px; font-size: 11px; text-align: left; }
+    .row .v { text-align: right; }
+    .prog-head { gap: 12px; font-size: 11px; }
+    .balance { margin-top: 16px; }
+  }
 </style>
 </head>
 <body>
