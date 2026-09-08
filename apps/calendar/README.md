@@ -144,7 +144,8 @@ Under "My calendars" a "Trip" box lists, per country, how many days are
 tagged with it and how many CHF were spent there; then how much is
 already booked ("Reserved", see Step 2.11) and how much is still "To
 book"; then the trip total, the per-person share (`TRAVELLERS` in the
-config block, 2 by default) and the average per day. Nothing is stored
+config block, 2 by default), the average per day and the average per
+day per person. Nothing is stored
 for this: costs are read straight out of the entry text, any
 `<number> chf` an entry contains (`treno — 140 chf`,
 `Kyoto — Onyado — 486 chf; …`), so the numbers follow whatever is in

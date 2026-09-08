@@ -1464,8 +1464,12 @@ function renderStats() {
   statsEl.appendChild(buildStatRow('Per person', '', formatChf(totalCost / TRAVELLERS), {
     className: 'total', title: `Total split between ${TRAVELLERS} people`
   }));
-  statsEl.appendChild(buildStatRow('Per day', '', totalDays ? formatChf(Math.round(totalCost / totalDays)) : '–', {
+  const perDay = totalDays ? totalCost / totalDays : 0;
+  statsEl.appendChild(buildStatRow('Per day', '', totalDays ? formatChf(Math.round(perDay)) : '–', {
     className: 'total', title: 'Total divided by the number of days'
+  }));
+  statsEl.appendChild(buildStatRow('Per day each', '', totalDays ? formatChf(Math.round(perDay / TRAVELLERS)) : '–', {
+    className: 'total', title: `Per day, split between ${TRAVELLERS} people`
   }));
 }
 
