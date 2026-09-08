@@ -56,27 +56,27 @@
   /* -----------------------------------------------------------------
      PAGE SHELL
      `body` is a full-height flex column. `main` is the single visible
-     block, capped at `max-width` and horizontally centered.
-     - `padding` here is the OUTER margin around everything (top/bottom
-       via 6vh, left/right via the clamp — shrinks on narrow screens,
-       caps at 3rem on wide ones).
+     block, anchored to the top-left rather than centered.
+     - `padding` here is the OUTER margin around everything: the first
+       value is the gap above the text, the clamp is the left/right
+       inset (shrinks on narrow screens, caps at 3rem on wide ones).
      ------------------------------------------------------------- */
   body {
     font-family: "Commit Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
     font-weight: 300;
     display: flex;
     align-items: stretch;        /* lets main fill the full height so .contact can pin to the bottom */
-    justify-content: center;     /* horizontally centers main */
+    justify-content: flex-start; /* text block sits against the left edge */
     min-height: 100vh;
-    padding: 6vh clamp(1.25rem, 6vw, 3rem);
+    padding: 2.75rem clamp(1.5rem, 4vw, 3rem) 2rem;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 
   main {
-    max-width: 40rem;   /* overall column width — widen/narrow the whole page here */
+    max-width: 48rem;   /* overall column width — widen/narrow the whole page here */
     width: 100%;
-    text-align: center;
+    text-align: left;
     animation: fade-in 0.6s ease-out;
 
     /* Two-row layout: row 1 (.intro) gets all the leftover space and
@@ -86,7 +86,7 @@
        just move its HTML between the .intro and .contact divs below. */
     display: grid;
     grid-template-rows: 1fr auto;
-    align-items: center;
+    align-items: start;   /* content hangs from the top instead of centering */
   }
 
   @keyframes fade-in {
@@ -117,11 +117,11 @@
   /* Top intro line: "Rodrigo Mendoza Diaz is a trained architect..." */
   .tagline {
     font-weight: 300;
-    font-size: clamp(0.82rem, 1.8vw, 0.95rem);
-    line-height: 1.7;
+    font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+    line-height: 1.55;
     color: var(--fg);
-    margin: 0 auto 0.85rem;
-    max-width: 38rem;   /* text column width — increase/decrease to move the wrap point */
+    margin: 0 0 1.4rem;
+    max-width: 46rem;   /* text column width — increase/decrease to move the wrap point */
   }
 
   /* "Currently Senior Consultant at ..." line */
@@ -130,8 +130,8 @@
     font-size: 0.8rem;
     line-height: 1.7;
     color: var(--muted);
-    margin: 0 auto 2rem;   /* space below this line, before the education list */
-    max-width: 38rem;
+    margin: 0 0 2.4rem;   /* space below this line, before the education list */
+    max-width: 46rem;
   }
 
   .role a {
@@ -147,8 +147,8 @@
 
   /* Education list block (the four degree lines) */
   .education {
-    margin: 0 auto 2.75rem;
-    max-width: 38rem;
+    margin: 0 0 2.75rem;
+    max-width: 46rem;
   }
 
   .education p {
@@ -177,8 +177,8 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
-    gap: 0.9rem;              /* space between the nav links */
+    justify-content: flex-start;
+    gap: 1.25rem;             /* space between the nav links */
     font-size: 0.72rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
