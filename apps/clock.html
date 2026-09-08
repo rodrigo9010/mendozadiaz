@@ -96,7 +96,9 @@
   input { text-align: center; min-width: 0; }
   .calculators { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 1.25rem; }
   .calculators .control { min-width: 0; padding: 1rem; }
-  .balance { display: block; margin: 16px 0 6px; color: var(--accent); font-size: 22px; overflow-wrap: anywhere; }
+  .balance { display: flex; flex-direction: column; align-items: center; gap: 5px; margin: 20px 0 10px; color: var(--accent); text-align: center; }
+  .balance-value { font-size: clamp(28px, 5vw, 36px); line-height: 1.1; overflow-wrap: anywhere; max-width: 100%; }
+  .balance-unit { font-size: 12px; line-height: 1.4; }
   @media (max-width: 480px) {
     body { padding: 1.5rem 12px; }
     .timer-grid, .grid { gap: 6px; }
@@ -106,7 +108,7 @@
     .row { gap: 12px; font-size: 11px; text-align: left; }
     .row .v { text-align: right; }
     .prog-head { gap: 12px; font-size: 11px; }
-    .balance { font-size: 18px; }
+    .balance { margin-top: 16px; }
   }
   input:focus { outline: none; border-color: var(--accent); }
   .grid {
@@ -276,13 +278,13 @@
     <div class="card control">
       <label for="overtime">Overtime hours</label>
       <input type="number" id="overtime" value="0" min="0" step="any">
-      <output class="balance" id="compensate" for="overtime hpd" aria-live="polite">0 days</output>
+      <output class="balance" id="compensate" for="overtime hpd" aria-live="polite"><span class="balance-value">0</span><span class="balance-unit">days</span></output>
       <div class="cap">To compensate</div>
     </div>
     <div class="card control">
       <label for="vacation">Vacation hours</label>
       <input type="number" id="vacation" value="0" min="0" step="any">
-      <output class="balance" id="vacations-left" for="vacation hpd" aria-live="polite">0 days</output>
+      <output class="balance" id="vacations-left" for="vacation hpd" aria-live="polite"><span class="balance-value">0</span><span class="balance-unit">days</span></output>
       <div class="cap">Vacations left</div>
     </div>
   </div>
@@ -437,9 +439,10 @@ function updateBalances() {
     const input = $(inputId);
     const valid = validDailyHours && input.value !== '' && input.checkValidity();
     const days = Number(input.value) / dailyHours;
-    $(outputId).textContent = valid
-      ? new Intl.NumberFormat('en-CH', { maximumFractionDigits: 2 }).format(days) + (days === 1 ? ' day' : ' days')
+    $(outputId).querySelector('.balance-value').textContent = valid
+      ? new Intl.NumberFormat('en-CH', { maximumFractionDigits: 2 }).format(days)
       : '—';
+    $(outputId).querySelector('.balance-unit').textContent = valid && days === 1 ? 'day' : 'days';
   });
 }
 hpdInput.addEventListener('input', () => { tick(); updateBalances(); });
