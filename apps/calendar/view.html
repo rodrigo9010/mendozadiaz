@@ -243,6 +243,35 @@
   }
   .legend-add:hover { background: var(--hover); color: var(--accent); }
 
+  /* ---- Trip stats (days + cost per country, totals) ---- */
+  .stats { display: flex; flex-direction: column; gap: 1px; }
+  .stat-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    column-gap: 10px;
+    align-items: center;
+    font-size: 0.78rem;
+    padding: 3px 4px;
+    border-radius: 3px;
+    min-width: 0;
+  }
+  .stat-row:hover { background: var(--hover); }
+  .stat-row.head { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); padding-bottom: 2px; }
+  .stat-row.head:hover { background: none; }
+  .stat-name { display: flex; align-items: center; gap: 7px; min-width: 0; }
+  .stat-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .stat-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c, var(--muted)); flex: none; }
+  .stat-num { color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; min-width: 2.2em; }
+  .stat-num.cost { min-width: 4.4em; }
+  /* Countries switched off in the calendar list drop out of the totals. */
+  .stat-row.off .stat-name, .stat-row.off .stat-num { color: var(--faint); }
+  .stat-row.off .stat-dot { opacity: 0.35; }
+  .stat-row.total { margin-top: 5px; padding-top: 6px; border-top: 1px solid var(--line); border-radius: 0; }
+  .stat-row.total .stat-num { color: var(--ink); }
+  .stat-row.total + .stat-row.total { margin-top: 0; padding-top: 3px; border-top: none; }
+  .stat-row.total .stat-name { color: var(--ink); }
+  .stat-empty { font-size: 0.75rem; color: var(--faint); padding: 3px 4px; }
+
   /* ==================== TOP BAR ==================== */
   .topbar {
     display: flex;
@@ -641,6 +670,10 @@
       <h2 class="sidebar-title">My calendars</h2>
       <div class="legend" id="legend"></div>
     </div>
+    <div class="sidebar-section">
+      <h2 class="sidebar-title">Trip</h2>
+      <div class="stats" id="stats"></div>
+    </div>
   </aside>
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
@@ -718,6 +751,13 @@ const PLACEHOLDER_COLORS = ['#7a8f99', '#a97d5d', '#6b9b7a', '#9b6b8f', '#7d8f5d
 // step by a single week.
 const WEEKS_PER_PAGE = 1;
 
+// The sidebar "Trip" box splits the total cost between this many people.
+const TRAVELLERS = 2;
+
+// Costs are read straight out of entry text: any "<number> chf" it
+// contains, e.g. "treno — 140 chf" or "Kyoto — Onyado — 486 chf; …".
+const COST_RE = /(\d[\d'\u2019.,]*)\s*chf\b/gi;
+
 // First day of the week: 0 = Sunday, 1 = Monday. Drives the month grid,
 // the week view and the mini calendar alike — change this one number to
 // switch the whole page over.
@@ -779,6 +819,7 @@ const miniNext = document.getElementById('miniNext');
 const tripViewBtn = document.getElementById('tripViewBtn');
 const weekViewBtn = document.getElementById('weekViewBtn');
 const legendEl = document.getElementById('legend');
+const statsEl = document.getElementById('stats');
 const tagRow = document.getElementById('tagRow');
 const countrySelect = document.getElementById('countrySelect');
 const newCountryInput = document.getElementById('newCountryInput');
@@ -1262,6 +1303,109 @@ function renderLegend() {
 }
 
 // ============================================================
+// TRIP STATS (sidebar)
+// ============================================================
+
+// Sum of every "<number> chf" in one entry's text. Accepts Swiss and
+// Italian spellings: 1'200 / 1’200 / 1.200 (thousands), 40,5 (decimals).
+function entryCost(txt) {
+  let total = 0;
+  for (const m of String(txt).matchAll(COST_RE)) {
+    let n = m[1].replace(/['\u2019]/g, '');
+    if (/^\d{1,3}(\.\d{3})+$/.test(n)) n = n.replace(/\./g, '');
+    const v = parseFloat(n.replace(',', '.'));
+    if (Number.isFinite(v)) total += v;
+  }
+  return total;
+}
+
+// Days and cost per country, in the order the countries appear in the
+// trip. Untagged days have no country to sit under, but any cost they
+// carry still belongs to the trip, so they get an "Untagged" bucket.
+function tripStats() {
+  const rows = new Map();
+  Object.keys(data)
+    .filter(k => k !== '_countries')
+    .sort()
+    .forEach(key => {
+      const day = getDay(key);
+      const cost = day.entries.reduce((sum, txt) => sum + entryCost(txt), 0);
+      if (!day.country && cost === 0) return;
+      const name = day.country || '';
+      const row = rows.get(name) || { name, days: 0, cost: 0 };
+      if (day.country) row.days++;
+      row.cost += cost;
+      rows.set(name, row);
+    });
+  return [...rows.values()];
+}
+
+function formatChf(v) {
+  return v.toLocaleString('de-CH', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
+
+function buildStatRow(label, days, cost, opts = {}) {
+  const row = document.createElement('div');
+  row.className = 'stat-row' + (opts.className ? ' ' + opts.className : '');
+  const name = document.createElement('span');
+  name.className = 'stat-name';
+  if (opts.color !== undefined) {
+    const dot = document.createElement('span');
+    dot.className = 'stat-dot';
+    if (opts.color) dot.style.setProperty('--c', opts.color);
+    name.appendChild(dot);
+  }
+  const text = document.createElement('span');
+  text.className = 'stat-label';
+  text.textContent = label;
+  name.appendChild(text);
+  name.title = opts.title || label;
+  const d = document.createElement('span');
+  d.className = 'stat-num';
+  d.textContent = days;
+  const c = document.createElement('span');
+  c.className = 'stat-num cost';
+  c.textContent = cost;
+  row.append(name, d, c);
+  return row;
+}
+
+// The sidebar "Trip" box: one row per country (days there, CHF spent
+// there), then the trip total and the per-person share. Countries
+// switched off in "My calendars" stay listed but leave the totals, so
+// the box always agrees with what the grid is showing.
+function renderStats() {
+  statsEl.innerHTML = '';
+  const rows = tripStats();
+  if (rows.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'stat-empty';
+    empty.textContent = 'No tagged days yet.';
+    statsEl.appendChild(empty);
+    return;
+  }
+
+  statsEl.appendChild(buildStatRow('', 'days', 'chf', { className: 'head' }));
+
+  let totalDays = 0, totalCost = 0;
+  rows.forEach(r => {
+    const off = r.name && isHidden(r.name);
+    if (!off) { totalDays += r.days; totalCost += r.cost; }
+    statsEl.appendChild(buildStatRow(
+      r.name || 'Untagged',
+      r.name ? r.days : '–',
+      r.cost ? formatChf(r.cost) : '–',
+      { color: r.name ? countryColor(r.name) : null, className: off ? 'off' : '' }
+    ));
+  });
+
+  statsEl.appendChild(buildStatRow('Total', totalDays, formatChf(totalCost), { className: 'total' }));
+  statsEl.appendChild(buildStatRow('Per person', '', formatChf(totalCost / TRAVELLERS), {
+    className: 'total', title: `Total split between ${TRAVELLERS} people`
+  }));
+}
+
+// ============================================================
 // MINI CALENDAR (sidebar)
 // ============================================================
 
@@ -1360,6 +1504,7 @@ function clampBlockStart(d) {
 function render() {
   monthsEl.innerHTML = '';
   renderLegend();
+  renderStats();
 
   if (viewMode === 'week') {
     if (!weekStart) weekStart = new Date(TRIP_FIRST_WEEK);

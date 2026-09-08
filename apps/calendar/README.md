@@ -139,6 +139,19 @@ at any zoom level, limited to whichever days are currently on screen
 (so moving between two different months means zooming out to Trip, or
 navigating Month view to bring both into view first).
 
+**Step 2.10 — trip stats in the sidebar.**
+Under "My calendars" a "Trip" box lists, per country, how many days are
+tagged with it and how many CHF were spent there, followed by the trip
+total and the per-person share (`TRAVELLERS` in the config block, 2 by
+default). Nothing is stored for this: costs are read straight out of the
+entry text, any `<number> chf` an entry contains (`treno — 140 chf`,
+`Kyoto — Onyado — 486 chf; …`), so the numbers follow whatever is in
+`data.json`. Swiss and Italian number spellings (`1'200`, `1.200`,
+`40,5`) all parse. Switching a country off in "My calendars" dims its
+row and drops it from the totals, so the box always agrees with the
+grid. A cost on a day with no country tag is still counted, under an
+"Untagged" row.
+
 **Step 3 → Step 4 — one file, auto-detecting mode.**
 Originally the editor (`editor.html`) and the public viewer
 (`viewer.html`) were two separate files sharing most of their markup/
