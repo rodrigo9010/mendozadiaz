@@ -39,9 +39,8 @@ and does the actual `fs.writeFileSync` on your behalf.
 
 | File | Purpose | Status |
 |---|---|---|
-| `data.json` | The data store: a `_countries` color legend plus one entry per date, `{ "YYYY-MM-DD": { "country", "city", "reserved", "entries": [...] } }`. An entry is a string, or `{ "text", "reserved": true }` once booked | done |
-| `Itinerary-v3.csv` | Canonical booking itinerary, maintained in a spreadsheet. It is imported directly into `data.json` | done |
-| `csv-to-json.js` | Imports the CSV into `data.json`, including quoted multi-line cells, accommodation ranges, transport days, and country/city tags | done |
+| `data.json` | The data store and source of truth: a `_countries` color legend plus one entry per date, `{ "YYYY-MM-DD": { "country", "city", "reserved", "entries": [...] } }`. An entry is a string, or `{ "text", "reserved": true }` once booked | done |
+| `csv-to-json.js` | One-off import: given a booking-itinerary CSV exported from a spreadsheet, merges it into `data.json` (quoted multi-line cells, accommodation ranges, transport days, country/city tags). The CSV itself is not kept in the repo — delete it after importing | done |
 | `itinerary.md` | Optional readable, English source for manually curated day-by-day entries | done |
 | `md-to-json.js` | Regenerates `data.json` from `itinerary.md` — run with `node md-to-json.js` | done |
 | `server.js` | Local HTTP server: serves `view.html` and exposes `/data` (read) and `/save` (write) endpoints | done |
@@ -236,7 +235,7 @@ including this one.
 
 ## Workflow summary
 
-1. Edit `Itinerary-v3.csv` in a spreadsheet, then run `cd apps/calendar && node csv-to-json.js`.
+1. Export the itinerary spreadsheet as CSV, then run `cd apps/calendar && node csv-to-json.js <file.csv>` to merge it into `data.json`, then delete the CSV.
 2. Optionally run `node server.js` and make small manual changes at `http://localhost:5500`.
 3. Stop the server (`Ctrl+C`) when done editing, then from the repo root: `git add`, `commit`, `push`.
 4. The public page at `mendozadiaz.ch/apps/calendar/view.html`

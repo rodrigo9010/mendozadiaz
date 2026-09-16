@@ -1,7 +1,7 @@
 // Imports the trip-planning CSV into data.json.
 //
-// Usage: node csv-to-json.js [input.csv] [start-year]
-// Example: node csv-to-json.js Itinerary-v3.csv 2026
+// Usage: node csv-to-json.js <input.csv> [start-year]
+// Example: node csv-to-json.js Itinerario-v6.csv 2026
 //
 // The CSV may have quoted, multi-line cells (as exported by spreadsheet apps).
 // Add an optional `Country` column for new destinations. Without it, the
@@ -9,11 +9,17 @@
 // A `Riservato` column marks a row as booked: its entry is written as
 // { text, reserved: true } instead of a plain string, and a booked stay also
 // flags each of its days with reserved: true (the calendar tints them green).
+// Newer sheets may drop that column and fold the status into Comments instead
+// (a cell starting with "Riservato"); both forms are recognized.
+//
+// The CSV is a one-time input, not kept in the repo — data.json is the
+// source of truth afterward. Delete the CSV once it's imported.
 const fs = require('fs');
 const path = require('path');
 
 const DATA_PATH = path.join(__dirname, 'data.json');
-const inputName = process.argv[2] || 'Itinerary-v3.csv';
+const inputName = process.argv[2];
+if (!inputName) throw new Error('Usage: node csv-to-json.js <input.csv> [start-year]');
 const CSV_PATH = path.resolve(__dirname, inputName);
 const START_YEAR = Number(process.argv[3] || 2026);
 
@@ -79,6 +85,12 @@ function isReserved(value) {
   return /^(s[iì]|yes|y|x|true|1|ok|\u2713)$/i.test(clean(value));
 }
 
+// Newer sheets drop the dedicated Riservato column and fold the status into
+// the Comments cell instead (e.g. "Riservato - pagare entro il 6 ottobre").
+function isReservedComment(value) {
+  return /^riservato\b/i.test(clean(value));
+}
+
 function isoDate(year, month, day) {
   return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
@@ -133,25 +145,31 @@ function main() {
   const columns = {
     stay: findHeader(headers, 'alloggio', 'Alloggio / / tipo di trasporto'),
     cost: findHeader(headers, 'costi', 'Costi'),
-    reserved: findHeader(headers, 'riservato', 'Riservato')
+    reserved: headers.includes('Riservato') || headers.find(header => header.toLowerCase().startsWith('riservato'))
+      ? findHeader(headers, 'riservato', 'Riservato')
+      : null
   };
   const dateIndex = rows.indexOf(headerRow);
   const imported = {};
   let windowStart = null;
   let windowEnd = null;
   let records = 0;
+  const seenRows = new Set();
 
   rows.slice(dateIndex + 1).forEach((cells, offset) => {
     const row = Object.fromEntries(headers.map((header, index) => [header, cells[index] || '']));
     const rawDate = clean(row.Date);
     if (!rawDate) return;
+    const signature = cells.join('|');
+    if (seenRows.has(signature)) return;
+    seenRows.add(signature);
     const parsed = parseDateRange(rawDate);
     const start = toDate(yearFor(parsed.startMonth), parsed.startMonth, parsed.startDay);
     const end = toDate(yearFor(parsed.endMonth), parsed.endMonth, parsed.endDay);
     if (!parsed.single && end <= start) throw new Error(`Row ${dateIndex + offset + 2}: end date must be after start date.`);
     const location = clean(row.Location);
     const country = clean(row.Country) || COUNTRY_BY_LOCATION[location];
-    const reserved = isReserved(row[columns.reserved]);
+    const reserved = columns.reserved ? isReserved(row[columns.reserved]) : isReservedComment(row.Comments);
     const text = buildEntry(row, location, columns);
     const entry = text && reserved ? { text, reserved: true } : text;
     const dates = parsed.single ? [start] : Array.from({ length: Math.round((end - start) / 86400000) }, (_, i) => addDays(start, i));

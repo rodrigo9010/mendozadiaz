@@ -10,7 +10,7 @@
   },
   "2026-11-03": {
     "entries": [
-      "Vuelo reservado"
+      "volo — 673,5 chf"
     ],
     "country": "Travel",
     "city": "Zurich"
@@ -18,7 +18,7 @@
   "2026-11-04": {
     "entries": [
       {
-        "text": "Tokyo — airbnb — 400 chf; Riservato - pagare entro il 6 ottobre",
+        "text": "Tokyo — airbnb — 400 chf; Riservato - già pagato, not refundable",
         "reserved": true
       }
     ],
@@ -54,7 +54,7 @@
     "entries": [
       "treno — 140 chf",
       {
-        "text": "Kyoto — Onyado ? — 486 chf; Riservato - Pagamento in alloggio / cxl gratis fino al 7.11",
+        "text": "Kyoto — Onyado — 486 chf; Riservato - Pagamento in alloggio / cxl gratis fino al 7.11",
         "reserved": true
       }
     ],
@@ -108,7 +108,7 @@
     "entries": [
       "treno — 120 chf",
       {
-        "text": "Hiroshima — https://www.airbnb.ch/properties/1715243639291438115?check_in=2026-11-16&check_out=2026-11-19&guests=2&adults=2&anchor_room_id=1537444940833431479&s=67&unique_share_id=80806da8-5b37-469a-9975-4a8e1fc812d6 — 225 chf; Riservato - pagare entro il 6 ottobre",
+        "text": "Hiroshima — https://www.airbnb.ch/properties/1715243639291438115?check_in=2026-11-16&check_out=2026-11-19&guests=2&adults=2&anchor_room_id=1537444940833431479&s=67&unique_share_id=80806da8-5b37-469a-9975-4a8e1fc812d6 — 225 chf; Riservato - già pagato, not refundable",
         "reserved": true
       }
     ],
@@ -132,7 +132,7 @@
     "entries": [
       "treno — 120 chf",
       {
-        "text": "Fukuoka — airbnb — 362 chf; Riservato - pagare entro il 6 ottobre",
+        "text": "Fukuoka — airbnb — 362 chf; Riservato - già pagato, not refundable",
         "reserved": true
       }
     ],
@@ -258,7 +258,7 @@
     "entries": [
       "treno www.trip.com — 180 chf; da riservare a fine ottobre",
       {
-        "text": "Shanghai — Sidihome Selected City Apartment — 218 chf; Riservato - Pagamento visa? / cxl gratis fino al 01.12",
+        "text": "Shanghai — Sidihome Selected City Apartment — 174 chf; Riservato - Pagamento visa? / cxl gratis fino al 01.12",
         "reserved": true
       }
     ],
@@ -288,7 +288,7 @@
     "entries": [
       "treno www.trip.com — 140 chf; da riservare a fine ottobre",
       {
-        "text": "Chongqing — Somerset Yangtze River — 180 chf; Riservato - Pagamento in alloggio / cxl gratis fino al 08.12",
+        "text": "Chongqing — Somerset Yangtze River — 170 chf; Riservato - Pagamento in alloggio / cxl gratis fino al 08.12",
         "reserved": true
       }
     ],
@@ -317,53 +317,68 @@
   "2026-12-13": {
     "entries": [
       "treno www.trip.com — 120 chf; da riservare a fine ottobre",
-      "Guangzhou — hotel"
+      {
+        "text": "Guangzhou — hotel — 365 chf; Riservato - Pagamento in alloggio / cxl gratis fino al 12.12",
+        "reserved": true
+      }
     ],
     "country": "China",
-    "city": "Guangzhou"
+    "city": "Guangzhou",
+    "reserved": true
   },
   "2026-12-14": {
     "entries": [],
     "country": "China",
-    "city": "Guangzhou"
+    "city": "Guangzhou",
+    "reserved": true
   },
   "2026-12-15": {
     "entries": [],
     "country": "China",
-    "city": "Guangzhou"
+    "city": "Guangzhou",
+    "reserved": true
   },
   "2026-12-16": {
     "entries": [],
     "country": "China",
-    "city": "Guangzhou"
+    "city": "Guangzhou",
+    "reserved": true
   },
   "2026-12-17": {
     "entries": [],
     "country": "China",
-    "city": "Guangzhou"
+    "city": "Guangzhou",
+    "reserved": true
   },
   "2026-12-18": {
     "entries": [
       "treno www.trip.com — 50 chf; da riservare a fine ottobre",
-      "Hongkong — hotel / airbnb"
+      {
+        "text": "Hong Kong — Hotel rodrigo — 519 chf; Riservato - già pagato, not refundable",
+        "reserved": true
+      }
     ],
     "country": "Hong Kong",
-    "city": "Hongkong"
+    "city": "Hong Kong",
+    "reserved": true
   },
   "2026-12-19": {
     "entries": [],
     "country": "Hong Kong",
-    "city": "Hongkong"
+    "city": "Hong Kong",
+    "reserved": true
   },
   "2026-12-20": {
     "entries": [],
     "country": "Hong Kong",
-    "city": "Hongkong"
+    "city": "Hong Kong",
+    "reserved": true
   },
   "2026-12-21": {
     "entries": [],
     "country": "Hong Kong",
-    "city": "Hongkong"
+    "city": "Hong Kong",
+    "reserved": true
   },
   "2026-12-22": {
     "entries": [
@@ -372,7 +387,7 @@
         "reserved": true
       },
       {
-        "text": "Bohol/Panglao — Moana — 323 chf; Riservato - Pagamento visa il 5.12",
+        "text": "Bohol/Panglao — moana dive resort — 321 chf; Riservato - Pagamento visa il 5.12",
         "reserved": true
       }
     ],
@@ -413,88 +428,114 @@
   "2026-12-28": {
     "entries": [
       "ferry — 20 chf; da riservare un mese prima!!",
-      "Cebu — hotel — 130 chf"
+      {
+        "text": "Cebu — astillo's guest house — 130 chf; Riservato - Pagamento visa l'11.12",
+        "reserved": true
+      }
     ],
     "country": "Philippines",
-    "city": "Cebu"
+    "city": "Cebu",
+    "reserved": true
   },
   "2026-12-29": {
     "entries": [],
     "country": "Philippines",
-    "city": "Cebu"
+    "city": "Cebu",
+    "reserved": true
   },
   "2026-12-30": {
     "entries": [],
     "country": "Philippines",
-    "city": "Cebu"
+    "city": "Cebu",
+    "reserved": true
   },
   "2026-12-31": {
     "entries": [
       "volo — 100 chf",
-      "Boracay — hotel — 400 chf"
+      {
+        "text": "Boracay — bale mi — 273 chf; Riservato - Pagamento visa il 14.12",
+        "reserved": true
+      }
     ],
     "country": "Philippines",
-    "city": "Boracay"
+    "city": "Boracay",
+    "reserved": true
   },
   "2027-01-01": {
     "entries": [],
     "country": "Philippines",
-    "city": "Boracay"
+    "city": "Boracay",
+    "reserved": true
   },
   "2027-01-02": {
     "entries": [],
     "country": "Philippines",
-    "city": "Boracay"
+    "city": "Boracay",
+    "reserved": true
   },
   "2027-01-03": {
     "entries": [],
     "country": "Philippines",
-    "city": "Boracay"
+    "city": "Boracay",
+    "reserved": true
   },
   "2027-01-04": {
     "entries": [],
     "country": "Philippines",
-    "city": "Boracay"
+    "city": "Boracay",
+    "reserved": true
   },
   "2027-01-05": {
     "entries": [],
     "country": "Philippines",
-    "city": "Boracay"
+    "city": "Boracay",
+    "reserved": true
   },
   "2027-01-06": {
     "entries": [
       "volo — 100 chf",
-      "Manila — City Garden — 70 chf"
+      {
+        "text": "Manila — City Garden — 74 chf; Riservato - Pagamento visa il 31.12",
+        "reserved": true
+      }
     ],
     "country": "Philippines",
-    "city": "Manila"
+    "city": "Manila",
+    "reserved": true
   },
   "2027-01-07": {
     "entries": [
       "volo — 300 chf",
-      "Bkk — Somerset — 345 chf"
+      {
+        "text": "Bkk — Somerset — 307 chf; Riservato - Pagamento visa il 03.01",
+        "reserved": true
+      }
     ],
     "country": "Thailand",
-    "city": "Bkk"
+    "city": "Bkk",
+    "reserved": true
   },
   "2027-01-08": {
     "entries": [],
     "country": "Thailand",
-    "city": "Bkk"
+    "city": "Bkk",
+    "reserved": true
   },
   "2027-01-09": {
     "entries": [],
     "country": "Thailand",
-    "city": "Bkk"
+    "city": "Bkk",
+    "reserved": true
   },
   "2027-01-10": {
     "entries": [],
     "country": "Thailand",
-    "city": "Bkk"
+    "city": "Bkk",
+    "reserved": true
   },
   "2027-01-11": {
     "entries": [
-      "Fly back home"
+      "Fly back home — volo — 673,5 chf"
     ],
     "country": "Travel",
     "city": "Zurich"
