@@ -243,7 +243,7 @@
   </div>
 
   <div class="timer">
-    <div class="timer-label">Work time left</div>
+    <div class="timer-label">Net work time left</div>
     <div class="timer-grid">
       <div class="tcard"><div class="tnum" id="w-dd">--</div><div class="cap">Workdays</div></div>
       <div class="tcard"><div class="tnum" id="w-hh">--</div><div class="cap">Hours</div></div>
@@ -251,6 +251,7 @@
       <div class="tcard"><div class="tnum" id="w-ss">--</div><div class="cap">Sec</div></div>
     </div>
     <p class="hint" id="work-status" aria-live="polite"></p>
+    <p class="hint">Overtime and remaining vacation hours are deducted.</p>
   </div>
 
   <div class="controls">
@@ -283,7 +284,7 @@
       <div class="cap">To compensate</div>
     </div>
     <div class="card control">
-      <label for="vacation">Vacation hours</label>
+      <label for="vacation">Vacation hours left</label>
       <input type="number" id="vacation" value="0" min="0" step="any">
       <output class="balance" id="vacations-left" for="vacation hpd" aria-live="polite"><span class="balance-value">0</span><span class="balance-unit">days</span></output>
       <div class="cap">Vacations left</div>
@@ -421,7 +422,14 @@ function tick() {
     return;
   }
   const hours = Number(hpdInput.value);
-  const remaining = workTimeRemaining(now, end, hours);
+  const balances = [$('overtime'), $('vacation')];
+  if (balances.some(input => !input.checkValidity())) {
+    ['dd', 'hh', 'mm', 'ss'].forEach(unit => $('w-' + unit).textContent = '--');
+    $('work-status').textContent = 'Enter zero or positive overtime and vacation hours.';
+    return;
+  }
+  const creditHours = balances.reduce((total, input) => total + Number(input.value), 0);
+  const remaining = Math.max(0, workTimeRemaining(now, end, hours) - creditHours * 3600000);
   renderTimer('w', remaining, Math.round(hours * 3600));
   const time = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600;
   const active = isWorkday(now.getUTCDay()) && time >= 8.5 && time < 8.5 + hours;
@@ -447,8 +455,9 @@ function updateBalances() {
   });
 }
 hpdInput.addEventListener('input', () => { tick(); updateBalances(); });
-$('overtime').addEventListener('input', updateBalances);
-$('vacation').addEventListener('input', updateBalances);
+['overtime', 'vacation'].forEach(id => {
+  $(id).addEventListener('input', () => { updateBalances(); tick(); });
+});
 updateBalances();
 mpwInput.addEventListener('input', update);
 
