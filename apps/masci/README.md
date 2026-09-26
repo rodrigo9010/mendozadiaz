@@ -1,7 +1,7 @@
-# Moche
+# Masci
 
-Open `/apps/moche/` to view the animated tanuki terminal mask. The **create**
-button opens the image converter at `/apps/moche/create.html`. No backend, installation, or image uploads
+Open `/apps/masci/` to view the animated tanuki terminal mask. The **create**
+button opens the image converter at `/apps/masci/create.html`. No backend, installation, or image uploads
 are required. The page exports plain text and the Python converter's
 `{w, h, c, l}` glyph JSON format.
 
@@ -11,7 +11,7 @@ For a local preview, run this from the repository root:
 python3 -m http.server 8000
 ```
 
-Then visit http://localhost:8000/apps/moche/ (use HTTP rather than opening the
+Then visit http://localhost:8000/apps/masci/ (use HTTP rather than opening the
 HTML file directly, so the browser can load `tanuki_ascii.txt`).
 
 Choose an image, adjust columns, background tolerance, or cell aspect, then

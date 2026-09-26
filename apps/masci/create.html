@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Moche — ASCII studio</title>
+<title>Masci — ASCII studio</title>
 <style>
 :root { color-scheme: dark; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #10120f; color: #e6e8db; }
 * { box-sizing: border-box; }
@@ -32,7 +32,7 @@ footer { display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-betwe
 </head>
 <body>
 <main>
-<header><div><h1>Moche / ASCII studio</h1><p><a href="./">← back to tanuki</a></p><p>An image, rebuilt in characters.</p></div><p>Images stay in your browser.</p></header>
+<header><div><h1>Masci / ASCII studio</h1><p><a href="./">← back to tanuki</a></p><p>An image, rebuilt in characters.</p></div><p>Images stay in your browser.</p></header>
 <div class="controls">
 <label>Source image<input id="image" type="file" accept="image/*"></label>
 <label>Columns<input id="cols" type="number" min="20" max="300" step="1" value="180"></label>
@@ -118,7 +118,7 @@ $('convert').addEventListener('click', convert);
 $('sample').addEventListener('click', sample);
 $('fit').addEventListener('click', () => { fit = true; resize(); });
 $('actual').addEventListener('click', () => { fit = false; resize(); });
-$('download').addEventListener('click', () => download(text, 'text/plain', 'moche.txt'));
+$('download').addEventListener('click', () => download(text, 'text/plain', 'masci.txt'));
 $('json').addEventListener('click', () => { if (glyphs) download(JSON.stringify(glyphs), 'application/json', 'fig.json'); });
 new ResizeObserver(resize).observe($('stage'));
 sample();
