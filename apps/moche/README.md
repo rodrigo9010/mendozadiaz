@@ -30,6 +30,7 @@ available through the Python script; crop browser inputs before selecting them.
 
 The landing animation uses `tanuki.js` and `tanuki.css`, shared with
 `Tanuki mask, terminal.html`. Motion follows elapsed time at the display refresh
-rate, with smoothly scrolling rain. Click the artwork or press Space to pause;
+rate, with smoothly scrolling rain. The mask appears in a staggered downward
+sweep over roughly five seconds, with each glyph fading in over 1.1 seconds. Click the artwork or press Space to pause;
 press R to replay. Reduced-motion preferences show a static mask. Animation
 pauses in background tabs, and resizing preserves the revealed mask.

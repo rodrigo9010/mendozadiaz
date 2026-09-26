@@ -27,14 +27,15 @@ function layout(){
  FONT=`${Math.floor(ch*0.92)}px ui-monospace,"SF Mono",Menlo,Consolas,"DejaVu Sans Mono",monospace`;ctx.font=FONT;
  ctx.textAlign='center';ctx.textBaseline='middle';
  const keep=map;cells=[];
+ const columnDelay=Array.from({length:FIG.w},()=>Math.random()*1100);
  for(let y=0;y<FIG.h;y++)for(let x=0;x<FIG.w;x++){const c=+FIG.c[y][x];if(!c)continue;
   const old=keep&&keep.get(y*FIG.w+x);
-  cells.push(old||{x,y,c,l:+FIG.l[y][x]/9,g:pick(G[c]),rev:reduce?1:0,flash:0});}
+  cells.push(old||{x,y,c,l:+FIG.l[y][x]/9,g:pick(G[c]),rev:reduce?1:0,revealAt:150+columnDelay[x]+y/FIG.h*2400+Math.random()*250,flash:0});}
  map=new Map();cells.forEach(k=>map.set(k.y*FIG.w+k.x,k));
  drops=[];for(let x=0;x<cols;x++)drops.push(newDrop(true));
 }
 let map,FONT;
-function newDrop(init){return{y:init?-Math.random()*rows*1.2:-Math.random()*20,v:0.35+Math.random()*0.7,len:8+Math.random()*22|0,g:[]}}
+function newDrop(init){return{y:init?-Math.random()*rows*1.2:-Math.random()*20,v:0.5+Math.random()*0.95,len:8+Math.random()*22|0,g:[]}}
 function cellColor(k){
  const l=Math.min(1,k.l+k.flash*0.6);
  if(k.c==5)return mix(tok.g3,tok.pale,0.3+l*0.7);
@@ -51,7 +52,7 @@ function draw(delta=0){
  for(let x=0;x<cols;x++){const d=drops[x];const hy=Math.floor(d.y);
   for(let i=0;i<d.len;i++){const y=hy-i;if(y<1||y>=rows)continue;
    const fx=x-ox,fy=y-oy,k=(fx>=0&&fx<FIG.w&&fy>=0&&fy<FIG.h)?map.get(fy*FIG.w+fx):null;
-   if(k){if(i==0){if(!k.rev){k.rev=1;k.flash=1;}lit.add(k);}continue;}
+   if(k){if(i===0&&k.rev===1)lit.add(k);continue;}
    if(!d.g[i]||(frames>0&&Math.random()<1-Math.pow(0.98,frames)))d.g[i]=pick(G.rain);
    const a=1-i/d.len;
    ctx.fillStyle=i==0?mix(tok.bg,tok.head,0.95):mix(tok.bg,tok.rain,a*0.85);
@@ -62,8 +63,10 @@ function draw(delta=0){
   if(frames>0&&Math.random()<1-Math.pow(0.996,frames))k.g=pick(G[k.c]);
   if(lit.has(k))k.flash=Math.max(k.flash,0.5);
   if(k.flash>0.02||!k.col){k.col=cellColor(k);if(k.flash<=0.02)k.cached=1;}ctx.fillStyle=k.col;
+  ctx.globalAlpha=k.rev;
   ctx.fillText(k.g,(k.x+ox)*cw+cw/2,(k.y+oy)*ch+ch/2);
   k.flash*=Math.pow(0.9,frames);if(k.flash<0.02&&k.flash>0){k.flash=0;k.col=null;}}
+ ctx.globalAlpha=1;
  // fret bands
  ctx.fillStyle=mix(tok.bg,tok.g2,0.5);
  for(let x=0;x<cols;x++){ctx.fillText(FRET[0][x%4],x*cw+cw/2,ch/2);}
@@ -76,7 +79,12 @@ function draw(delta=0){
 function step(delta){
  elapsed+=delta;
  for(const d of drops){d.y+=d.v*delta/40;if(d.y-d.len>rows)Object.assign(d,newDrop(false));}
- if(elapsed>7000)cells.forEach(k=>{if(!k.rev){k.rev=1;k.flash=.6}});
+ // Each glyph fades in along a staggered downward sweep; no final bulk reveal.
+ for(const k of cells){
+  if(k.rev===1)continue;
+  const progress=Math.max(0,Math.min(1,(elapsed-k.revealAt)/1100));
+  k.rev=progress*progress*(3-2*progress);
+ }
 }
 let last=null,frame=null;
 function loop(t){
