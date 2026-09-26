@@ -4,3 +4,6 @@
 
 # local layout scratchpad — experiment freely, never committed
 index-tests.html
+
+# portfolio source PDF (65 MB) — the site uses the exported images in img/
+portfolio/ETH-Arch/*.pdf
