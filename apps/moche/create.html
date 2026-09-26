@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moche — ASCII studio</title>
+<style>
+:root { color-scheme: dark; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #10120f; color: #e6e8db; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: clamp(16px, 4vw, 48px); }
+main { max-width: 1400px; margin: auto; }
+header { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 28px; }
+h1 { font-size: 28px; letter-spacing: -.06em; margin: 0 0 8px; }
+p { color: #9ca58f; font-size: 12px; line-height: 1.7; margin: 0; }
+a { color: #cced9b; }
+.controls { display: flex; flex-wrap: wrap; gap: 18px; align-items: end; padding: 20px; border: 1px solid #343a2e; border-radius: 12px; }
+label { display: grid; gap: 8px; font-size: 11px; color: #bcc5af; }
+input, button, .button { font: inherit; font-size: 12px; border: 1px solid #45503a; border-radius: 6px; background: #20271b; color: #e6e8db; padding: 10px 12px; }
+input[type=number] { width: 94px; }
+input[type=file] { max-width: 100%; width: 260px; }
+button, .button { cursor: pointer; text-decoration: none; display: inline-block; }
+button:hover, .button:hover { background: #303e24; }
+button:disabled { cursor: default; opacity: .4; }
+:focus-visible { outline: 2px solid #cced9b; outline-offset: 4px; }
+.stage { margin-top: 22px; padding: 24px 12px; background: #0a0c09; border: 1px solid #343a2e; border-radius: 12px; overflow: auto; min-height: 240px; }
+pre { width: max-content; margin: auto; font-family: monospace; font-size: 8px; line-height: 2; white-space: pre; color: #cced9b; font-variant-ligatures: none; }
+footer { display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-top: 18px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+#status { margin-top: 14px; min-height: 21px; }
+@media(max-width:600px) { header { display:block; } header > p { margin-top: 12px; } .controls { padding: 14px; gap: 12px; } }
+</style>
+</head>
+<body>
+<main>
+<header><div><h1>Moche / ASCII studio</h1><p><a href="./">← back to tanuki</a></p><p>An image, rebuilt in characters.</p></div><p>Images stay in your browser.</p></header>
+<div class="controls">
+<label>Source image<input id="image" type="file" accept="image/*"></label>
+<label>Columns<input id="cols" type="number" min="20" max="300" step="1" value="180"></label>
+<label>Background tolerance<input id="tolerance" type="number" min="0" max="442" step="1" value="28"></label>
+<label>Cell aspect<input id="aspect" type="number" min="1" max="3" step="0.1" value="2"></label>
+<button id="convert" disabled>Convert image</button>
+<button id="sample">Show tanuki</button>
+</div>
+<p id="status" role="status" aria-live="polite">Loading tanuki…</p>
+<div class="stage" id="stage" tabindex="0" aria-label="ASCII artwork"><pre id="art" aria-label="Tanuki ASCII drawing"></pre></div>
+<footer><p id="dimensions"></p><div class="actions"><button id="fit">Fit to screen</button><button id="actual">Actual size</button><button id="download" disabled>Download .txt</button><button id="json" disabled>Download .json</button></div></footer>
+</main>
+<script src="converter.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+let source = null, text = '', glyphs = null, fit = true, revision = 0;
+function resize() {
+  const columns = Math.max(1, ...text.split('\n').map(line => line.length));
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.font = '10px monospace';
+  const width = ctx.measureText('M').width / 10;
+  $('art').style.fontSize = (fit ? Math.min(12, Math.max(1, ($('stage').clientWidth - 26) / columns / width)) : 10) + 'px';
+}
+function show(result, data, name, aspect) {
+  text = result; glyphs = data;
+  $('art').textContent = text;
+  $('art').setAttribute('aria-label', name + ' ASCII drawing');
+  $('art').style.lineHeight = String(aspect * .602);
+  const lines = text.replace(/\n$/, '').split('\n');
+  $('dimensions').textContent = `${Math.max(...lines.map(line => line.length))} columns / ${lines.length} rows`;
+  $('download').disabled = false;
+  $('json').disabled = !glyphs;
+  resize();
+}
+async function sample() {
+  const request = ++revision;
+  try {
+    const response = await fetch('tanuki_ascii.txt');
+    if (!response.ok) throw new Error('Sample unavailable');
+    const value = await response.text();
+    if (request !== revision) return;
+    show(value, null, 'Tanuki', 2);
+    $('status').textContent = 'Tanuki / original ASCII. Choose an image to create your own.';
+  } catch (error) {
+    if (request === revision) $('status').textContent = 'Could not load the tanuki. Serve this folder over HTTP or choose an image above.';
+  }
+}
+$('image').addEventListener('change', async () => {
+  const file = $('image').files[0];
+  if (!file) return;
+  const request = ++revision;
+  $('convert').disabled = true;
+  $('status').textContent = 'Opening image…';
+  const url = URL.createObjectURL(file);
+  try {
+    const img = new Image(); img.src = url; await img.decode();
+    if (request !== revision) return;
+    source = img;
+    $('convert').disabled = false;
+    convert();
+  } catch (error) {
+    if (request === revision) { source = null; $('status').textContent = 'This image could not be opened. Try a PNG, JPEG, or WebP.'; }
+  } finally { URL.revokeObjectURL(url); }
+});
+function convert() {
+  if (!source) return;
+  const inputs = ['cols', 'tolerance', 'aspect'].map($);
+  if (inputs.some(input => !input.value || !input.reportValidity())) return;
+  ++revision;
+  try {
+    const result = imageToGlyphs(source, Number($('cols').value), Number($('tolerance').value), Number($('aspect').value));
+    show(result.text, result.data, 'Converted image', Number($('aspect').value));
+    $('status').textContent = 'Converted locally. Adjust the settings and convert again to refine the result.';
+  } catch (error) { $('status').textContent = 'Could not convert this image. Try a smaller image.'; }
+}
+function download(value, type, name) {
+  const url = URL.createObjectURL(new Blob([value], {type}));
+  const link = document.createElement('a'); link.href = url; link.download = name;
+  link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+$('convert').addEventListener('click', convert);
+$('sample').addEventListener('click', sample);
+$('fit').addEventListener('click', () => { fit = true; resize(); });
+$('actual').addEventListener('click', () => { fit = false; resize(); });
+$('download').addEventListener('click', () => download(text, 'text/plain', 'moche.txt'));
+$('json').addEventListener('click', () => { if (glyphs) download(JSON.stringify(glyphs), 'application/json', 'fig.json'); });
+new ResizeObserver(resize).observe($('stage'));
+sample();
+</script>
+</body>
+</html>
