@@ -41,6 +41,8 @@
     --bg: #181D23;     /* page background */
     --fg: #f2f2f2;      /* main (bright) text color */
     --muted: #9aa0ab;   /* secondary/dimmer text color */
+    --rule: #5f6670;    /* top bar divider — same as portfolio/ETH-Arch */
+    --inset: clamp(1.5rem, 4vw, 3rem);   /* left/right page margin */
   }
 
   * { box-sizing: border-box; }
@@ -55,26 +57,49 @@
 
   /* -----------------------------------------------------------------
      PAGE SHELL
-     `body` is a full-height flex column. `main` is the single visible
-     block, anchored to the top-left rather than centered.
-     - `padding` here is the OUTER margin around everything: the first
-       value is the gap above the text, the clamp is the left/right
-       inset (shrinks on narrow screens, caps at 3rem on wide ones).
+     `body` is a full-height flex column: the top bar, then `main`,
+     which fills the rest of the screen.
+     - `padding` on main is the margin around the content: the first
+       value is the gap below the top bar, --inset the left/right
+       margin (shrinks on narrow screens, caps at 3rem on wide ones).
      ------------------------------------------------------------- */
   body {
     font-family: "Commit Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
     font-weight: 300;
     display: flex;
-    align-items: stretch;        /* lets main fill the full height so .contact can pin to the bottom */
-    justify-content: flex-start; /* text block sits against the left edge */
+    flex-direction: column;
     min-height: 100vh;
-    padding: 2.75rem clamp(1.5rem, 4vw, 3rem) 2rem;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 
+  /* -----------------------------------------------------------------
+     TOP BAR — shared with portfolio/ETH-Arch: name on the left (links
+     home), page links on the right, hairline underneath. Keep the two
+     in sync so the pages read as one site.
+     ------------------------------------------------------------- */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px var(--inset) 12px;
+    border-bottom: 1px solid var(--rule);
+    font-size: 11px;
+    line-height: 1.6;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .topbar a { color: var(--fg); text-decoration: none; }
+  .topbar .name,
+  .topbar nav a { font-weight: 700; }
+  .topbar nav { display: flex; gap: 24px; }
+  .topbar nav a { padding-bottom: 2px; border-bottom: 1px solid transparent; transition: border-color 0.2s ease; }
+  .topbar nav a:hover { border-color: var(--fg); }
+
   main {
+    flex: 1;
     width: 100%;        /* full width so the .contact bar can center on the page */
+    padding: 2.5rem var(--inset) 2rem;
     text-align: left;
     animation: fade-in 0.6s ease-out;
 
@@ -179,7 +204,7 @@
   }
 
   /* Email / LinkedIn / CV row */
-  nav {
+  .contact nav {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -191,7 +216,7 @@
     margin-bottom: 0.75rem;   /* space between nav and the copyright line below it */
   }
 
-  nav a {
+  .contact nav a {
     color: var(--fg);
     text-decoration: none;
     padding-bottom: 2px;
@@ -199,7 +224,7 @@
     transition: border-color 0.2s ease, opacity 0.2s ease;
   }
 
-  nav a:hover {
+  .contact nav a:hover {
     border-color: var(--fg);
   }
 
@@ -212,6 +237,13 @@
 </style>
 </head>
 <body>
+  <header class="topbar">
+    <a class="name" href="index.html">Rodrigo Mendoza Diaz</a>
+    <nav>
+      <a href="portfolio/ETH-Arch/index.html">Portfolio</a>
+    </nav>
+  </header>
+
   <main>
     <!-- CENTERED GROUP: whatever is in here is vertically centered
          in the space above the bottom-pinned .contact group. -->
@@ -223,7 +255,7 @@
       </p>
       <div class="education">
         <p>MAS in Management, Technology &amp; Economics — ETH Zürich · <a href="thesis.html">Thesis</a></p>
-        <p>MSc in Architecture — ETH Zürich · <a href="portfolio/ETH-Arch/index.html">Portfolio</a></p>
+        <p>MSc in Architecture — ETH Zürich · <a href="msc-architecture.html">Thesis</a></p>
         <p>BSc in Architecture — ETH Zürich</p>
         <p>BA in Architecture — Universidad de los Andes, Bogotá</p>
       </div>
