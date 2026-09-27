@@ -15,8 +15,11 @@ Then visit http://localhost:8000/apps/masci/ (use HTTP rather than opening the
 HTML file directly, so the browser can load `tanuki_ascii.txt`).
 
 Choose an image, adjust columns, background tolerance, or cell aspect, then
-press **Convert image**. Background removal samples the corners, so images
-with a flat background work best. Set tolerance to zero to keep the background.
+press **Convert image**, then **Start**. Falling symbols build your image
+using the same animation as the landing page. **Replay** starts it again;
+**Back to edit** or Escape returns to the converter with your image and settings
+intact. Animation respects reduced-motion preferences. Background removal samples
+the corners, so images with a flat background work best. Set tolerance to zero to keep the background.
 Transparent pixels are removed. Fit to screen scales the drawing; Actual size
 lets you scroll through its detail. JSON export is available for converted
 images; the original sample only contains text.

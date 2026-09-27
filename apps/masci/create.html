@@ -27,6 +27,18 @@ pre { width: max-content; margin: auto; font-family: monospace; font-size: 8px; 
 footer { display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-top: 18px; }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; }
 #status { margin-top: 14px; min-height: 21px; }
+#start { color: #00ff41; border-color: #3e7a4c; }
+.animation {
+  --bg:#191a1b; --g1:#0d3a18; --g2:#008f11; --g3:#00ff41;
+  --pale:#c8ffd2; --rain:#0b5d1e; --head:#b8ffc6; --ui:#3e7a4c;
+  position: fixed; inset: 0; width: 100%; max-width: none; height: 100svh; max-height: none;
+  margin: 0; padding: 0; border: 0; background: var(--bg); color: var(--g3);
+}
+.animation[open] { display: flex; flex-direction: column; }
+.animation canvas { display: block; width: 100%; flex: 1; min-height: 0; }
+.animation-controls { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; padding: 16px 16px max(22px, env(safe-area-inset-bottom)); }
+.animation button { background: transparent; color: var(--g3); border-color: var(--ui); border-radius: 0; letter-spacing: .12em; }
+body:has(.animation[open]) { overflow: hidden; }
 @media(max-width:600px) { header { display:block; } header > p { margin-top: 12px; } .controls { padding: 14px; gap: 12px; } }
 </style>
 </head>
@@ -40,15 +52,22 @@ footer { display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-betwe
 <label>Cell aspect<input id="aspect" type="number" min="1" max="3" step="0.1" value="2"></label>
 <button id="convert" disabled>Convert image</button>
 <button id="sample">Show tanuki</button>
+<button id="start" disabled>[ start_ ]</button>
 </div>
 <p id="status" role="status" aria-live="polite">Loading tanuki…</p>
 <div class="stage" id="stage" tabindex="0" aria-label="ASCII artwork"><pre id="art" aria-label="Tanuki ASCII drawing"></pre></div>
 <footer><p id="dimensions"></p><div class="actions"><button id="fit">Fit to screen</button><button id="actual">Actual size</button><button id="download" disabled>Download .txt</button><button id="json" disabled>Download .json</button></div></footer>
 </main>
+<dialog id="animation" class="animation" aria-label="Your image in falling terminal glyphs">
+  <canvas id="animation-c" role="img" tabindex="0" aria-label="Your image built by falling symbols. Click or press Space to pause; press R to replay."></canvas>
+  <div class="animation-controls"><button id="replay">[ replay ]</button><button id="edit">[ back to edit ]</button></div>
+</dialog>
 <script src="converter.js"></script>
+<script src="tanuki.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 let source = null, text = '', glyphs = null, fit = true, revision = 0;
+let animation = null, convertedAspect = 2;
 function resize() {
   const columns = Math.max(1, ...text.split('\n').map(line => line.length));
   const canvas = document.createElement('canvas');
@@ -59,6 +78,7 @@ function resize() {
 }
 function show(result, data, name, aspect) {
   text = result; glyphs = data;
+  convertedAspect = aspect;
   $('art').textContent = text;
   $('art').setAttribute('aria-label', name + ' ASCII drawing');
   $('art').style.lineHeight = String(aspect * .602);
@@ -66,6 +86,7 @@ function show(result, data, name, aspect) {
   $('dimensions').textContent = `${Math.max(...lines.map(line => line.length))} columns / ${lines.length} rows`;
   $('download').disabled = false;
   $('json').disabled = !glyphs;
+  $('start').disabled = !glyphs || !glyphs.c.some(row => /[1-5]/.test(row));
   resize();
 }
 async function sample() {
@@ -86,6 +107,7 @@ $('image').addEventListener('change', async () => {
   if (!file) return;
   const request = ++revision;
   $('convert').disabled = true;
+  $('start').disabled = true;
   $('status').textContent = 'Opening image…';
   const url = URL.createObjectURL(file);
   try {
@@ -106,7 +128,9 @@ function convert() {
   try {
     const result = imageToGlyphs(source, Number($('cols').value), Number($('tolerance').value), Number($('aspect').value));
     show(result.text, result.data, 'Converted image', Number($('aspect').value));
-    $('status').textContent = 'Converted locally. Adjust the settings and convert again to refine the result.';
+    $('status').textContent = $('start').disabled
+      ? 'No visible foreground. Lower the background tolerance and convert again.'
+      : 'Ready. Hit Start to build your image with falling symbols, or adjust the settings and convert again.';
   } catch (error) { $('status').textContent = 'Could not convert this image. Try a smaller image.'; }
 }
 function download(value, type, name) {
@@ -115,6 +139,18 @@ function download(value, type, name) {
   link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 $('convert').addEventListener('click', convert);
+$('start').addEventListener('click', () => {
+  if (!glyphs || $('start').disabled) return;
+  $('animation').showModal();
+  animation = startMasciAnimation($('animation-c'), glyphs, {aspect: convertedAspect, label: 'masci / your image'});
+  $('animation-c').focus();
+});
+$('replay').addEventListener('click', () => animation?.replay());
+$('edit').addEventListener('click', () => $('animation').close());
+$('animation').addEventListener('close', () => {
+  animation?.destroy(); animation = null;
+  $('start').focus();
+});
 $('sample').addEventListener('click', sample);
 $('fit').addEventListener('click', () => { fit = true; resize(); });
 $('actual').addEventListener('click', () => { fit = false; resize(); });
