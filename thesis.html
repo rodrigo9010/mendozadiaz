@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang class="gate-locked">
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
@@ -8,10 +8,6 @@
   <meta name="dcterms.date" content="2026-07-11" />
   <meta name="robots" content="noindex, nofollow" />
   <title>Innovating With Constraints: Leveraging Generative AI to Enable Digital Venturing in Resource-Constrained, Non-Technology-Oriented Small Enterprises</title>
-  <style>
-    html.gate-locked body > *:not(#thesis-gate) { display: none !important; }
-    html.gate-locked body { overflow: hidden; }
-  </style>
   <style>
 
 code{white-space: pre-wrap;}
@@ -381,57 +377,6 @@ span.citation:target { background: #fff3b0; border-radius: 3px; }
 </style>
 </head>
 <body>
-<div id="thesis-gate" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#282c34;font-family:'Jost','Century Gothic',Futura,Avenir,'Helvetica Neue',Helvetica,Arial,sans-serif;">
-  <form id="thesis-gate-form" style="text-align:center;color:#f2f2f2;max-width:20rem;width:90%;">
-    <p style="font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:#9aa0ab;margin:0 0 1rem;">Restricted</p>
-    <p style="font-size:1.05rem;font-weight:300;margin:0 0 1.5rem;">This thesis is password protected.</p>
-    <input id="thesis-gate-input" type="password" autocomplete="off" placeholder="Password"
-      style="width:100%;padding:.6rem .75rem;font-size:1rem;font-family:inherit;background:transparent;border:1px solid #9aa0ab;color:#f2f2f2;border-radius:2px;box-sizing:border-box;text-align:center;" />
-    <button type="submit" style="margin-top:1rem;width:100%;padding:.6rem .75rem;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;font-family:inherit;background:#f2f2f2;color:#282c34;border:0;border-radius:2px;cursor:pointer;">Enter</button>
-    <p id="thesis-gate-error" style="display:none;color:#e06c75;font-size:.8rem;margin-top:1rem;">Incorrect password.</p>
-  </form>
-</div>
-<script>
-(function () {
-  var CORRECT_HASH = "bfed790967458cb22a2f5fe469bd027906d5a300ebec6c8a943e9942c4b020e3";
-  var gate = document.getElementById("thesis-gate");
-  var form = document.getElementById("thesis-gate-form");
-  var input = document.getElementById("thesis-gate-input");
-  var error = document.getElementById("thesis-gate-error");
-
-  function unlock() {
-    gate.remove();
-    document.documentElement.classList.remove("gate-locked");
-  }
-
-  async function sha256Hex(text) {
-    var data = new TextEncoder().encode(text);
-    var hashBuffer = await crypto.subtle.digest("SHA-256", data);
-    return Array.from(new Uint8Array(hashBuffer))
-      .map(function (b) { return b.toString(16).padStart(2, "0"); })
-      .join("");
-  }
-
-  if (sessionStorage.getItem("thesis-unlocked") === "1") {
-    unlock();
-  } else {
-    input.focus();
-  }
-
-  form.addEventListener("submit", async function (e) {
-    e.preventDefault();
-    var hash = await sha256Hex(input.value.trim());
-    if (hash === CORRECT_HASH) {
-      sessionStorage.setItem("thesis-unlocked", "1");
-      unlock();
-    } else {
-      error.style.display = "block";
-      input.value = "";
-      input.focus();
-    }
-  });
-})();
-</script>
 <div id="page-actions">
 <a id="ai-notebook-link" href="https://notebook.google.com/notebook/dff48205-4475-41e8-a82c-f142e2d4af5c" target="_blank" rel="noopener">AI Notebook</a>
 <a id="pdf-download" href="files/Thesis-Rodrigo-Mendoza.pdf" target="_blank" rel="noopener">&#8681; Download PDF</a>
