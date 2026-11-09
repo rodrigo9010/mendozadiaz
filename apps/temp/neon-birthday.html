@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Neon Birthday Tokyo</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;900&family=Noto+Sans+JP:wght@700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{ --c:#ff2a6d; --c2:#05d9e8; --bg:#05010d; }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);overflow:hidden;color:#fff;
+    font-family:'Orbitron','Noto Sans JP',system-ui,sans-serif;cursor:crosshair}
+  canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+
+  .scan{position:fixed;inset:0;pointer-events:none;z-index:8;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.1) 0 1px,transparent 1px 3px)}
+  .vignette{position:fixed;inset:0;pointer-events:none;z-index:7;
+    background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.75) 100%)}
+  .flash{position:fixed;inset:0;pointer-events:none;z-index:9;background:#fff;opacity:0}
+  body.surge .flash{animation:flash .35s steps(3) 1}
+  body.surge #ui{animation:surge .4s steps(4) 1}
+
+  .hud{position:fixed;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;
+    font-family:'Share Tech Mono',monospace;font-size:clamp(10px,1.4vw,14px);letter-spacing:.2em;
+    color:#05d9e8;text-shadow:0 0 6px #05d9e8;z-index:6;opacity:.85;pointer-events:none}
+  .hud b{color:#f9f871;text-shadow:0 0 6px #f9f871;font-weight:400}
+
+  #ui{position:fixed;inset:0;z-index:2;pointer-events:none;perspective:1100px}
+  #tilt{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
+
+  /* ---------- neon sign (shared) ---------- */
+  .nsign{display:flex;flex-direction:column;align-items:center}
+  .sign{position:relative;max-width:94vw;padding:clamp(14px,2.4vw,30px) clamp(18px,3.5vw,54px);
+    border:3px solid var(--c);border-radius:18px;background:rgba(5,1,13,.55);
+    box-shadow:0 0 8px var(--c),0 0 28px var(--c),inset 0 0 16px color-mix(in srgb,var(--c) 55%,transparent);
+    animation:flicker 7s infinite}
+  .sign::before,.sign::after{content:"";position:absolute;width:10px;height:10px;border-radius:50%;
+    background:var(--c2);box-shadow:0 0 10px var(--c2);top:-6px}
+  .sign::before{left:24px}.sign::after{right:24px}
+
+  .msg{position:relative;display:inline-block;white-space:nowrap;font-weight:900;line-height:1.15;
+    font-size:clamp(34px,8.5vw,118px);color:#fff;letter-spacing:.02em;
+    text-shadow:0 0 3px #fff,0 0 10px var(--c),0 0 24px var(--c),0 0 50px var(--c)}
+  .msg::before,.msg::after{content:attr(data-text);position:absolute;inset:0;opacity:0;text-shadow:none;pointer-events:none}
+  .msg.glitch{animation:shake .45s steps(3) 1}
+  .msg.glitch::before{opacity:.9;color:var(--c2);animation:g1 .45s steps(2) 1}
+  .msg.glitch::after{opacity:.9;color:#f9f871;animation:g2 .45s steps(2) 1}
+
+  /* ---------- main sign (fixed text) ---------- */
+  .main{position:absolute;inset:0;justify-content:center;padding:0 16px 20vh;transform:translateZ(30px)}
+  .main .sign{animation:pulse .9s ease-in-out infinite}
+  .hanko{font-family:'Noto Sans JP',sans-serif;font-weight:900;font-size:clamp(26px,4vw,46px);
+    color:#fff;width:2.1em;height:2.1em;display:grid;place-items:center;border-radius:50%;
+    border:3px solid #f9f871;margin-bottom:18px;
+    text-shadow:0 0 4px #fff,0 0 12px #f9f871;
+    box-shadow:0 0 12px #f9f871,inset 0 0 14px rgba(249,248,113,.6);
+    animation:spin 12s linear infinite}
+  .name{margin-top:8px;font-size:clamp(22px,4vw,48px);font-weight:900;color:#fff;letter-spacing:.15em;
+    text-shadow:0 0 4px #fff,0 0 14px #05d9e8,0 0 34px #05d9e8}
+  .name:empty{display:none}
+
+  /* ---------- satellite signs ---------- */
+  .mini{position:absolute;--r:0deg;--z:0px;transform:translateZ(var(--z)) rotate(var(--r));animation:bob 3.4s ease-in-out infinite}
+  .mini .sign{padding:10px 20px;border-radius:12px;border-width:2px}
+  .mini .sign::before,.mini .sign::after{width:7px;height:7px;top:-4px}
+  .mini .msg{font-size:clamp(18px,3.6vw,50px)}
+  .s1{top:9vh;left:13vw;--r:-7deg;--z:-90px;animation-delay:-.4s}
+  .s2{top:12vh;right:12vw;--r:6deg;--z:80px;animation-delay:-1.6s}
+  .s3{bottom:25vh;left:11vw;--r:4deg;--z:100px;animation-delay:-2.3s}
+  .s4{bottom:28vh;right:10vw;--r:-5deg;--z:-70px;animation-delay:-.9s}
+  .s2 .sign{border-radius:40px}
+  .s3 .sign{border-style:double;border-width:5px}
+  .s4 .sign{border-radius:4px}
+
+  .vsign{position:fixed;top:30vh;z-index:3;writing-mode:vertical-rl;font-family:'Noto Sans JP',sans-serif;
+    font-weight:900;font-size:clamp(16px,2.4vw,32px);letter-spacing:.25em;padding:16px 8px;
+    border:3px solid;border-radius:10px;pointer-events:none;background:rgba(5,1,13,.5);color:#fff}
+  .vsign.l{left:2vw;border-color:#b967ff;text-shadow:0 0 4px #fff,0 0 14px #b967ff;
+    box-shadow:0 0 14px #b967ff,inset 0 0 14px rgba(185,103,255,.5);animation:flicker 4.5s infinite .4s}
+  .vsign.r{right:2vw;border-color:#05d9e8;text-shadow:0 0 4px #fff,0 0 14px #05d9e8;
+    box-shadow:0 0 14px #05d9e8,inset 0 0 14px rgba(5,217,232,.5);animation:flicker 5.5s infinite 2.2s}
+
+  @media (max-width:760px){
+    .vsign,.s3,.s4{display:none}
+    .s1{top:8vh;left:5vw}
+    .s2{top:auto;bottom:22vh;right:5vw}
+  }
+
+  /* lighter glow on weak devices */
+  .low .msg{text-shadow:0 0 3px #fff,0 0 12px var(--c),0 0 26px var(--c)}
+  .low .sign{box-shadow:0 0 14px var(--c),inset 0 0 12px color-mix(in srgb,var(--c) 55%,transparent)}
+  .low .mini{animation:none}
+
+  .ticker{position:fixed;left:0;right:0;bottom:0;z-index:6;overflow:hidden;white-space:nowrap;
+    border-top:2px solid #ff2a6d;background:rgba(5,1,13,.85);
+    font-family:'Noto Sans JP','Share Tech Mono',sans-serif;font-size:clamp(12px,1.6vw,16px);padding:8px 0}
+  .ticker .track{display:inline-block;animation:scroll 45s linear infinite;will-change:transform}
+  .ticker i{font-style:normal;margin:0 1.2em;color:#f9f871}
+  .ticker i:nth-child(3n+2){color:#05d9e8}
+  .ticker i:nth-child(3n){color:#ff2a6d}
+
+  .date{position:fixed;left:0;right:0;bottom:52px;z-index:6;text-align:center;pointer-events:none;
+    white-space:nowrap;font-weight:900;letter-spacing:.08em;font-size:clamp(20px,5vw,72px);color:#fff;
+    text-shadow:0 0 3px #fff,0 0 10px #f9f871,0 0 24px #ff6c11,0 0 50px #ff6c11}
+  .date small{font-family:'Noto Sans JP',sans-serif;font-size:.6em;margin-left:.5em;color:#fff;
+    text-shadow:0 0 3px #fff,0 0 12px #05d9e8,0 0 30px #05d9e8}
+
+  @keyframes flicker{0%,18%,22%,25%,53%,57%,100%{opacity:1}20%,24%,55%{opacity:.35}}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+  @keyframes spin{to{transform:rotateY(360deg)}}
+  @keyframes bob{0%,100%{transform:translateZ(var(--z)) rotate(var(--r)) translateY(0)}50%{transform:translateZ(var(--z)) rotate(var(--r)) translateY(-10px)}}
+  @keyframes scroll{to{transform:translateX(-50%)}}
+  @keyframes flash{0%{opacity:.22}50%{opacity:0}75%{opacity:.12}100%{opacity:0}}
+  @keyframes surge{
+    0%{transform:translate(0)}
+    25%{transform:translate(-12px,4px) skewX(8deg)}
+    50%{transform:translate(10px,-6px)}
+    75%{transform:translate(-4px,2px) skewX(-6deg)}
+    100%{transform:translate(0)}
+  }
+  @keyframes shake{0%{transform:translate(0)}33%{transform:translate(-3px,2px) skewX(-6deg)}
+    66%{transform:translate(4px,-1px) skewX(4deg)}100%{transform:translate(0)}}
+  @keyframes g1{0%{clip-path:inset(10% 0 70% 0);transform:translate(-8px,0)}
+    50%{clip-path:inset(60% 0 15% 0);transform:translate(6px,0)}
+    100%{clip-path:inset(35% 0 40% 0);transform:translate(-4px,0)}}
+  @keyframes g2{0%{clip-path:inset(70% 0 5% 0);transform:translate(7px,0)}
+    50%{clip-path:inset(20% 0 55% 0);transform:translate(-6px,0)}
+    100%{clip-path:inset(45% 0 30% 0);transform:translate(5px,0)}}
+  @media (prefers-reduced-motion:reduce){
+    .sign,.hanko,.vsign,.mini,.main .sign{animation:none}
+  }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+
+<div class="hud">
+  <div>NEO-TOKYO // <b>渋谷区</b></div>
+  <div id="clock">--:--:--</div>
+</div>
+
+<div class="vsign l">お誕生日おめでとう</div>
+<div class="vsign r">ハッピーバースデー</div>
+
+<div id="ui"><div id="tilt">
+  <div class="nsign mini s1" data-max=".34"><div class="sign"><div class="msg"></div></div></div>
+  <div class="nsign mini s2" data-max=".34"><div class="sign"><div class="msg"></div></div></div>
+  <div class="nsign mini s3" data-max=".32"><div class="sign"><div class="msg"></div></div></div>
+  <div class="nsign mini s4" data-max=".32"><div class="sign"><div class="msg"></div></div></div>
+
+  <div class="nsign main">
+    <div class="hanko">祝</div>
+    <div class="sign"><div class="msg" id="mainMsg">Buon Compleanno BB!!</div></div>
+    <div class="name" id="name"></div>
+  </div>
+</div></div>
+
+<div class="date">10.11.2027 — KYOTO<small>京都</small></div>
+<div class="ticker"><div class="track" id="track"></div></div>
+<div class="vignette"></div>
+<div class="scan"></div>
+<div class="flash"></div>
+
+<script>
+// Languages that rotate around the fixed Italian sign in the middle
+const LANGS = [
+  ["Happy Birthday"],
+  ["お誕生日おめでとう"],
+  ["¡Feliz Cumpleaños!"],
+  ["Alles Gute zum Geburtstag"],
+  ["Joyeux Anniversaire"],
+  ["Feliz Aniversário"],
+  ["生日快乐"],
+  ["생일 축하해요"],
+  ["С днём рождения"],
+  ["عيد ميلاد سعيد",true],
+  ["जन्मदिन मुबारक"],
+  ["İyi ki Doğdun"],
+  ["Gefeliciteerd"],
+  ["Wszystkiego Najlepszego"],
+  ["Grattis på Födelsedagen"],
+  ["Χρόνια Πολλά"],
+  ["יום הולדת שמח",true],
+  ["สุขสันต์วันเกิด"],
+  ["Chúc Mừng Sinh Nhật"],
+  ["Selamat Ulang Tahun"],
+  ["З Днем Народження"],
+  ["শুভ জন্মদিন"],
+  ["Heri ya Siku ya Kuzaliwa"],
+  ["Maligayang Kaarawan"],
+];
+const COLORS = ["#ff2a6d","#05d9e8","#f9f871","#b967ff","#39ff14","#ff6c11"];
+const N = LANGS.length;
+const root = document.documentElement;
+
+// Low-power mode: phones, small screens, weak machines (also switches on automatically if frames run slow)
+let LOW = matchMedia('(pointer:coarse)').matches || innerWidth < 800 ||
+          (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
+if (LOW) root.classList.add('low');
+
+const nm = new URLSearchParams(location.search).get('name');
+if (nm) document.getElementById('name').textContent = nm.toUpperCase();
+
+const track = document.getElementById('track');
+const items = '<i>Buon Compleanno</i>' + LANGS.map(l => `<i>${l[0]}</i>`).join('');
+track.innerHTML = items + items;
+
+/* ---------- signs ---------- */
+const mainMsg = document.getElementById('mainMsg');
+const signs = [...document.querySelectorAll('.mini')].map((el, k) => ({
+  el, k, msg: el.querySelector('.msg'), max: parseFloat(el.dataset.max), idx: (k * 6) % N,
+}));
+
+function fitEl(el, frac){
+  el.style.fontSize = '';
+  const max = window.innerWidth * frac, w = el.scrollWidth;
+  if (w > max) el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) * max / w) + 'px';
+}
+function fitAll(){ fitEl(mainMsg, .8); signs.forEach(s => fitEl(s.msg, s.max)); }
+
+function nextIdx(s){
+  const used = new Set(signs.filter(o => o !== s).map(o => o.idx));
+  let i = s.idx;
+  do { i = (i + 1 + Math.floor(Math.random()*3)) % N; } while (used.has(i));
+  return i;
+}
+function render(s, glitch){
+  const [txt, rtl] = LANGS[s.idx];
+  const apply = () => {
+    s.msg.textContent = txt;
+    s.msg.dataset.text = txt;
+    s.msg.dir = rtl ? 'rtl' : 'ltr';
+    const ci = (s.idx + s.k * 2) % COLORS.length;
+    s.el.style.setProperty('--c', COLORS[ci]);
+    s.el.style.setProperty('--c2', COLORS[(ci + 1) % COLORS.length]);
+    fitEl(s.msg, s.max);
+  };
+  if (!glitch) return apply();
+  s.msg.classList.remove('glitch'); void s.msg.offsetWidth; s.msg.classList.add('glitch');
+  setTimeout(apply, 180);
+  setTimeout(() => s.msg.classList.remove('glitch'), 460);
+}
+signs.forEach(s => render(s, false));
+signs.forEach((s, k) => {
+  setTimeout(() => setInterval(() => {
+    if (document.hidden) return;
+    s.idx = nextIdx(s); render(s, true);
+  }, 2600 + k*150), k * 600);
+});
+document.fonts && document.fonts.ready.then(fitAll);
+fitAll();
+
+function surge(){
+  setTimeout(surge, rand(4000, 7500));
+  if (document.hidden) return;
+  document.body.classList.remove('surge'); void document.body.offsetWidth;
+  document.body.classList.add('surge');
+  const n = LOW ? 2 : 4;
+  for (let i=0;i<n;i++) setTimeout(() => firework(rand(W*.1,W*.9), rand(H*.08, horizon*.6)), i*90);
+  setTimeout(() => document.body.classList.remove('surge'), 420);
+}
+setTimeout(surge, 3000);
+
+const clock = document.getElementById('clock');
+setInterval(() => {
+  if (document.hidden) return;
+  clock.innerHTML = `<b>${new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Tokyo'})}</b> JST`;
+}, 1000);
+
+/* ================= CANVAS ================= */
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d', {alpha:false});
+let W = 0, H = 0, DPR = 1, horizon = 0, bg, skyFar, skyNear;
+let antennas = [], drops = [], sparks = [], holos = [];
+
+function rand(a,b){ return a + Math.random()*(b-a); }
+function mk(w, h){
+  const c = document.createElement('canvas');
+  c.width = Math.ceil(w*DPR); c.height = Math.ceil(h*DPR);
+  const x = c.getContext('2d'); x.scale(DPR, DPR);
+  return {c, x, w, h};
+}
+
+// Everything that never moves is painted once into one image
+function buildBg(){
+  bg = mk(W, H);
+  const x = bg.x;
+  const sky = x.createLinearGradient(0,0,0,horizon);
+  sky.addColorStop(0,'#05010d'); sky.addColorStop(.6,'#1a0638'); sky.addColorStop(1,'#3d0b4f');
+  x.fillStyle = sky; x.fillRect(0,0,W,horizon);
+
+  // sun
+  const R = Math.min(W, H) * 0.24;
+  const sun = mk(R*2, R*2), sx = sun.x;
+  const g = sx.createLinearGradient(0,0,0,R*2);
+  g.addColorStop(0,'#f9f871'); g.addColorStop(.45,'#ff6c11'); g.addColorStop(1,'#ff2a6d');
+  sx.fillStyle = g; sx.beginPath(); sx.arc(R,R,R,0,Math.PI*2); sx.fill();
+  sx.globalCompositeOperation = 'destination-out';
+  for (let i=0;i<9;i++) sx.fillRect(0, R*0.9 + i*(R*0.13), R*2, 2 + i*1.6);
+  x.save(); x.shadowColor = '#ff2a6d'; x.shadowBlur = 60*DPR;
+  x.drawImage(sun.c, W/2 - R, horizon - R*1.35, R*2, R*2);
+  x.restore();
+
+  // floor + horizon + the grid lines that run toward the viewer
+  const fl = x.createLinearGradient(0,horizon,0,H);
+  fl.addColorStop(0,'#1a0533'); fl.addColorStop(1,'#05010d');
+  x.fillStyle = fl; x.fillRect(0,horizon,W,H-horizon);
+  x.lineWidth = 1.2;
+  for (let i=-24;i<=24;i++){
+    x.strokeStyle = `rgba(185,103,255,${.75 - Math.abs(i)/40})`;
+    x.beginPath(); x.moveTo(W/2 + i*6, horizon); x.lineTo(W/2 + i*W/9, H); x.stroke();
+  }
+  x.strokeStyle = '#ff2a6d'; x.lineWidth = 2; x.shadowColor = '#ff2a6d'; x.shadowBlur = 18*DPR;
+  x.beginPath(); x.moveTo(0,horizon); x.lineTo(W,horizon); x.stroke();
+}
+
+function makeSkyline(minH, maxH, base, windowsProb, collectAntennas){
+  const sh = Math.ceil(maxH*H) + 20, L = mk(W + 40, sh), x = L.x;
+  let px = 0;
+  while (px < W + 40){
+    const bw = rand(28, 90), bh = rand(minH, maxH) * H, top = sh - bh;
+    x.fillStyle = base; x.fillRect(px, top, bw, bh);
+    for (let wy = top + 8; wy < sh - 6; wy += 9){
+      for (let wx = px + 5; wx < px + bw - 5; wx += 7){
+        if (Math.random() < windowsProb){
+          x.fillStyle = Math.random()<.7 ? `rgba(255,220,150,${rand(.25,.7)})`
+                       : (Math.random()<.5 ? 'rgba(5,217,232,.6)' : 'rgba(255,42,109,.6)');
+          x.fillRect(wx, wy, 3, 4);
+        }
+      }
+    }
+    if (Math.random() < .3){
+      const col = COLORS[Math.floor(Math.random()*COLORS.length)];
+      x.shadowColor = col; x.shadowBlur = 12*DPR; x.fillStyle = col;
+      x.fillRect(px + bw*rand(.2,.7), top + 10, 3, bh*rand(.2,.5));
+      x.shadowBlur = 0;
+    }
+    if (collectAntennas && Math.random() < .3){
+      antennas.push({x: px + bw/2, y: horizon - bh - 14, p: Math.random()*6});
+      x.strokeStyle = base; x.lineWidth = 2; x.beginPath();
+      x.moveTo(px + bw/2, top); x.lineTo(px + bw/2, top - 14); x.stroke();
+    }
+    px += bw + rand(-6, 4);
+  }
+  return L;
+}
+
+function newHolo(h, enter){
+  h.txt = LANGS[Math.floor(Math.random()*N)][0];
+  h.size = rand(.05, .11) * Math.min(W, H*1.6);
+  h.y = rand(.12, .58) * horizon;
+  h.v = rand(.4, 1.3) * (Math.random()<.5 ? 1 : -1);
+  h.col = COLORS[Math.floor(Math.random()*COLORS.length)];
+  h.font = `900 ${h.size|0}px Orbitron, "Noto Sans JP", sans-serif`;
+  ctx.font = h.font;
+  h.w = ctx.measureText(h.txt).width;
+  h.x = enter ? (h.v < 0 ? W + 20 : -h.w - 20) : rand(-h.w*.5, W);
+}
+
+function build(){
+  DPR = LOW ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
+  W = window.innerWidth; H = window.innerHeight;
+  cv.width = Math.ceil(W*DPR); cv.height = Math.ceil(H*DPR);
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  horizon = H * 0.66;
+  antennas = [];
+  buildBg();
+  skyFar = makeSkyline(.10, .30, '#120726', .12, false);
+  skyNear = makeSkyline(.05, .22, '#08020f', .2, true);
+  drops = Array.from({length: Math.min(260, Math.floor(W*H/(LOW ? 16000 : 8000)))}, () => ({
+    x: rand(0, W*1.2), y: rand(-H, H), l: rand(10, 28), v: rand(9, 18)
+  }));
+  holos = Array.from({length: LOW ? 2 : 4}, () => { const h = {}; newHolo(h, false); return h; });
+  fitAll();
+}
+let rz;
+window.addEventListener('resize', () => {
+  clearTimeout(rz);
+  rz = setTimeout(() => {
+    // ignore the small height changes phones make when the address bar hides
+    if (window.innerWidth === W && Math.abs(window.innerHeight - H) < 150) return;
+    build();
+  }, 200);
+});
+build();
+
+function firework(x, y){
+  const maxS = LOW ? 140 : 320;
+  if (document.hidden || sparks.length > maxS) return;
+  const col = COLORS[Math.floor(Math.random()*COLORS.length)];
+  const col2 = COLORS[Math.floor(Math.random()*COLORS.length)];
+  const n = LOW ? 32 : 56;
+  for (let i=0;i<n;i++){
+    const a = (i/n)*Math.PI*2 + rand(-.05,.05), s = rand(1.5, 7);
+    sparks.push({x, y, vx:Math.cos(a)*s, vy:Math.sin(a)*s, life:1, d:rand(.012,.022),
+                 col: Math.random()<.15 ? '#ffffff' : (i%2 ? col : col2)});
+  }
+}
+window.addEventListener('pointerdown', e => firework(e.clientX, e.clientY));
+
+/* ---------- subtle 3D ---------- */
+const tiltEl = document.getElementById('tilt');
+let mx = 0, my = 0, smx = 0, smy = 0;
+window.addEventListener('pointermove', e => { mx = e.clientX/W*2 - 1; my = e.clientY/H*2 - 1; }, {passive:true});
+
+function poly(verts, d){
+  const edges = [];
+  for (let i=0;i<verts.length;i++) for (let j=i+1;j<verts.length;j++)
+    if (Math.abs(Math.hypot(verts[i][0]-verts[j][0], verts[i][1]-verts[j][1], verts[i][2]-verts[j][2]) - d) < .01) edges.push([i,j]);
+  return {verts, edges};
+}
+const PHI = 1.618034;
+const ICO = poly([[0,1,PHI],[0,1,-PHI],[0,-1,PHI],[0,-1,-PHI],[1,PHI,0],[1,-PHI,0],[-1,PHI,0],[-1,-PHI,0],
+                  [PHI,0,1],[PHI,0,-1],[-PHI,0,1],[-PHI,0,-1]].map(v => v.map(c => c/1.9)), 2/1.9);
+const OCTA = poly([[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]], Math.SQRT2);
+const SHAPES = [
+  {g:ICO,  fx:.24, fy:.50, size:.075, col:'#05d9e8', sp:.35, depth:26},
+  {g:OCTA, fx:.77, fy:.54, size:.065, col:'#ff2a6d', sp:-.45, depth:38},
+  {g:OCTA, fx:.50, fy:.07, size:.035, col:'#f9f871', sp:.6, depth:16},
+];
+function drawShapes(){
+  ctx.lineWidth = 1.5; ctx.globalAlpha = .55;
+  for (const s of SHAPES){
+    const ay = t*s.sp, ax = t*s.sp*.6 + .4;
+    const ca = Math.cos(ay), sa = Math.sin(ay), cb = Math.cos(ax), sb = Math.sin(ax);
+    const size = s.size * Math.min(W, H*1.4);
+    const cx = W*s.fx - smx*s.depth, cy = H*s.fy - smy*s.depth*.6 + Math.sin(t*.8 + s.fx*9)*8;
+    const pts = s.g.verts.map(([x,y,z]) => {
+      const x1 = x*ca + z*sa, z1 = -x*sa + z*ca;
+      const y1 = y*cb - z1*sb, z2 = y*sb + z1*cb;
+      const k = 3.2/(3.2 + z2);
+      return [cx + x1*size*k, cy + y1*size*k];
+    });
+    ctx.strokeStyle = s.col; ctx.beginPath();
+    for (const [i,j] of s.g.edges){ ctx.moveTo(pts[i][0], pts[i][1]); ctx.lineTo(pts[j][0], pts[j][1]); }
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+}
+
+const LIGHTS = [[.12,'5,217,232',0],[.88,'255,42,109',2],[.5,'185,103,255',4]];
+let t = 0, last = 0, ema = 16, fwAt = 1;
+
+function frame(now){
+  requestAnimationFrame(frame);
+  const raw = now - last;
+  if (raw < (LOW ? 30 : 14)) return;          // ~30 fps in low-power mode, 60 otherwise
+  last = now;
+  const dt = Math.min(.05, raw/1000), f = dt*60;
+  t += dt;
+
+  // switch to low-power mode by itself if this device can't keep up
+  ema = ema*.95 + Math.min(raw, 100)*.05;
+  if (!LOW && t > 4 && ema > 26){ LOW = true; root.classList.add('low'); build(); }
+
+  smx += (mx - smx)*.05*f; smy += (my - smy)*.05*f;
+  tiltEl.style.transform =
+    `rotateY(${(smx*5 + Math.sin(t*.5)*2.5).toFixed(2)}deg) rotateX(${(-smy*4 + Math.cos(t*.4)*1.5).toFixed(2)}deg)`;
+
+  if (t > fwAt){
+    firework(rand(W*.05, W*.95), rand(H*.06, horizon*.6));
+    fwAt = t + (LOW ? 1.7 : 1.0);
+  }
+
+  ctx.drawImage(bg.c, 0, 0, W, H);
+
+  // holographic greetings drifting through the sky
+  ctx.textBaseline = 'middle';
+  for (const h of holos){
+    h.x += h.v*f;
+    if ((h.v < 0 && h.x < -h.w - 40) || (h.v > 0 && h.x > W + 40)) newHolo(h, true);
+    ctx.font = h.font;
+    ctx.globalAlpha = .16 + .08*Math.sin(t*4 + h.y);
+    ctx.fillStyle = h.col;
+    ctx.fillText(h.txt, h.x, h.y);
+  }
+  ctx.globalAlpha = 1;
+
+  ctx.globalCompositeOperation = 'lighter';
+  if (!LOW){
+    for (const [fx, rgb, ph] of LIGHTS){
+      const ox = W*fx, oy = horizon, ang = -Math.PI/2 + Math.sin(t*.7 + ph) * .65, len = H * 1.1, sp = .06;
+      const g = ctx.createLinearGradient(ox, oy, ox + Math.cos(ang)*len, oy + Math.sin(ang)*len);
+      g.addColorStop(0, `rgba(${rgb},.35)`); g.addColorStop(1, `rgba(${rgb},0)`);
+      ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(ox, oy);
+      ctx.lineTo(ox + Math.cos(ang-sp)*len, oy + Math.sin(ang-sp)*len);
+      ctx.lineTo(ox + Math.cos(ang+sp)*len, oy + Math.sin(ang+sp)*len);
+      ctx.closePath(); ctx.fill();
+    }
+  }
+  drawShapes();
+  ctx.globalCompositeOperation = 'source-over';
+
+  // skyline layers shift at different depths
+  const fo = -20 - smx*8, no = -20 - smx*18;
+  ctx.drawImage(skyFar.c, fo, horizon - skyFar.h, skyFar.w, skyFar.h);
+  ctx.drawImage(skyNear.c, no, horizon - skyNear.h, skyNear.w, skyNear.h);
+
+  ctx.fillStyle = '#ff1744';
+  for (const a of antennas){
+    if (Math.sin(t*3 + a.p) > .3) ctx.fillRect(no + a.x - 2, a.y - 2, 4, 4);
+  }
+
+  // moving grid lines
+  const fh = H - horizon, off = (t * 1.3) % 1;
+  for (let k=0;k<(LOW ? 16 : 24);k++){
+    const d = k + 1 - off, y = horizon + fh / d;
+    if (y > H) continue;
+    ctx.strokeStyle = `rgba(255,42,109,${Math.min(1, 1.4/d)})`;
+    ctx.lineWidth = Math.max(.5, 2/d);
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+  }
+
+  // rain (one path)
+  ctx.strokeStyle = 'rgba(170,220,255,.28)'; ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (const r of drops){
+    ctx.moveTo(r.x, r.y); ctx.lineTo(r.x - r.l*.18, r.y + r.l);
+    r.y += r.v*f; r.x -= r.v*.18*f;
+    if (r.y > H){ r.y = rand(-60, -10); r.x = rand(0, W*1.2); }
+  }
+  ctx.stroke();
+
+  // fireworks
+  ctx.globalCompositeOperation = 'lighter';
+  ctx.lineWidth = 2.2;
+  for (let i=sparks.length-1;i>=0;i--){
+    const s = sparks[i];
+    s.vx *= .985; s.vy = s.vy*.985 + .045*f;
+    s.x += s.vx*f; s.y += s.vy*f; s.life -= s.d*f;
+    if (s.life <= 0){ sparks[i] = sparks[sparks.length-1]; sparks.pop(); continue; }
+    ctx.globalAlpha = s.life;
+    ctx.strokeStyle = s.col;
+    ctx.beginPath(); ctx.moveTo(s.x - s.vx*3, s.y - s.vy*3); ctx.lineTo(s.x, s.y); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = 'source-over';
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
